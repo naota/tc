@@ -1,0 +1,8 @@
+This directory contains a kit for inputting with T-Code on kinput2.
+
+	* ccdef.tcode
+		A ccdef file for T-Code.
+	* tc-ki2.el
+		Emacs Lisp program to make your T-Code table for kinput2.
+
+For detail, see Info.

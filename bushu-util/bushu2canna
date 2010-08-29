@@ -1,0 +1,72 @@
+#!/usr/local/bin/perl5
+
+$target = "bushu.select";
+$target = shift if @ARGV;
+
+%num = (qw(0 ０ 1 １ 2 ２ 3 ３ 4 ４ 5 ５ 6 ６ 7 ７ 8 ８ 9 ９ , ， . ． / ／),
+	"\'", "’");
+
+open (STDOUT, "|nkf -s");
+$\ = "\r\n";
+
+$CH = "(?:[!-~]|[\241-\376][\241-\376])";
+
+# 基本ストロークを読む。そのまま出力する。
+
+open (IN, "tcode.txt");
+while (<IN>) {
+    chomp;
+    ($s, $c) = /^($CH+) ($CH)/o;
+    push(@tchars, $c);
+    (print), next if $c eq '';
+    $stroke_code{"$s"} = $c;
+    $code_stroke{$c} = "$s";
+    if ($c eq '▲') {
+	$jf = $c;
+	next;
+    } elsif ($c eq '△') {
+	$fj = $c;
+	next;
+    }
+    
+    print "$s $c";
+}
+close (IN);
+
+# 部首変換の辞書を出す
+
+print "";
+open (IN, $target);
+while (<IN>) {
+    chomp;
+    my ($f, $s, $c) = /^($CH)($CH)($CH)/o;
+    my ($cf, $cs);
+    $cf = $code_stroke{$f};
+    $cs = $code_stroke{$s};
+
+    if ($cs) {
+	$used{$f}++;
+	$f =~ s|([0-9\',./])|$num{$1}|ge;
+	print "$jf$f$cs $c";
+    }
+}
+close (IN);
+
+
+# 部首変換の開始シーケンスを出す。
+
+print "";
+print $code_stroke{$jf}, " \\0 $jf";
+
+for $c (@tchars) {
+    next unless $used{$c};
+    (print ""), next if $c eq '';
+    next if $c eq $jf || $c eq $fj;
+
+    if ($code_stroke{$c}) {
+	my ($c2) = $c;
+	$c2 =~ s|([0-9\',./])|$num{$1}|ge;
+	print $jf, $code_stroke{$c}, " \\0 $jf$c2";
+    }
+}
+

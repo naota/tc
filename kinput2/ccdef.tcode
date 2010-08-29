@@ -1,0 +1,141 @@
+## 
+##	ccdef for T-Code
+##
+
+## modified from ccdef.kinput2 of:
+## ## $I-d: ccdef.kinput2,v 1.4 1991/08/24 02:15:12 ishisone Exp $
+
+
+### 注意
+### ccdef ファイル (このファイルおよびインクルードされているファイル)
+### はすべて EUC コードでなければなりません。気をつけて下さい。
+
+# モードの宣言
+defmode Ascii ZenkakuAscii Tcode JIS Kuten All Restricted
+
+# 初期モードの指定
+initialmode Tcode
+
+# 各モードに対するルールの記述
+
+# T-Code
+mode Tcode	"T-Code"	fallthrough All
+    include '/home/ricoh/src/maeda/X/rule.tcode'
+	""	Tab		""	goto Ascii
+	""	'^Z'		""	goto Ascii
+	""	shift-Tab	""	goto ZenkakuAscii
+	""	' '		"/"	goto Tcode
+endmode
+
+# アスキー
+mode Ascii	"ABC"	fallthrough All
+#	特にルールを記述する必要はない
+	""	Tab		""	goto ZenkakuAscii
+	""	'^Z'		""	goto Tcode
+	""	shift-Tab	""	goto Tcode
+endmode
+
+# 全角アスキー
+mode ZenkakuAscii	"ＡＢＣ"	fallthrough All
+    include 'rule.zascii'
+	""	Tab		""	goto Tcode
+	""	'^Z'		""	goto Tcode
+	""	shift-Tab	""	goto Ascii
+endmode
+
+# JISコード入力
+mode JIS	"JISコード"	fallthrough Restricted
+	""	ENTERMODE	""	jiscode-begin
+	""	EXITMODE	""	jiscode-end
+	""	'0'		"0"
+	""	'1'		"1"
+	""	'2'		"2"
+	""	'3'		"3"
+	""	'4'		"4"
+	""	'5'		"5"
+	""	'6'		"6"
+	""	'7'		"7"
+	""	'8'		"8"
+	""	'9'		"9"
+	""	'a'		"A"
+	""	'b'		"B"
+	""	'c'		"C"
+	""	'd'		"D"
+	""	'e'		"E"
+	""	'f'		"F"
+	""	'A'		"A"
+	""	'B'		"B"
+	""	'C'		"C"
+	""	'D'		"D"
+	""	'E'		"E"
+	""	'F'		"F"
+endmode
+
+# 区点コード入力
+mode Kuten	"区点コード"	fallthrough Restricted
+	""	ENTERMODE	""	kutencode-begin
+	""	EXITMODE	""	kutencode-end
+	""	'0'		"0"
+	""	'1'		"1"
+	""	'2'		"2"
+	""	'3'		"3"
+	""	'4'		"4"
+	""	'5'		"5"
+	""	'6'		"6"
+	""	'7'		"7"
+	""	'8'		"8"
+	""	'9'		"9"
+endmode
+
+# All -- 共通定義
+mode All	"?"
+	""	control-Kanji	""	end-conversion goto Tcode
+	""	shift-space	""	end-conversion goto Tcode
+	""	mod1-space	""	end-conversion goto Tcode
+#	""	'^\\'		""	end-conversion goto Tcode
+	""	F5		""	goto JIS
+	""	mod1-5		""	goto JIS
+	""	F6		""	goto Kuten
+	""	mod1-6		""	goto Kuten
+
+# function key bindings
+	""	'^A'		""	move-top
+	""	'^B'		""	backward
+	""	'^C'		""	unconvert
+	""	'^F'		""	delete
+	""	'^E'		""	move-bottom
+	""	'^L'		""	forward
+	""	'^T'		""	next
+	""	'^N'		""	previous
+	""	'^G'		""	clear
+	""	'^H'		""	backspace
+#	""	'^K'		""	clear
+	""	'^L'		""	forward
+	""	'^M'		""	fix-or-cr
+	""	'^X'		""	convert
+	""	Right		""	forward
+	""	Left		""	backward
+	""	Delete		""	delete
+	""	F1		""	to-katakana
+	""	mod1-1		""	to-katakana
+	""	F2		""	to-hiragana
+	""	mod1-2		""	to-hiragana
+	""	F3		""	to-hankaku
+	""	mod1-3		""	to-hankaku
+	""	F4		""	to-zenkaku
+	""	mod1-4		""	to-zenkaku
+	""	shift-Escape	""	symbol-input
+	""	@keypad		"&"
+	""	@printable	"&"
+
+endmode
+
+# Restricted -- JIS コード / 区点コード用
+mode Restricted	"??"
+	""	F5		""	goto PREV
+	""	F6		""	goto PREV
+	""	mod1-5		""	goto PREV
+	""	mod1-6		""	goto PREV
+	""	'^H'		""	backspace
+	""	@ascii		""	beep
+endmode

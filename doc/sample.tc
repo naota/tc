@@ -1,0 +1,131 @@
+;;; .tc --- setup file for T-Code       -*-emacs-lisp-*-
+
+;;; 【注意】このファイルの設定は、あくまで設定例であり、
+;;; 誰にでもおすすめできる設定ではありません。
+;;; 内容を理解した上で設定してください。
+
+;;; ●変数の設定
+;; tcode-data-directory を "~/T-Code/" に設定する。
+(setq tcode-data-directory "~/T-Code/")
+
+;; 起動時に、Tコードで使うすべてのライブラリをロードする。
+(setq tcode-load-immediate t)
+
+;; 部首合成変換で後置型を使用する。
+(setq tcode-use-postfix-bushu-as-default t)
+
+;; 部首合成変換辞書を tc.el ロード時に読み込む。
+(setq tcode-bushu-on-demand 0)
+
+;; 表示するメッセージを最低限にする。
+(setq tcode-verbose-message nil)
+
+;; ヘルプ用のウィンドウの大きさを自動的に調整する。
+(setq tcode-adjust-window-for-help t)
+
+;; .tc-record に記録しない。
+(setq tcode-record-file-name nil)
+
+;;; ●global キーの設定
+
+;; `tcode-electric-space' および `tcode-electric-comma' を使った
+;; モードの切り替えを有効にする
+(global-set-key " " 'tcode-electric-space)
+(global-set-key "," 'tcode-electric-comma)
+
+;;; ●Tコードモードに初めて入ったときに行う設定
+(add-hook 'tcode-ready-hook
+	  (lambda ()
+	    ;; シフトでの入力で、大文字ではなく小文字で入力する。
+	    ;; 次のtcode-set-key-layoutで設定が行われる。
+	    (setq tcode-shift-lowercase t)
+	    ;; キー配置としてDvorakを用いる。
+	    (tcode-set-key-layout "dvorak")
+	    ;; Tコードで使用する40個のキー以外のキーへのコマンドの割り当て
+	    (tcode-set-key "\\" 'tcode-inactivate-and-self-insert)
+	    ;; カーソルの色
+	    (when window-system
+	      (tcode-enable-cursor-to-change-color)
+	      ;; 安全のため
+	      (add-hook 'tcode-toggle-hook
+			'tcode-enable-cursor-to-change-color))
+	    ;; Tコードモードに最初に入った時に交ぜ書き変換の辞書を読み込む。
+	    (save-excursion
+	      (tcode-mazegaki-switch-to-dictionary))))
+
+;;; ●文字表を読んだ後に行う設定
+;;;   ○2ストローク以上のストロークのキー割り当て
+(add-hook 'tcode-after-load-table-hook
+	  (lambda ()
+	    (when (eq tcode-input-method 'tcode)
+	      ;; Tコード用の設定
+	      ;; 表を一部変更する。
+	      ;;   坂→阪
+	      (tcode-set-action-to-table '(34 29) "阪")
+	      ;; QWERTY での「ke」に変数 tcode-left-paren を割り当てる。
+	      (tcode-set-action-to-table '(27 12)
+					 'tcode-left-paren)
+	      ;; QWERTY での「id」に変数 tcode-right-paren を割り当てる。
+	      (tcode-set-action-to-table '(17 22)
+					 'tcode-right-paren))))
+
+;;; ●交ぜ書き変換に関する設定
+(add-hook 'tcode-mazegaki-init-hook
+	  (lambda ()
+	    ;; 候補選択に使用するキーを2段だけにする。
+	    (setq tcode-mazegaki-stroke-priority-list
+		  ;; キー配置
+		  ;;  0  1  2  3  4    5  6  7  8  9
+		  ;; 10 11 12 13 14   15 16 17 18 19
+		  ;; 20 21 22 23 24   25 26 27 28 29
+		  ;; 30 31 32 33 34   35 36 37 38 39
+		  '(27 22 26 23 28 21 25 24 29 20
+		       17 12 16 13 18 11 15 14 19 10))
+	    ;; 変換対象の長さの設定
+	    (setq tcode-mazegaki-yomi-max 8)
+	    ;; 学習(候補の入れ替え)をしないようにする。
+	    (setq tcode-mazegaki-fixed-priority-count 10000)
+	    ;; スペースで、変換だけでなくモード切り替えも行う。
+	    (tcode-set-key " " 'tcode-electric-space)))
+
+;;; ●その他の設定
+
+;; ○句読点等の切り替え
+;; 標準よりも組み合わせを増やし、かつ「(」や「)」も切り替えるようにする。
+(defvar tcode-left-paren "(" "* 開き括弧")
+(make-variable-buffer-local 'tcode-left-paren)
+(defvar tcode-right-paren ")" "* 閉じ括弧")
+(make-variable-buffer-local 'tcode-right-paren)
+(setq tcode-switch-table-list
+      '(;; デフォールト
+        ((tcode-touten . "、")
+         (tcode-kuten . "。")
+         (tcode-left-paren . "(")
+         (tcode-right-paren . ")"))
+        ;; 1バイト系
+        ((tcode-touten . ", ")
+         (tcode-kuten . ". ")
+         (tcode-left-paren . "(")
+         (tcode-right-paren . ")"))
+        ;; 2バイト系
+        ((tcode-touten . "，")
+         (tcode-kuten . "．")
+         (tcode-left-paren . "（")
+         (tcode-right-paren . "）"))))
+
+;;; ○句読点の自動切り替え
+;; 切り替えの規準(正規表現)の指定
+(setq tcode-kutouten-regexp-alist
+      (list '("[、。]" . 1)
+            (if (tcode-nemacs-p)
+                '("\\z[,.]" . 2)
+              '("\\cj[,.]" . 2))
+            '("[，．]" . 3)))
+;; 切り替える主モードを指定(text-mode latex-mode)
+(setq tcode-auto-identify-kutouten-mode-list
+      '(text-mode latex-mode))
+;; バッファで最初に Tコードモードに入ったときに、
+;; 句読点を自動的に切り替える。
+(add-hook 'tcode-mode-hook 'tcode-auto-switch-kutouten)
+
+;;; .tc ends here

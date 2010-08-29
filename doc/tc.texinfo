@@ -1,0 +1,3193 @@
+\overfullrule=0pt\def\lang{jp}\input texinfo
+@c $Id: tc.texinfo,v 1.21 2003/03/21 09:38:20 kitajima Exp $
+@c original RCS version follows.
+@comment Id: tc.texinfo,v 1.14 1991/04/24 07:15:34 kaoru Exp kaoru
+
+@comment %**start of header (This is for running Texinfo on a region.)
+@setfilename tc.info
+@settitle Tコード入力環境tc2マニュアル
+@paragraphindent 2
+@iftex
+@afourpaper
+@end iftex
+@comment %**end of header (This is for running Texinfo on a region.)
+
+@set VERSION 2.3
+@set EDITION 2.4
+@set UPDATE-MONTH 2003年3月
+@set UPDATED 2003年3月17日
+
+@ifinfo
+@set KUTEN .
+@end ifinfo
+@iftex
+@set KUTEN 。
+@end iftex
+
+@c @setchapternewpage off
+@synindex pg cp
+@synindex vr fn
+@synindex ky fn
+@synindex tp fn
+
+@ifinfo
+@noindent
+@dircategory Input Methods
+@direntry
+* T-Code: (tc.info).         Yet Another Japanese Input Method.  (Japanese)
+@end direntry
+
+This file documents about T-Code driver for Emacs which can deal with
+Japanese characters.
+
+Copyright @copyright{} 1997-2000 Kaoru Maeda, Yasushi Saito, KITAJIMA Akira
+@end ifinfo
+
+@titlepage
+@title Tコード入力環境tc2マニュアル
+@subtitle Edition @value{EDITION}
+@subtitle @value{UPDATE-MONTH}
+@author 前田薫 @t{maeda@@src.ricoh.co.jp}
+@author 斎藤靖 @t{yasushi@@cs.washington.edu}
+@author 北嶋暁 @t{kitajima@@isc.osakac.ac.jp}
+@end titlepage
+@headings double
+@tex
+\global\parskip 0pt plus 1pt
+\global\baselineskip 1.75zh plus 1pt minus 1pt
+\global\envskipamount 1zh
+@end tex
+
+@ifinfo
+@node Top, Overview, (dir), (dir)
+@top Tコード入力環境tc2
+
+このマニュアルでは、日本語の扱いが可能なEmacsでTコード文字入力を行うため
+のパッケージを解説します。ここで対象としているパッケージのバージョンは
+@value{VERSION}です。
+
+このマニュアルは@value{UPDATED}に改訂されました。
+
+@menu
+* Overview::                    Tコードとは.
+* How to setup::                個人環境の構築.
+* "Practice makes perfect!"::   Tコードの練習.
+* Using tc2::                   Tコードを使う.
+* Customization::               カスタマイズ.
+* TUT-Code::                    TUTコードで入力するには.
+* Support softwares::           補助ソフトウェア.
+* Concept Index::               概念索引.
+* Function and Variable Index::  関数と変数索引.
+
+@detailmenu
+ --- The Detailed Node Listing ---
+
+Tコードとは
+
+* 2 stroke input::              2ストローク入力とは.
+* T-Code keyboard::             Tコードで使用するキーボード.
+* Stroke chart::                ストローク表の見方.
+* Obtaining T-Code Information::  Tコード情報の入手方法.
+
+個人環境の構築
+
+* setting up in .emacs::        @file{.emacs}での設定.
+* setting up in .tc::           @file{.tc}での設定.
+
+Tコードの練習
+
+* EELLL::                       Tコード練習プログラムEELLL.
+* Note of Practice::            練習のヒント.
+
+Tコードを使う
+
+* Usage::                       使用法.
+* Bushu conversion::            部首合成変換.
+* Mazegaki conversion::         交ぜ書き変換.
+* Incremental search::          インクリメンタルサーチ.
+* Completion::                  補完機能.
+* Various help::                様々なヘルプ機能.
+* Other utilities::             その他の補助機能.
+
+部首合成変換
+
+* What is bushu conversion::    部首合成変換とは.
+* Bushu conversion in tc2::     tc2での部首合成変換.
+* Interactive bushu conversion:: 対話的な部首合成変換.
+* Bushu dictionary::            部首合成変換辞書.
+
+交ぜ書き変換
+
+* What is mazegaki conversion:: 交ぜ書き変換とは.
+* Mazegaki postfix type::       tc2での交ぜ書き変換---後置型.
+* Mazegaki prefix type::        tc2での交ぜ書き変換---前置型.
+* Completing yomi::             読みの補完.
+* Maintenance of your mazegaki dictionary::  交ぜ書き変換辞書の管理.
+* Mazegaki with LEIM::          tc2での交ぜ書き変換---LEIMを使用する場合.
+* Making mazegaki dictionary::  交ぜ書き変換辞書の作成.
+
+tc2での交ぜ書き変換---後置型
+
+* Selecting an entry in mazegaki conversion::  候補の選択法.
+* Dealing with inflection::     活用する語に対する変換候補の検索法.
+* Notice of inflection in mazegaki conversion::  活用する語の変換における注意点.
+* fixed yomi postfix Mazegaki conversion::  文字数を指定した交ぜ書き変換.
+
+交ぜ書き変換辞書の管理
+
+* Adding kanji to your mazegaki dictionary::  交ぜ書き変換辞書への登録.
+* Deleting kanji from your mazegaki dictionary::  交ぜ書き変換辞書からの削除.
+
+交ぜ書き変換辞書の作成
+
+* Files for making mazegaki dictionary::  交ぜ書き辞書の作成に必要なファイル.
+* Procedure for making mazegaki dictionary::  交ぜ書き変換辞書の作り方.
+
+その他の補助機能
+
+* Changing cursor color::       カーソルの色でモードを表す機能.
+* Toggle mode without control key::  コントロールキーを伴わない
+                                       モード切り替え.
+* Yet another outset::          もう一つの外字入力.
+* Showing yomi in mazegaki dictionary::  漢字に対する交ぜ書き変換辞書中の
+                                           読みの表示.
+* Translating hiragana to katakana::  ひらがなからカタカナへの変換.
+* Inputting by kuten code and JIS code::  区点コード・JISコードによる
+                                            文字の入力.
+* Automatic switching kutouten::  句読点自動切り替え.
+* Zap to char::                 zap-to-charの拡張.
+* Input statistics::            入力文字の統計管理.
+
+カスタマイズ
+
+* Private configuration file::  個人設定用ファイル.
+* Customizing code table::      コード表のカスタマイズ.
+* Input Filters::               入力フィルタ.
+* User variables::              ユーザ変数.
+* Hooks::                       フック.
+* Changing keys::               キー割り当ての変更.
+* Sample configuration file::   個人用設定ファイルの見本.
+
+キー割り当ての変更
+
+* Changing Hot Key::            Tコードモード切り替えキーの変更.
+* Mapping real keymap to virtual keymap::  入力文字と仮想鍵盤との対応.
+* Changing T-Code mode key::    Tコードモードでのキー割り当ての変更.
+* Changing stroke-action::      コード入力に対する動作の変更.
+
+TUTコードで入力するには
+
+* Setup for TUT-Code::          TUTコード用の設定.
+* TUT-Code specific key strokes::  各機能の割り当て.
+
+補助ソフトウェア
+
+* hasida-table::                打ち方表作成プログラム hasida-table.
+* DOGGG::                       Tコード練習プログラム DOGGG.
+* skkinput3::                   skkinput3を利用するには.
+* kinput2::                     kinput2を利用するには.
+
+@end detailmenu
+@end menu
+
+@end ifinfo
+
+@node Overview, How to setup, Top, Top
+@chapter Tコードとは
+@cindex T-Code
+
+@dfn{Tコード}は東京大学理学部情報科学科山田研究室で開発された@dfn{無連想
+2ストローク漢字入力方式}です。ここでは、Tコードについて、日本語の扱いが
+可能なEmacs(以降では単にEmacsと呼びます。)用のTコード入力環境
+tc2を使用するにあたって必要最小限の紹介をします。
+
+@menu
+* 2 stroke input::              2ストローク入力とは.
+* T-Code keyboard::             Tコードで使用するキーボード.
+* Stroke chart::                ストローク表の見方.
+* Obtaining T-Code Information::  Tコード情報の入手方法.
+@end menu
+
+@node 2 stroke input, T-Code keyboard, Overview, Overview
+@section 2ストローク入力とは
+@iftex
+@cindex 2ストローク入力[2すとろーくにゅうりょく]
+@end iftex
+@ifinfo
+@cindex 2ストローク入力
+@end ifinfo
+
+@dfn{2ストローク入力}はキー2打鍵の組み合わせで漢字1文字を表すことによ
+って漢字入力を行う入力方式です。
+漢字入力は現在「かな漢字変換入力」が主流であると思われます。しかし、かな
+漢字変換は判断を必要とする作業であり、大量の文書を入力するのには向きませ
+ん。
+一方、2ストローク入力では、キーボードから直接漢字を入力できるので、
+変換の必要はありません。キーの2打鍵で常に一つの文字を入力することになる
+ので、文章の入力はリズムをくずすことなく行えます。
+
+
+
+@iftex
+@cindex 外字[がいじ]
+@end iftex
+@ifinfo
+@cindex 外字
+@end ifinfo
+@quotation
+■ただし、2ストロークで表せる文字の種類には限りがあります。
+2ストロークで直接入力できない文字のことをTコードでは@dfn{外字}と呼びます。
+外字の入力にはかな漢字変換を使うこともあります。
+Emacs用のTコード入力環境tc2では、外字入力用に、
+部首合成変換(@pxref{Bushu conversion, 部首合成変換, 部首合成変換})・
+交ぜ書き変換(@pxref{Mazegaki conversion, 交ぜ書き変換, 交ぜ書き変換})・
+JISコード表(@pxref{Using tc2, Tコードを使う, Tコードを使う})などの補
+助入力手段を提供しています。
+□
+@end quotation
+
+@iftex
+@cindex 無連想式[むれんそうしき]
+@cindex 連想式[れんそうしき]
+@end iftex
+@ifinfo
+@cindex 無連想式
+@cindex 連想式
+@end ifinfo
+漢字に対するキーの割り当てには@dfn{連想式}と@dfn{無連想式}があります。連
+想式というのはキーの組み合わせと文字の間に連想があるものを言います。たとえ
+ば「トキ」で「時」を表すなどの方法です。一方無連想式というのはそれらの間
+に連想関係がないものを言います。
+
+@cindex awkward sequence
+一般に連想式は習熟にかかる時間は短くてすみますが、ある程度上達してしまう
+と打鍵速度が上がらなくなります。その理由は文字と打鍵位置の間に関係がある
+ために入力が思考によって邪魔されてしまうためと、もともと入力する時のこと
+は考えられていないために@dfn{awkward sequence}(複雑な指の運びを強いられる打鍵
+列のこと)が多くなり指に負担がかかってしまうためです。
+
+無連想式では入力時のawkward sequenceが小さくなるように打鍵位置を決められ
+るため、習熟すればするだけいくらでも速く入力できるようになります。しかも
+変に思考に邪魔されることがないため、英文タイピストのようにおしゃべりをし
+ながら文書の入力ができるようになるといわれています。そのかわり打鍵位置を
+覚えるまでは、何の手がかりもないのですから長い時間をかけてひたすら覚える
+ことになります。
+
+2ストローク入力方式はたとえば手書きの文書を計算機に入力する時に最大の効果
+が期待できます。目から入ってきた文字を言語中枢を経由することなく手で打つ
+ことができるからです。しかし、頭で考えながら文章を入力するときには必ずし
+も最善の方法ではないかもしれません。
+
+@node T-Code keyboard, Stroke chart, 2 stroke input, Overview
+@section Tコードで使用するキーボード
+@cindex キーボード
+
+Tコードでは片手あたり5列4段20個、計40個のキーを使います。40個のキーを2打
+鍵することで1文字の入力を行います。人指し指は2列分を受け持ちます。
+Tコードでは40個のキーの2打鍵、計1600通りの打鍵位置のうち現在約1300に文字
+を割り当てています。新聞などの記事を入力する際には、入力するべき文字の約
+95--98%がTコードの二打鍵で入力できるといわれています。
+
+普通のキーボードでTコードを利用する場合、次の図のような
+配列を用います。このマニュアルでは、いわゆるQWERTY配列のキーボードを
+想定しています。以降の説明でも、特に断らない場合はこの配列に基づき説明し
+ます。なお、Tコード入力環境tc2では、Dvorak配列用などにカスタマイズすることが
+できます(@pxref{Mapping real keymap to virtual keymap,
+入力文字と仮想鍵盤との対応, 入力文字と仮想鍵盤との対応})。
+実際のキーボードでは、キーは下図のような
+長方形ではなく、一列毎にずれた配列になっていることが多いのですが、
+そこはがまんして使うことにします。
+
+@example
+@group
+ 左手用          右手用
+
+1 2 3 4 5      6 7 8 9 0
+Q W E R T      Y U I O P
+A S D F G      H J K L ;
+Z X C V B      N M , . /
+@end group
+@end example
+
+@quotation
+■Tコード専用のキーボードも存在します。Tコード用のキーボードを見ると、その第
+一印象は真っ白なことです。真っ白なのはキートップに書くべき情報が何もない
+ことから納得できます。次にもっとよく見るとキーが長方形に並んでいることに
+気づきます。キーの配置が長方形だというのは、「上段が左に、下段が右にずれ
+て」いないということです。タイプライターに由来するこの「ずれ」は電子化さ
+れた今のキーボードには必要ないからです。
+□
+@end quotation
+
+@node Stroke chart, Obtaining T-Code Information, T-Code keyboard, Overview
+@section ストローク表の見方
+@iftex
+@cindex ストローク表[すとろーくひょう]
+@end iftex
+@ifinfo
+@cindex ストローク表
+@end ifinfo
+
+Tコードの打鍵位置の割り当てを表にまとめたものが@dfn{ストローク表}です。
+Tコード入力環境上で@kbd{11}, @kbd{10}, @kbd{01}, @kbd{00}を入力
+すればこの表を表示させることができます(@pxref{Using tc2, Tコードを使う,
+Tコードを使う})。
+この表は大きく四つ
+の部分に分かれています。それぞれ、5×4の文字の長方形が5×4個並んでいます。
+そのうちの一つを見てみましょう。
+
+@ifinfo
+@example
+RL
+
+  ■■■■*   ■■■■■  ■■■■■  ■■■■■  ■■■■■
+  請境系探象  尚賀岸責漁  舎喜幹丘糖  布苦圧恵固  姿絶密秘押
+  盛革突温捕  益援周域荒  康徒景処ぜ  邦舞雑漢緊  衆節杉肉除
+  依繊借須訳  織父枚乱香  譲ヘ模降走  激干彦均又  測血散笑弁
+
+  酸昼炭稲湯  貿捜異隣旧  攻焼闘奈夕  盤帯易速拡  汽換延雪互
+  歩回務島開  キせ区百木  や出タ手保  コ山者発立  ナ金マ和女
+  給員ど代レ  分よル千ア  7 か( トれ  きっ日国二  上く8 え年
+  相家的対歴  付プばュ作  内工八テ見  九名川機チ  サ建パ第入
+
+  桜瀬鳥催障  典博筋忠乳  採謡希仏察  君純副盟標  犯余堀肩療
+  中スもお定  わラ東生ろ  う4 ) 十リ  あこ6 学月  本さら高シ
+  3 と〇てる  ーした一が  い、の5 1   。* 0 ・2   ではになを
+  ッ人三京ち  ロク万方フ  んまンつ四  けイす電地  業時「長み
+
+  呼幅歓功盗  紀破郡抗幡  房績識属衣  去疑ぢ綿離  秒範核影麻
+  店持町所ほ  全じ自議明  バ部六経動  後間場ニ産  問ム七住北
+  行ド円小ジ  通カ社野同  だり―め大  新」9 子五  事田会前そ
+  海道ず西げ  当理メウグ  不合面政オ  委化ビ目市  気売下都株
+@end example
+@end ifinfo
+@iftex
+@example
+@group
+RL
+
+  ■■■■＊  ■■■■■  ■■■■■  ■■■■■  ■■■■■
+  請境系探象  尚賀岸責漁  舎喜幹丘糖  布苦圧恵固  姿絶密秘押
+  盛革突温捕  益援周域荒  康徒景処ぜ  邦舞雑漢緊  衆節杉肉除
+  依繊借須訳  織父枚乱香  譲ヘ模降走  激干彦均又  測血散笑弁
+
+  酸昼炭稲湯  貿捜異隣旧  攻焼闘奈夕  盤帯易速拡  汽換延雪互
+  歩回務島開  キせ区百木  や出タ手保  コ山者発立  ナ金マ和女
+  給員ど代レ  分よル千ア  ７か（トれ  きっ日国二  上く８え年
+  相家的対歴  付プばュ作  内工八テ見  九名川機チ  サ建パ第入
+
+  桜瀬鳥催障  典博筋忠乳  採謡希仏察  君純副盟標  犯余堀肩療
+  中スもお定  わラ東生ろ  う４）十リ  あこ６学月  本さら高シ
+  ３と〇てる  ーした一が  い、の５１  。＊０・２  ではになを
+  ッ人三京ち  ロク万方フ  んまンつ四  けイす電地  業時「長み
+
+  呼幅歓功盗  紀破郡抗幡  房績識属衣  去疑ぢ綿離  秒範核影麻
+  店持町所ほ  全じ自議明  バ部六経動  後間場ニ産  問ム七住北
+  行ド円小ジ  通カ社野同  だり―め大  新」９子五  事田会前そ
+  海道ず西げ  当理メウグ  不合面政オ  委化ビ目市  気売下都株
+@end group
+@end example
+@end iftex
+
+@iftex
+@cindex 木を見て森を見る方式[きをみてもりをみるほうしき]
+@end iftex
+@ifinfo
+@cindex 木を見て森を見る方式
+@end ifinfo
+表の左上に@samp{RL}と書いてあるのは、この表が1打鍵目は右手、2打鍵目は
+左手で打つ文字の表であることを示しています。小さなブロック内での文字の位
+置が1打鍵目の打鍵位置を、そのブロックが全体の中でどこにあるかが2打鍵目
+の打鍵位置を表しています。たとえば@samp{円}という字は左下のブロックの中に
+あり、その中で中央中段にありますから、1打鍵目は右手中指のホームポジショ
+ン、2打鍵目は左手小指の下段(@kbd{Z}のキー)ということになります。この表
+現形式を@dfn{木を見て森を見る方式}と評した人がいます。
+
+この表の中で@samp{■}で表された打鍵位置には現在文字が割り当てられていま
+せん。また、@samp{*}で表された打鍵位置は、機能または3ストローク以上のキ
+ーストロークを表しており、文字は割り当てられていません。
+ここで、機能とは、たとえば部首合成変換入
+力(@pxref{Bushu conversion, 部首合成変換, 部首合成変換})の開始、
+交ぜ書き変換入力(@pxref{Mazegaki conversion, 交ぜ書き変換, 交ぜ書き変換})の開
+始などを指します。また、3ストローク以上のキーストロークは
+TUTコード (@pxref{TUT-Code,
+TUTコードで入力するには, TUTコードで入力するには})で使
+用します。
+
+@node Obtaining T-Code Information,  , Stroke chart, Overview
+@section Tコード情報の入手方法
+
+@unnumberedsubsec WWW
+@cindex WWW
+
+Tコードオープンラボ@code{http://openlab.ring.gr.jp/tcode/}でTコード関連
+の情報を公開しています。
+
+Emacs用のTコード入力環境tc2のサポートページは
+@code{http://openlab.ring.gr.jp/tcode/tc2/}です。
+
+@unnumberedsubsec Tコードメーリングリスト
+@cindex メーリングリスト
+
+Tコード のメーリングリストが運営されています。
+Tコードに興味を持つ人であれば、誰でも入会できます。
+内容、あるいは参加方法について知りたい人は、
+@code{tcode-ml@@is.s.u-tokyo.ac.jp}宛に
+@code{# guide}という内容のメールを送ってください。下はその例です。
+
+@example
+% echo '# guide' | mail tcode-ml@@is.s.u-tokyo.ac.jp
+@end example
+
+ニフティサーブからメーリングリストに参加したい場合には、
+@code{INET:tcode-ml@@is.s.u-tokyo.ac.jp}あてに
+@code{# guide}の1行からなるメールを送ってください。
+
+@unnumberedsubsec ニフティサーブ
+@cindex ニフティサーブ
+
+ニフティサーブのFKBOARDでは、Tコード等の直接入力方式に関する
+会議室が開かれています。この会議室の最初の方には
+直接入力入門者のための非常に分かりやすい説明が
+多数登録されています。
+
+また、次のPatioが直接入力に関するものです。
+
+@enumerate
+@item
+ID: NBH00475 (情報のやりとり)
+
+管理人: かぜはるか (email: @code{nbh00475@@nifterserve.or.jp})
+
+@item
+ID: GGB03565 (関連データの登録)
+
+管理人: m(as)m (email: @code{ggb03565@@nifterserve.or.jp})
+@end enumerate
+
+@noindent
+いちおうクローズドな形態になっていますので、参加を希望する方は、
+それぞれの管理人にメールして下さい。Passwordを教えてくれます。
+
+
+@node How to setup, "Practice makes perfect!", Overview, Top
+@comment  node-name,  next,  previous,  up
+@chapter 個人環境の構築
+
+@cindex INSTALL
+ここでは、個人環境の構築方法について説明します。
+パッケージのインストールが正しく行われていることを
+前提にしています。パッケージのインストールの方法については、
+パッケージに付属の@file{INSTALL}を見てください。
+
+@menu
+* setting up in .emacs::        @file{.emacs}での設定.
+* setting up in .tc::           @file{.tc}での設定.
+@end menu
+
+@node setting up in .emacs, setting up in .tc, How to setup, How to setup
+@comment  node-name,  next,  previous,  up
+@section @file{.emacs}での設定
+
+まず、@file{.emacs}での設定を行います。
+
+Emacs のバージョンが20以上か、XEmacsの場合は、
+次の記述が@file{.emacs}にあるか確認して、
+なければ追加してください。
+
+@lisp
+(set-language-environment "Japanese")
+@end lisp
+
+@noindent
+これにより、Emacsが、日本語文字コードで記述されたファイルの
+読み書きに適した環境になります。
+
+インストールされた場所がEmacsに分かるように、
+load-pathを設定することが必要な場合があります。
+@samp{*scratch*}バッファで (require 'tc-setup) C-j と入力して
+みてください。エラーメッセージが表示された場合は、
+load-pathの設定が必要です。
+@file{tc.el}などがどこにインストールされているか確かめて、
+次の記述を@file{.emacs}に追加してください。
+
+@lisp
+(setq load-path (cons "@var{/path/to/tc}" load-path))
+@end lisp
+
+@noindent
+上の例の中の@var{/path/to/tc}の部分に、@file{tc.el}などが
+インストールされているディレクトリを記述します。
+
+最後に、次の行を@file{.emacs}に追加してください。
+
+@lisp
+(require 'tc-setup)
+@end lisp
+
+  ここまでで、@file{.emacs}での設定は完了です。
+設定を反映させるため、Emacsを再起動してください。
+
+@node setting up in .tc,  , setting up in .emacs, How to setup
+@comment  node-name,  next,  previous,  up
+@section @file{.tc}での設定
+
+@cindex .tc
+tc2の設定は、設定ファイル@file{.tc}に記述します。ここでは、その作成方法
+を示します。
+
+Emacs を起動し、@kbd{C-u C-\}を入力します。そして、
+@kbd{japanese-T-Code}と入力します。
+ここで、TUTコードを使いたい場合は@kbd{japanese-TUT-Code}と入力します。
+すると、「設定ファイル~/.tcがありません。作成しますか?(y or n)」
+というメッセージが表示されます。
+ここで@kbd{y}と押すと、データを置くディレクトリとキー配置を聞かれますので、適
+切に入力します。
+
+データを置くディレクトリには、辞書などのデータが置かれます。
+最初の状態は空ですが、必要に応じてファイルが置かれます。
+また、EELLLの練習テキストを自分用に作りたい場合などは、
+ここで指定したディレクトリに置いてください。
+なお、もとのデータは変数@code{tcode-site-data-directory}で示される
+ディレクトリにあります。
+
+@iftex
+@cindex キー配置[キーはいち]
+@end iftex
+@ifinfo
+@cindex キー配置
+@end ifinfo
+キー配置については、使用するキー配置を選びます。
+大きく分けて、qwertyとdvorakがあります。
+通常のキーボードをそのまま使用する場合は、qwertyを選択してください。
+また、入力時にシフトを用いるかどうかという選択肢があります。
+これは、キー配置名の次に-shiftが付いているかいないかで区別できます。
+どちらにすればよいか分からない場合は、シフトは用いないでください。
+
+上記の操作を行うと、@file{~/.tc}が作成されます。あとは、必要に応じて
+@file{.tc}を編集してください
+(@pxref{Customization, カスタマイズ, カスタマイズ})。
+
+@node "Practice makes perfect!", Using tc2, How to setup, Top
+@comment  node-name,  next,  previous,  up
+@chapter Tコードの練習
+
+Tコードで普通に入力できるようになるためには練習が必要です。
+実際の生活で使い始める前に、十分練習をすることが理想です。
+ただ、職業的に使用するのでなければ、ある程度修得したら、
+交ぜ書き変換などを用いて、そこそこ入力できるようにはなります。
+
+練習には、EELLLを用いるとよいでしょう。
+
+@iftex
+@cindex ---練習法[TUTコード---れんしゅうほう]
+@end iftex
+@ifinfo
+@cindex TUTコード---練習法
+@end ifinfo
+EELLLでは、TUTコードの練習もできます。TUTコードの練習については、
+TUT-Code Home Pageの、習得と練習テキスト
+(@code{http://www.crew.sfc.keio.ac.jp/~chk/shutoku.html})も参照してくださ
+い。TUT コード用のEELLLのテキストは、このウェブページにある練習テキスト
+を採用しています。
+
+@menu
+* EELLL::                       Tコード練習プログラムEELLL.
+* Note of Practice::            練習のヒント.
+@end menu
+
+@node EELLL, Note of Practice, "Practice makes perfect!", "Practice makes perfect!"
+@section Tコード練習プログラム EELLL
+@cindex EELLL
+@iftex
+@cindex Tコードの練習[Tコードのれんしゅう]
+@end iftex
+@ifinfo
+@cindex Tコードの練習
+@end ifinfo
+
+@dfn{EELLL}はTコードやTUTコードの練習プログラムです。
+@code{EELLL} (「うなぎぎぎ」と読
+みます :-)は、山田研にかって存在したタイピング練習ソフト
+@code{Computer Aided Touch Type Trainer CATTT} (「きゃっととと」)
+のEmacs Lisp版であるということにちなんで名付けられました。
+端末を使って直接練習するプログラムとしては、@code{DOGGG}が用意されています
+(@pxref{DOGGG, Tコード練習プログラム DOGGG, Tコード練習プログラム DOGGG})。
+
+EELLLは@kbd{M-x eelll}で起動します。ミニバッファから練習テキストの番号を
+入力します。前回練習したレッスン番号がミニバッファにあらかじめ入力されて
+います。基本的に、番号の順に練習を進めていってください。
+
+練習テキストが1行ずつ出てきます。それをTコードを使って入力して下さい。
+入力はエコーバックされません。また、入力の際には部首合成変換や交ぜ書き変換を
+使うことはできません。
+
+@vindex eelll-use-image
+ビットマップを表示できる環境では、
+ビットマップによりヘルプが表示されます。
+うまく表示されない場合、変数@code{eelll-use-image}を
+@code{t}に設定することで、ビットマップ表示されることもあります。
+
+@findex eelll-random
+@vindex eelll-random-max-line
+通常はテキストを順番に入力するだけですが、
+@kbd{M-x eelll-ramdom}で起動することにより、
+指定したレッスンの中からランダムに何行か選択して表示されます。
+1回の練習で選択される行数は、変数@code{eelll-random-max-line}で指定します。
+
+@findex eelll-region
+EELLLに用意されているテキストを用いずに、
+練習する文を自分で作成したり何らかの文章を利用して練習したい場合、
+リージョンを指定して
+@kbd{M-x eelll-region}を実行すると、そのテキストの練習ができます。
+
+@node Note of Practice,  , EELLL, "Practice makes perfect!"
+@comment  node-name,  next,  previous,  up
+@section 練習のヒント
+
+練習は基本的にはテキストの順に行えばよいのですが、
+ひらがなをだいたい覚えたら、
+数字やカタカナなどは後まわしにして、漢字に進んでも構いません。
+漢字が簡単に入力できることを早目に体験しておくと、
+練習意欲が増すかもしれません。
+
+さて、練習にあたって心がけておくとよい点をあげておきましょう。
+
+@table @emph
+@item 指の動きでコード(キーの入力順)を覚える。
+例えば「kd」で「の」という覚え方ではなく、
+「右手中指→左手中指」の動きで「の」というように覚えましょう。
+
+@item 入力はリズムよく。
+正確に打つことも大事ですが、
+一定のリズムで入力することがもっと重要です。
+EELLLでは、1行の入力が終わるまで入力した文字列が画面上に現れないよ
+うになっていますが、
+それはリズムを重視した練習を行いやすくするためです。
+
+@item 練習は継続的に。
+毎日決まった量(時間)を練習しましょう。
+なお、1日に2時間以上練習しても効果は上がらないそうです。
+30分とか1時間とか、時間を決めて効率的に練習しましょう。
+
+@item 覚えたはずの字のコードを忘れても気にしない。
+人間誰でも忘れるもの。忘れたらまた覚えればいいだけのことです。
+@end table
+
+@node Using tc2, Customization, "Practice makes perfect!", Top
+@chapter Tコードを使う
+
+@menu
+* Usage::                       使用法.
+* Bushu conversion::                部首合成変換.
+* Mazegaki conversion::             交ぜ書き変換.
+* Incremental search::          インクリメンタルサーチ.
+* Completion::                  補完機能.
+* Various help::                様々なヘルプ機能.
+* Other utilities::             その他の補助機能.
+@end menu
+
+@node Usage, Bushu conversion, Using tc2, Using tc2
+@comment  node-name,  next,  previous,  up
+@section 使用法
+
+@kbd{C-\} (@code{toggle-input-method}がマップされている
+キー、@pxref{Changing Hot Key,
+Tコードモード切り替えキーの変更,
+Tコードモード切り替えキーの変更})で、Tコードを入力するモー
+ドに入ります。モード行が@samp{[TC]}と変わります。
+
+この状態で、たとえば@kbd{jg}と打つと、@samp{は}が挿入されます。2打鍵目に
+スペースを入力すると1打鍵目の文字がそのまま挿入されます。英小文字を少しだけ
+挿入したい場合に便利です。
+
+@iftex
+@cindex カタカナの入力[カタカナのにゅうりょく]
+@end iftex
+@ifinfo
+@cindex カタカナの入力
+@end ifinfo
+シフトキーを押しながら入力すると、
+設定により動作が異なります。
+具体的には、キー配置名の設定で、末尾が@samp{-shift}の
+配置を使うようにした場合、シフト機能が有効になります。
+シフト機能が有効な場合、デフォールトでは、
+ひらがなからカタカナへの変換が行われます。
+つまり、「の」を入力するためのストロークをシフトキーを押しながら
+行うと、「ノ」が入力されます。
+また、シフト機能が無効で、
+変数@code{tcode-shift-lowercase}がtに設定されていた場合、
+その英字の小文字が直ちに挿入されます。
+たとえば、@kbd{A}と入力すると、@samp{a}が挿入されます。
+シフト機能が無効で、@code{tcode-shift-lowercase}がnilの場合、
+入力した文字がそのまま入力されます。
+シフトを有効にしたい場合は、@file{.tc}で@code{tcode-set-key-layout}の
+配置の部分を、@samp{-shift}の付いている分に変更してください。
+どのような配置があるのかは、変数@code{tcode-key-layout-list}の値を
+参照してください。
+
+1打鍵目を打った直後にその1打鍵目を取り消すには、@kbd{DEL}(バックスペース)を
+入力します。
+
+Emacsのコマンド引数も使用できます。
+文字を挿入するストロークの前に@kbd{C-u}と入力すれば、
+次に入力した文字が二つ挿入されます(挿入される文字の数が
+非Tコードモードの場合と異なります)。
+整数を指定した場合(@kbd{C-u 3}など)はその数だけ挿入されます。
+
+もう一度@kbd{C-\}を打つと、非Tコードモードに戻ります。
+
+@iftex
+@cindex ミニバッファでの入力[みにばっふぁでのにゅうりょく]
+@end iftex
+@ifinfo
+@cindex ミニバッファでの入力
+@end ifinfo
+ミニバッファでも、@kbd{C-\}を入力することで、Tコードを使うことができます。
+ミニバッファでTコードモードになっているときは、
+ミニバッファの左端に@samp{[TC]}と表示されます。
+
+Tコードモードでは、2ストロークで漢字を入力する以外に、いろいろな機能が用
+意されています。これらの機能は、Tコードコード表の空の所に割り当てられてい
+ます。次に列挙します。
+
+@table @kbd
+@item jf
+@iftex
+@cindex ---開始[ぶしゅへんかん---かいし]
+@end iftex
+@ifinfo
+@cindex 部首合成変換---開始
+@end ifinfo
+前置型の部首合成変換を
+開始します(@pxref{Bushu conversion, 部首合成変換, 部首合成変換})。
+
+ただし、変数@code{tcode-use-postfix-bushu-as-default}
+を@code{t}にすると、@kbd{77}と@kbd{jf}の機能が入れ換わります。
+
+@item fj
+@iftex
+@cindex ---開始[まぜがきへんかん---かいし]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---開始
+@end ifinfo
+交ぜ書き変換を行います(@pxref{Mazegaki conversion, 交ぜ書き変換, 交ぜ書き変換})。
+
+@item 55
+現在のカーソル位置にある文字の打ち方(ヘルプ表)を表示し
+ます(@pxref{Various help, 様々なヘルプ機能, 様々なヘルプ機能})。
+
+@item 44
+ヘルプ表で表示された打ち方で最も新しい分を再度@kbd{55}と同様に表示します。
+
+@item 11
+@samp{LL} (第1ストローク:左、第2ストローク:左)の
+ストローク表(@pxref{Stroke chart, ストローク表の見方, ストローク表の見方})を
+表示します。
+なお、ストローク表を表示するためのキーストロークは、@kbd{1}が左、@kbd{0}が右
+に対応しています(最上段の、Tコードで用いるキーの左端と右端)。
+
+@item 10
+@samp{LR} (第1ストローク:左、第2ストローク:右)のストローク表を表示します。
+
+@item 01
+@samp{RL} (第1ストローク:右、第2ストローク:左)のストローク表を表示します。
+
+@item 00
+@samp{RR} (第1ストローク:右、第2ストローク:右)のストローク表を表示します。
+
+@item 32
+@vindex tcode-switch-table-list
+句読点セットを「、。」と「, . 」の間で切り替えます。デフォールトは「、。」
+です。変数@code{tcode-switch-table-list}を使うと、
+自分の好みの句読点セットを利用することもできます
+(@pxref{Sample configuration file,
+個人用設定ファイルの見本, 個人用設定ファイルの見本})。
+
+@item 77
+@findex tcode-bushu-begin-alternate-conversion
+カーソル直前の2文字を部首合成変換によって合成した文字で置きかえます
+(@pxref{Bushu conversion, 部首合成変換, 部首合成変換})。
+@kbd{jf}が前置型の部首合成変換であるのに対して、@kbd{77}は後置型の部首合成変換で
+す。
+
+@item 88
+@findex tcode-transpose-strokes
+現在のカーソル位置にある文字を、1打鍵目と2打鍵目を入れかえて打ったときの文字
+で置きかえます。たとえば、@samp{味}の上にカーソルを置いて@kbd{88}を打てば、
+@samp{味}が@samp{の}に変わります。行末にカーソルがある場合には、その直前
+の文字に対してこの処理を行います。
+
+@item 99
+@findex tcode-clear
+@iftex
+@cindex 中断[ちゅうだん]
+@cindex ---中断[ぶしゅへんかん---ちゅうだん]
+@cindex ---中断[まぜがきへんかん---ちゅうだん]
+@end iftex
+@ifinfo
+@cindex 中断
+@cindex 部首合成変換---中断
+@cindex 交ぜ書き変換---中断
+@end ifinfo
+現在実行途中の部首合成変換・交ぜ書き変換を中断します。
+また、ヘルプ用のウインドウを消します。
+
+@item 22
+@iftex
+@cindex JISコード表[JISこーどひょう]
+@end iftex
+@ifinfo
+@cindex JISコード表
+@end ifinfo
+別バッファ(@code{*jis-code*})にJISの全文字をコード順に表示します。
+このバッファ上で適当な文字の上にカーソルを合わせて@kbd{RET}を押すと、
+その文字が、直前にいたバッファに挿入されます。@kbd{q}を押すと、
+直前にいたバッファに戻ります。
+
+@item 33
+英数字の文字コードを2バイト・1バイトの間で切り替えます。
+
+@item 58
+活用語を優先して交ぜ書き変換を行います(@pxref{Notice of inflection in
+mazegaki conversion, 活用する語を変換する際の注意点, 活用する語を変換する際の注意点})。
+
+@item [1-4]8, [2-5]9
+文字数を指定して後置型交ぜ書き変換を行います(@pxref{fixed yomi postfix
+Mazegaki conversion, 文字数を指定した交ぜ書き変換, 文字数を指定した交ぜ書き変換})。
+@end table
+
+なお、Tコードモードで@kbd{?}を押すと、
+以上の、キーと機能との関係の要約が表示されます。
+
+@node Bushu conversion, Mazegaki conversion, Usage, Using tc2
+@section 部首合成変換
+@iftex
+@cindex 部首合成変換[ぶしゅへんかん]
+@end iftex
+@ifinfo
+@cindex 部首合成変換
+@end ifinfo
+
+外字を入力するための補助入力機構の一つに部首合成変換があります。
+
+@menu
+* What is bushu conversion::        部首合成変換とは.
+* Bushu conversion in tc2::         tc2での部首合成変換.
+* Interactive bushu conversion::    対話的な部首合成変換.
+* Bushu dictionary::            部首合成変換辞書.
+@end menu
+
+@node What is bushu conversion, Bushu conversion in tc2, Bushu conversion, Bushu conversion
+@subsection 部首合成変換とは
+
+外字の入力をするのに、Tコードに割り当てられている文字の部首を組み合わせる
+方法があります。これを@dfn{部首合成変換}と呼んでいます。
+
+Tコードの部首合成変換で使用する部首は、実際には漢和辞典にのっている部首ほど正
+確ではなく、文字の形を元にかなりいいかげんにできています。以下に主な部首
+を代表する文字を示します。
+
+@example
+ア、院→こざとへん　　イ→にんべん　　　　　ウ→うかんむり
+エ→工　　　　　　　　オ→てへん　　　　　　サ→くさがんむり
+シ→さんずい　　　　　ヌ→又　　　　　　　　ネ→しめすへん
+リ→りっとう　　　　　レ→礼のつくり　　　　ロ→口(くち)
+ワ→わかんむり　　　　ン→にすい　　　　　　部→おおざと
+性→りっしんべん　　　独→けものへん　　　　四→あみがしら
+図→くにがまえ　　　　之→しんにょう
+@end example
+
+これらの文字だけでなく、部首を構成要素として含んでいる文字で代用すること
+もできます。
+
+以下に、部首合成変換のいくつかの例を示します。
+
+@example
+ロ + ル→兄      日 + 生→星      シ + 談→淡      点 + 重→薫
+病 + 波→疲      図 + 木→困      国 + 木→椢      頭 + 川→順
+石 + 白→碧      言 + 売→読      ア + 良→限      水 + う→永
+@end example
+
+また、部首の引き算もできます。
+
+@example
+　頭 - 豆→頁　　　例 - イ→列　　　列 - リ→歹　　　麻 - 木→床
+ (頭 = 豆 + 頁)　 (例 = イ + 列)　 (列 = 歹 + リ)　 (麻 = 床 + 木)
+@end example
+
+また、共通の部首を取り出す場合もあります。
+
+@example
+題 + 題→頁      進 + 進→之
+@end example
+
+いくつかの記号は、意味を表す文字で入力します。
+
+@example
+た + す→＋      ひ + く→−      か + け→×      わ + る→÷
+等 + 号→＝      不 + 等→≠      矢 + 上→↑      、 + 、→，
+@end example
+
+@noindent
+ただし、記号はデフォールトの辞書には登録されていません。
+この変換を行いたい場合は、辞書に登録してください(@pxref{Bushu dictionary,
+部首合成変換辞書, 部首合成変換辞書})。
+
+2文字の組み合わせで入力できない文字は、3文字以上の組み合わせで入力でき
+る場合があります。
+
+@example
+劇 = (七 + 上→虍) + リ
+@end example
+
+まれに、組み合わされる2文字の順序が関係ある場合があります。
+
+@example
+門 + オ→閉      オ + 門→捫      足 + 戔→践      戔 + 足→踐
+@end example
+
+部首合成変換は部首合成変換辞書に基づき行われます(@pxref{Bushu dictionary,
+部首合成変換辞書, 部首合成変換辞書})。tc2での
+部首合成変換アルゴリズムはちょっと変わっています。実際
+にどの文字が入力されるのかは、一般に、組み合わせる2文字を打鍵してみるまで
+わかりません。
+
+@node Bushu conversion in tc2, Interactive bushu conversion, What is bushu conversion, Bushu conversion
+@subsection tc2での部首合成変換
+
+Tコードモードで@kbd{jf}と打つと部首合成変換モードに入ります。画面には@samp{▲}と
+表示されます。この状態で、Tコード文字を二つ入力すると、その2文字を合成して
+できる文字にそれらが置きかえられます。合成してできる文字がないと、beep音
+がなります。
+
+部首合成変換は再帰的に使うこともできます。たとえば、@samp{劇[(七+上→虍)+リ]}
+という文字を入力したい時には、
+
+@ifinfo
+@example
+  キー                          画面
+---------------------------------------
+  jf (部首合成変換に入る)       ▲
+  jf (さらに部首合成変換に入る) ▲▲
+  ib (七)                       ▲▲七
+  ht (上)                       ▲虍
+  pd (リ)                       劇
+@end example
+@end ifinfo
+@tex
+\example
+\halign{\hskip\itemindent#\hfill&# \hfill&#\hfill\cr
+  キー &                       & 画面\cr\cr
+  jf   &(部首合成変換に入る)       & ▲\cr
+  jf   &(さらに部首合成変換に入る) & ▲▲\cr
+  ib   &(七)                   & ▲▲七\cr
+  ht   &(上)                   & ▲虍\cr
+  pd   &(リ)                   & 劇\cr}
+\end example
+@end tex
+
+@noindent
+のようにして入力することができます。
+
+また、Tコードモードで@kbd{77}と打つと、カーソルの直前の2文字を合成して、そ
+の2文字を合成結果の文字に置きかえます(後置型部首合成変換)。
+こちらの方が分かりやすいかもしれません。
+
+@ifinfo
+@example
+  キー                          画面
+---------------------------------------
+  ib (七)                       七
+  ht (上)                       七上
+  77 (合成)                     虍
+  pd (リ)                       虍リ
+  77 (合成)                     劇
+@end example
+@end ifinfo
+@tex
+\example
+\halign{\hskip\itemindent#\hfill&# \hfill&#\hfill\cr
+  キー &                       & 画面\cr\cr
+  ib   &(七)                   & 七\cr
+  ht   &(上)                   & 七上\cr
+  77   &(合成)                 & 虍\cr
+  pd   &(リ)                   & 虍リ\cr
+  77   &(合成)                 & 劇\cr}
+\end example
+@end tex
+
+@quotation
+■あまりに複雑な合成が必要な文字については交ぜ書き変換を使う方が
+よいでしょう(@pxref{Mazegaki conversion, 交ぜ書き変換, 交ぜ書き変換})。
+□
+@end quotation
+
+@vindex tcode-bushu-on-demand
+部首合成変換辞書の初期化(辞書の読み出し)は、
+処理能力の低い計算機では時間がかかることもあります。
+このため、必要となるまで初期化を行わないようにしたいと思うかもしれません。
+Emacsの変数
+@code{tcode-bushu-on-demand}を@code{0}以外の値に設定すると、その値に応じ
+て辞書初期化のタイミングが
+変わります。@xref{User variables, ユーザ変数, ユーザ変数}@value{KUTEN}
+
+なお、辞書の初期化がされないうちは部首合成変換は使用できません。
+
+@node Interactive bushu conversion, Bushu dictionary, Bushu conversion in tc2, Bushu conversion
+@comment  node-name,  next,  previous,  up
+@subsection 対話的な部首合成変換
+
+コマンド@code{tcode-bushu-convert-preceding-char-interactively}を使えば、
+部首を順次入力して、インクリメンタルに文字を選択することができます。
+このコマンドは、デフォールトではキーに割り当てられていません。
+使いたい場合は、次のように設定してください。
+
+@lisp
+(add-hook 'tcode-ready-hook
+	  (function
+	   (lambda ()
+	     (tcode-set-action-to-table '(5 5) ; 66で対話的な部首変換
+					'tcode-bushu-convert-preceding-char-interactively))))
+@end lisp
+
+このコマンドは、入力された1文字に対し、対話的に変換候補を表示します。
+例えば、「山」と入力し、変換すると、エコーエリアに次のように
+表示されます。
+
+@example
+山 => 岡 [岳岩岸端缶嵩仙岨辿……
+@end example
+
+@noindent
+この例では、@samp{=>}の左側にある@samp{山}の部分が現在の対象部首の集合で、
+@samp{=>}の右側にある@samp{岡}が変換候補です。
+@samp{[}以降が他の候補を表しています。
+この状態で使用できるキーは次のとおりです。
+
+@table @kbd
+@item SPC
+@item >
+変換候補を次の字へ移す。
+
+@item <
+変換候補を前の字へ移す。
+
+@item RET
+先頭の候補を確定する。
+
+@item 文字
+文字を対象部首に追加して変換候補を絞る。
+
+@item Backspace
+対象部首を1文字し、一段階前の状態に戻る。
+対象部首がなくなる場合は変換自体を中断する。
+@end table
+
+@node Bushu dictionary,  , Interactive bushu conversion, Bushu conversion
+@comment  node-name,  next,  previous,  up
+@subsection 部首合成変換辞書
+@iftex
+@cindex 部首合成変換辞書[ぶしゅへんかんじしょ]
+@end iftex
+@ifinfo
+@cindex 部首合成変換辞書
+@end ifinfo
+
+@cindex bushu.rev
+部首合成変換辞書@file{bushu.rev}には、1行に1文字分のエントリがあります。
+
+@example
+唖口亜
+@end example
+
+上の行は、@samp{唖}という見出しの文字は@samp{口}と@samp{亜}の2文字から成る
+ことを意味します。現在の辞書では、過去の経緯から、見出しの文字を
+構成している文字は1文字または2文字で構成されていますが、
+何文字でも構いません。
+
+@example
+院ア
+@end example
+
+上のように、1文字で構成されている場合、その文字と
+見出しの文字は等価である、ということを定義しています。
+つまり、@samp{院}はこざとへんを代表する文字ですが、@samp{院}の
+代わりに@samp{ア}を使っても、こざとへんを入力できるのです。
+ここで、@samp{院}と@samp{ア}の順番に注意してください。
+見出しの文字の方が代表する文字です。
+
+部首合成変換辞書への登録や削除は@file{bushu.rev}を編集することにより行います。
+ここで、辞書はEUCコードでソートされていなければなりません。
+登録したときは、忘れずにソートしてください。
+
+@cindex symbol.rev
+標準辞書@file{bushu.rev}とは別に、記号類を登録してある@file{symbol.rev}
+があります。この辞書を使いたい場合は、その内容を@file{bushu.rev}に追加し
+て、ソートしてください。
+Emacsを用いてソートする場合は、@file{bushu.rev}に@kbd{C-x i}などで
+@file{symbol.rev}追加して、@kbd{C-x h M-x sort-lines}の後
+@file{bushu.rev}を保存してください。
+
+@node Mazegaki conversion, Incremental search, Bushu conversion, Using tc2
+@section 交ぜ書き変換
+@iftex
+@cindex 交ぜ書き変換[まぜがきへんかん]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換
+@end ifinfo
+
+Tコードで外字を入力するには、部首合成変換のほかに交ぜ書き変換
+という方法もあります。
+
+@menu
+* What is mazegaki conversion::     交ぜ書き変換とは.
+* Mazegaki postfix type::       tc2での交ぜ書き変換---後置型.
+* Mazegaki prefix type::        tc2での交ぜ書き変換---前置型.
+* Completing yomi::             読みの補完.
+* Maintenance of your mazegaki dictionary::  交ぜ書き変換辞書の管理.
+* Mazegaki with LEIM::          tc2での交ぜ書き変換---LEIMを使用する場合.
+* Making mazegaki dictionary::  交ぜ書き変換辞書の作成.
+@end menu
+
+@node What is mazegaki conversion, Mazegaki postfix type, Mazegaki conversion, Mazegaki conversion
+@subsection 交ぜ書き変換とは
+
+Tコードを使って熟語変換のようなことをすることも考えられます。この場合、
+Tコードで入力できる漢字を直接入力することで同音異義語が減り、通常のかな漢
+字変換よりも効率のよい変換をすることができます。
+
+@example
+@group
+き社のき者がき車でき社した
+き社→帰社、貴社  き者→記者  き車→汽車
+@end group
+@end example
+
+@noindent
+このような変換を、読みとして漢字とひらがなを
+交ぜ書きして指定できることから、@dfn{交ぜ書き変換}と呼びます
+@footnote{読みをひらがなだけで指定した場合でも、ここでは交ぜ書き変換と
+読んでいます。「交ぜ書きが可能な変換」というくらいの意味です。}。
+
+交ぜ書き変換では、接頭
+語・接尾語はTコードで入力できることが多いのでいちいち接頭語つきの複合語と
+して辞書に登録する必要はありません。そのかわり、一つの単語について「読み」
+の組み合わせが増えるため、辞書が大
+きくなってしまいます。
+
+@example
+@group
+郵便　　ゆうびん、ゆう便、郵びん
+方程式　ほうていしき、方ていしき、ほう程しき、ほうてい式、
+　　　　方程しき、方てい式、ほう程式
+@end group
+@end example
+
+一方、直接入力できる漢字のみからなる候補は、
+辞書に登録されていてもまず使用しないので、
+削除した方がよいかもしれません。
+その方が、同音異義語が減り、選択がしやすくなるからです。
+@xref{Procedure for making mazegaki dictionary,
+交ぜ書き変換辞書の作り方, 交ぜ書き変換辞書の作り方}@value{KUTEN}
+また、@xref{Deleting kanji from your mazegaki dictionary,
+交ぜ書き変換辞書からの削除, 交ぜ書き変換辞書からの削除}@value{KUTEN}
+
+@node Mazegaki postfix type, Mazegaki prefix type, What is mazegaki conversion, Mazegaki conversion
+@subsection tc2での交ぜ書き変換---後置型
+@iftex
+@cindex ---後置型[まぜがきへんかん---こうちがた]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---後置型
+@end ifinfo
+
+tc2標準の交ぜ書き変換は、この「後置型」です。
+
+この後置型交ぜ書き変換では、変換の前に特にモードに入ることなく
+適当に読みを入力して、最後に@kbd{fj}と打つと、
+カーソル直前の文字列の中で辞書に登録されている最も長い読みを使って
+(いわゆる最長一致)漢字変換が行われます。
+
+@menu
+* Selecting an entry in mazegaki conversion::  候補の選択法.
+* Dealing with inflection::     活用する語に対する変換候補の検索法.
+* Notice of inflection in mazegaki conversion::  活用する語の変換における注意点.
+* fixed yomi postfix Mazegaki conversion::  文字数を指定した交ぜ書き変換.
+@end menu
+
+@node Selecting an entry in mazegaki conversion, Dealing with inflection, Mazegaki postfix type, Mazegaki postfix type
+@comment  node-name,  next,  previous,  up
+@subsubsection 候補の選択法
+@iftex
+@cindex ---候補の選択[まぜがきへんかん---こうほのせんたく]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---候補の選択
+@end ifinfo
+
+候補の選択法は、入力した読みに対する辞書中の候補の数によって異
+なります。
+
+@table @asis
+@item 読みに対し、候補が一つの場合
+その候補に変換されますので、その候補を選択するためには、次
+の入力を始めるか、または@kbd{RET}により明示的にその候補を確定
+します。
+
+なお、前置型の変換(@pxref{Mazegaki prefix type,
+tc2での交ぜ書き変換---前置型,
+tc2での交ぜ書き変換---前置型})で、
+活用する語の変換をしないように設定している
+場合(@pxref{User variables, ユーザ変数, ユーザ変数})は、自動的に確定します。
+
+@item 候補がちょうど二つの場合
+たとえば、読み「かん定」に対する漢字として、「勘定」「鑑定」の二つだけが
+辞書に登録されているとします。
+このとき、「かん定@kbd{fj}」(後置型の場合)と入力すると、
+次のように候補が表示されます。
+
+@example
+△@{勘定,鑑定@}
+@end example
+
+ここで左側に表示されている候補を選ぶには、
+第1候補を選択するキー(デフォールトでは@kbd{d})を押します。
+右側の候補を選ぶには、同様に、
+第2候補を選択するキー(デフォールトでは@kbd{f})を押します。
+
+選択に用いるキーは、変数@code{tcode-mazegaki-alternative-select-first-keys}
+と変数@code{tcode-mazegaki-alternative-select-second-keys}の値を変えるこ
+とで変更できます。いずれかの変数の値がnilの場合は、この選択法は用いず、
+候補が10個までの場合と同じになります。
+
+@item 候補が10個までの場合
+たとえば、「あわ@kbd{fj}」(後置型の場合)と入力すると、ミニバッフ
+ァに一覧が次のように表示されます。
+
+@example
+[- 泡 阿波 粟] -  - [- - - -]  
+@end example
+
+これは、Tコードで使用するキーの、上から3段目を表しています。
+候補を選択するときは、選びたい候補に対応しているキーを押します。
+上の例では、「泡」を選択したいときは、Tコードで使用するキーの、
+上から3段目、左から2番目のキー(@key{s}のキー)を押します。
+
+@item 候補が10個を超える場合
+たとえば、「こう@kbd{fj}」と入力すると、ウインドウに次のように表示
+されます。
+
+@example
+@group
+ -    -    -    -     -        -     -    -    -    -
+[孔   幸   厚   黄  ] 逅      鈎 [  肛   浩   袷   恰]
+[頁   煌   候   稿  ] 項      耕 [  膠   淆   功   侯]
+[-    -    -    -   ] -        - [   -    -    -    -]     (1/5)
+@end group
+@end example
+
+この表はTコードで使用するキーを表しています。候補を選択する
+ときは、選びたい候補に対応しているキーを押します。
+なお、候補の優先度と入力するキーとの対応は、
+変数@code{tcode-mazegaki-stroke-priority-list}で
+指定できます(@pxref{User variables, ユーザ変数, ユーザ変数})。
+
+表の右端の@samp{(1/5)}は、候補の数が表三つ分あり、その表のうちの
+1番目を表示していることを示しています。表を切り替えるには、
+次の表に切り替える場合は@kbd{SPC}を、前の表に切り替える場合は
+@kbd{DEL}を押します。
+@end table
+
+@iftex
+@cindex ---候補選択モード[まぜがきへんかん---こうほせんたくもーど]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---候補選択モード
+@end ifinfo
+確定前の状態(交ぜ書き変換候補選択モード)で利用可能なキーは次のとおりです。
+
+@table @kbd
+@item SPC
+次の表または候補を表示する。
+
+@item DEL
+前の表を表示する。
+
+@item RET
+候補を確定して、候補選択モードを抜ける。
+
+@item <
+読みを伸ばす。
+
+@item >
+読みを縮める。
+
+@item C-u
+候補を読みの状態にもどして、候補選択モードを抜ける。
+
+@item |
+漢字を登録して、その後変換する。
+
+@item !
+現在の読みの漢字を(一つ選んで)削除する。
+
+@item C-b
+現在の区切りの先頭部分にカーソルを移動して、そこから後置型変換を
+行う(読みをさかのぼって変換する)。確定したら、その前の候補選択に戻る。
+
+@item C-f
+さかのぼった変換を一つ分取り消す。
+@end table
+
+上に挙げた以外のキーを入力すると、現在の候補を確定して、
+候補選択モードを抜けた後、入力されたキーを再実行します。
+
+候補の先頭4個を超えた候補を確定すると、そ
+の候補は5番目の候補になり、次回の出現順(一覧表での並び方)が
+変わります(先頭4個の候補の出現順には影響を与えません)。
+一方、候補の先頭4個までを確定したときは、次回同じ読みを変換しても、その
+出現順は変わりません。候補入れ替えの対象とならない候補
+の数は、
+変数@code{tcode-mazegaki-fixed-priority-count}で
+指定できます(@pxref{User variables, ユーザ変数, ユーザ変数})。
+
+@node Dealing with inflection, Notice of inflection in mazegaki conversion, Selecting an entry in mazegaki conversion, Mazegaki postfix type
+@comment  node-name,  next,  previous,  up
+@subsubsection 活用する語に対する変換候補の検索法
+@iftex
+@cindex ---活用語[まぜがきへんかん---かつようご]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---活用語
+@end ifinfo
+
+交ぜ書き変換モジュールでは、
+活用する語に対する変換候補の検索は、文法の情報を用いず、パター
+ンマッチングのみにより行います。
+辞書には、読みとして、たとえば「ながめ―」のように、
+語幹`ながめ'と活用する語であることの印`―'をつなげたものを登録します。
+
+パターンマッチングによる変換は次のように行われます。たとえば、「な
+がめて」と入力して変換した場合には、「ながめ」と「て」とに分割す
+れば「ながめ」が辞書の読みの「ながめ」と一致しますので、「ながめ」
+の部分を「眺め」にし、語尾「て」をつなげたものに変換します。
+
+パターンマッチングのみによる変換の問題点としては、文法に合わな
+い語尾でも変換候補になることが挙げられます。この問題点に対し、
+交ぜ書き変換モジュールで
+は、「人が選ぶので、おかしな候補があってもよい」という立場で、
+これ以上の自動的な候補削減を行わ
+ないことにしています。
+
+逆に、パターンマッチングのみによる変換の長所は、
+古文や方言に柔軟に対応できることです。
+
+@node Notice of inflection in mazegaki conversion, fixed yomi postfix Mazegaki conversion, Dealing with inflection, Mazegaki postfix type
+@comment  node-name,  next,  previous,  up
+@subsubsection 活用する語を変換する際の注意点
+
+活用する語は、以下の各項目に注意すれば、活用しない語と同様
+に変換できます。
+
+@itemize @bullet
+@item
+活用しない語と活用する語は、異なる読みとして扱われます。
+
+たとえば、「葵」と「蒼い」は、両方とも読み方は「あおい」ですが、
+「葵」は活用しない語、「蒼い」は活用する語です。ですから、変換の
+際に表示される読みの一覧の中に、これらの候補が同時に現れることはあ
+りません(「蒼い」が活用しない語として登録されている場合を除く)。
+
+@item
+活用しない語は、通常、活用する語よりも優先されます。
+
+上の「あおい」の例では、まず「葵」が表示され、読みを縮める(@kbd{>}
+を入力する)と、活用しない語として読みを縮めて区切り直します。つ
+まり、この場合では、読みを縮めていくと、「おい」、「い」の順に活用
+しない語の候補一覧が(もしあれば)表示されます。その後、更に読みを縮める
+@footnote{『縮める』という語を使っ
+ていますが、この例のように、実際には長くなることもあります。}
+と、読みを、活用する語として区切り直し、「蒼い」が候補となります。
+
+活用する語であることを明示して変換すれば、活用する語である「蒼
+い」をすぐに選択できるようになります。これは、@kbd{fj}の代わり
+に@kbd{58} (または@kbd{C-u fj})を入力することにより行えます。
+
+@item
+活用する語の区切り直しは、語幹の長さに基づいて行われます。
+
+活用する語は『語幹』と『語尾』に分かれますが、区切り直しは、縮
+める方向の場合では、語幹の長い候補が優先され、また、その中で語尾の長い
+候補が優先されます。
+
+@item
+活用語尾にはひらがな・カタカナしか使えません。
+
+たとえば、読み「お―」・漢字「押」が登録されていても、
+「押し通す」を入力しようとして、
+「おし通す」という読みで変換することはできません。この場合は、「おし」と
+いう読みで変換し、
+その後、「通す」を入力してください(または、「おし通―」という読みを登
+録してください)。
+@end itemize
+
+@node fixed yomi postfix Mazegaki conversion,  , Notice of inflection in mazegaki conversion, Mazegaki postfix type
+@comment  node-name,  next,  previous,  up
+@subsubsection 文字数を指定した交ぜ書き変換
+
+以下のキーストロークにより、後置型で変換対象(読み)の文字数を指
+定して交ぜ書き変換ができます。
+
+@table @asis
+@item 活用しない語
+@example
+@group
+キーストローク  読みの長さ
+      @kbd{18}          1
+      @kbd{28}          2
+      @kbd{38}          3
+      @kbd{48}          4
+@end group
+@end example
+
+@item 活用する語
+@example
+@group
+キーストローク  読みの長さ
+      @kbd{29}          2
+      @kbd{39}          3
+      @kbd{49}          4
+      @kbd{59}          5
+@end group
+@end example
+@end table
+
+ここで、活用する語の読みの長さには、活用語尾の長さも含みます。
+
+また、@kbd{fj}のコマンド引数として文字数を指定することができま
+す。@kbd{C-u fj}の場合は活用する語(長さは自由)、
+正の整数(たとえば@kbd{C-u 3 fj})の場合は活用しない語で文字数を指定、
+負の整数(たとえば@kbd{C-u - 3 fj})の場合は活用する語で文字数を指定、
+というようになっています。
+
+文字数を指定した場合、活用しない語では、指定した読みに対し候補が一つしか
+ない場合は、変換後ただちに確定します。
+
+@node Mazegaki prefix type, Completing yomi, Mazegaki postfix type, Mazegaki conversion
+@subsection tc2での交ぜ書き変換---前置型
+@iftex
+@cindex ---前置型[まぜがきへんかん---ぜんちがた]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---前置型
+@end ifinfo
+
+@iftex
+@cindex 交ぜ書き入力モード[まぜがきにゅうりょくもーど]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き入力モード
+@end ifinfo
+変数@code{tcode-use-prefix-mazegaki}を@code{t}にすると、
+前置型の交ぜ書き変換を使うことができます。
+Tコードモードで@kbd{fj}と打つと@dfn{交ぜ書き入力モード}に入ります。
+このモードから抜けるときは、@kbd{99}を押します。このモードで読みを入力し、
+@kbd{SPC}を押すと、交ぜ書き変換候補選択モードに入ります。候補選択の方
+法は後置型の場合と同じです(@pxref{Selecting an entry in mazegaki conversion,
+候補の選択法, 候補の選択法})。
+
+@node Completing yomi, Maintenance of your mazegaki dictionary, Mazegaki prefix type, Mazegaki conversion
+@subsection 読みの補完
+@iftex
+@cindex ---補完[まぜがきへんかん---ほかん]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---補完
+@end ifinfo
+
+交ぜ書き変換辞書の読みから、入力途中の文字列を補完する(未入力の部分を補う)こ
+とができます。「読み」といっても、交ぜ書きですから、すべて漢字でも構いま
+せんし、カタカナでも英単語でも構いません。
+
+使用法を例で説明します。ここでは、
+辞書に読み「アルゴリズム」、漢字「アルゴリズム」が登録してあるとします。
+
+「アル」と入力し、@kbd{=}を押すと、「アル」で始まる読みが他にない
+場合では、「アルゴリズム」と補完され、その読みで変換されます。
+また、「アルゴリズム」
+の他に「アルゴン」という読みがあった場合では、「アルゴ」まで補完
+され、ミニバッファに
+
+@example
+アルゴ@{リズム, ン@}
+@end example
+
+@noindent
+と表示されます。@samp{@{@}}の中が候補です。この候補に対し、次の操作がで
+きます。
+
+@table @kbd
+@item SPC
+次の候補を先頭へ
+
+@item DEL
+最後の候補を先頭へ
+
+@item =
+@itemx TAB
+@itemx LFD
+先頭の候補を選択し、それを読みとして交ぜ書き変換
+
+@item RET
+補完をそこまでで中断
+@end table
+
+@node Maintenance of your mazegaki dictionary, Mazegaki with LEIM, Completing yomi, Mazegaki conversion
+@comment  node-name,  next,  previous,  up
+@subsection 交ぜ書き変換辞書の管理
+@iftex
+@cindex ---辞書[まぜがきへんかん---じしょ]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---辞書
+@end ifinfo
+
+交ぜ書き変換辞書への漢字の登録および辞書からの削除の方法を説明します。
+
+@menu
+* Adding kanji to your mazegaki dictionary::  交ぜ書き変換辞書への登録.
+* Deleting kanji from your mazegaki dictionary::  交ぜ書き変換辞書からの削除.
+@end menu
+
+@node Adding kanji to your mazegaki dictionary, Deleting kanji from your mazegaki dictionary, Maintenance of your mazegaki dictionary, Maintenance of your mazegaki dictionary
+@comment  node-name,  next,  previous,  up
+@subsubsection 交ぜ書き変換辞書への登録
+@iftex
+@cindex ---登録[まぜがきへんかん---とうろく]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---登録
+@end ifinfo
+
+交ぜ書き変換辞書への登録の方法には、一つの漢字を登録する場合と、複数の漢字を
+まとめて登録する場合の2通りあります。
+
+@table @asis
+@item 一つの漢字を登録する場合
+Tコードモードで@kbd{|}を押します。その後、読み・
+漢字を順に入力していけば登録できます。
+
+ここで、交ぜ書き変換の場合、同じ漢
+字に対して複数の読みを登録したい場合があります。たとえば、「春夏秋冬」とい
+う漢字に対して、「春」だけ入力法を知っている場合には、「春夏秋とう」「春
+夏しゅう冬」「春夏しゅうとう」「春か秋冬」「春か秋とう」「春かしゅう冬」
+「春かしゅうとう」という7通りの読みがあります。これは、読みを「春|か|し
+ゅう|とう」、漢字を「春|夏|秋|冬」と入力することで、一度に登録できます。
+
+@item 複数の漢字を登録する場合
+まず、次の形式のデータを用意します。
+
+@example
+@group
+@var{読み1} /@var{漢字1-1}/@var{漢字1-2}/@dots{}/@var{漢字1-m}/
+ :
+@var{読みn} /@var{漢字n-1}/@var{漢字n-2}/@dots{}/@var{漢字n-l}/
+@end group
+@end example
+
+次に、このデータがあるバッファ上で
+@kbd{M-x tcode-mazegaki-make-entries-buffer}とします。
+なお、すでに登録されている読みと漢字との組み合わせについては、二重登録はし
+ないようになっています。
+@end table
+
+@node Deleting kanji from your mazegaki dictionary,  , Adding kanji to your mazegaki dictionary, Maintenance of your mazegaki dictionary
+@comment  node-name,  next,  previous,  up
+@subsubsection 交ぜ書き変換辞書からの削除
+@iftex
+@cindex ---削除[まぜがきへんかん---さくじょ]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---削除
+@end ifinfo
+
+交ぜ書き変換辞書からの削除の方法には、一つの漢字を削除する場合と、複数の漢字
+をまとめて削除する場合、入力法を覚えた漢字一字について不要な漢字をまとめ
+て削除する場合の3通りあります。
+
+@table @asis
+@item 一つの漢字を削除する場合
+Tコードモードで@kbd{C-u !}を押し、読みを入力します。変換中や変換中断直後な
+ら@kbd{!}だけで構いません。続いて、もしその読みに対して漢字が複数ある場
+合には、どれを削除するか選びます。
+
+@item 複数の漢字をまとめて削除する場合
+まず削除する漢字のデータを用意します。
+データの形式は、まとめて登録する場合と同じです
+(@pxref{Adding kanji to your mazegaki dictionary,
+交ぜ書き変換辞書への登録,
+交ぜ書き変換辞書への登録})。
+次に、そのデータがあるバッファで
+@kbd{M-x tcode-mazegaki-delete-entries-buffer}とします。
+なお、辞書に登録されていない読みと漢字との組み合わせに関しては無視します。
+
+@item 入力法を覚えた漢字一字について不要な漢字をまとめて削除する場合
+@kbd{M-x tcode-mazegaki-delete-kanji-from-dictionary}とし、漢字を1字指
+定します。
+こうすると、その漢字が読みに含まれず、漢字に含まれるものを削除します。削
+除する前に、確認のため、漢字一覧が表示されますが、このうち、実際に削除さ
+れるのは、指定した漢字を含む候補だけです。
+なお、このときに表示される漢字一覧は
+コマンド@code{tcode-mazegaki-make-entries-region}で登録可能な形式です。
+部分的に登録し直したい場合に使うとよいでしょう。
+
+ここで、次のことに注意してください。たとえば、「花」を指定した場合、
+読み「あじさい」・漢字「紫陽花」というように、特殊な読みを持つものも削除さ
+れます。このような特殊な読みを辞書に残しておきたいのなら、新たに登録
+し直さなければなりません。
+@end table
+
+@node Mazegaki with LEIM, Making mazegaki dictionary, Maintenance of your mazegaki dictionary, Mazegaki conversion
+@comment  node-name,  next,  previous,  up
+@subsection tc2での交ぜ書き変換---LEIMを使用する場合
+
+@findex tcode-kkc-region
+@defun tcode-kkc-region
+リージョンで囲んだ平仮名を漢字に変換する。
+@end defun
+
+@vindex tcode-kkc-toroku
+@kbd{M-x tcode-kkc-region}とする事で、リージョンで囲んだ平仮名を漢字に
+変換します。この時リージョン内は文章ではなく、単語を含めるようにして下
+さい。通常の交ぜ書き変換辞書に載っていないものを変換するのが主な目的で
+す。変数@code{tcode-kkc-toroku}で、変換した漢字を交ぜ書き変換辞書に追加
+するか制御できます。
+
+適当なキーにバインドしておくと便利です。例えば
+@kbd{C-SPC}で変換をしたい場合は、次のコードを@file{.tc}
+に書いておきます。
+
+@lisp
+(define-key ctl-x-map " " 'tcode-kkc-region)
+@end lisp
+
+@cindex LEIM
+Emacs 20以降では、Mule機能が本家Emacsに統合されました。同時に英語以外
+の言語の入力方法として@dfn{LEIM}と呼ばれるパッケージが提供されるように
+なりました。LEIMは日本語用の変換方法に、@code{kkc-region}(kkc: Kana
+Kanji Converter)を採用しています。
+
+@code{tcode-kkc-region}はLEIM付属の日本語辞書を使って変換を行います。
+LEIM付属辞書の実体は、SKK ver. 8.1付属の@file{SKK-JISYO.L}ですが、変換
+エンジンはSKKではありません。Emacs 21では、混乱を排す為、ファイル名が
+@file{ja-dic.el}に変わっています。
+
+@node Making mazegaki dictionary,  , Mazegaki with LEIM, Mazegaki conversion
+@subsection 交ぜ書き変換辞書の作成
+@iftex
+@cindex ---辞書作成[まぜがきへんかん---じしょさくせい]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---辞書作成
+@end ifinfo
+
+この章では、新たに交ぜ書き変換辞書を作成するための手順を簡単に説明します。
+
+ただし、通常は、これから説明する方法は使う必要がありません。交ぜ書き変換
+辞書は、初期設定を行えば自動的に作成されるからです。自動的に作成される辞
+書は、「Tコードで入力できる漢字がない」という前提のもとで作成されたもの
+です。この辞書をもとにして、登録や削除を行ってください。
+
+@menu
+* Files for making mazegaki dictionary::  交ぜ書き辞書の作成に必要なファイル.
+* Procedure for making mazegaki dictionary::  交ぜ書き変換辞書の作り方.
+@end menu
+
+@node Files for making mazegaki dictionary, Procedure for making mazegaki dictionary, Making mazegaki dictionary, Making mazegaki dictionary
+@subsubsection 交ぜ書き辞書の作成に必要なファイル
+
+交ぜ書き変換辞書を作るために必要なファイルは、パッケージインストール時
+に、様々なファイルと共に一つのディレクトリに置かれます。そのディレクトリ
+は、@code{tcode-site-data-directory}の値を調べれば分かります。
+
+以下のファイルが交ぜ書き変換辞書の作成に用いるファイルです。
+
+@table @file
+@item pd_kihon.yom
+元となる辞書ファイル。
+
+@item t225.dat
+@itemx t300.dat
+@itemx t400.dat
+@itemx t450.dat
+@itemx t575.dat
+@itemx t675.dat
+@itemx t900.dat
+@itemx t1200.dat
+
+@code{t}の後ろの数字は、漢字を大体何文字位覚えたかを示しています。
+@end table
+
+@node Procedure for making mazegaki dictionary,  , Files for making mazegaki dictionary, Making mazegaki dictionary
+@subsubsection 交ぜ書き変換辞書の作り方
+
+@cindex certain
+@cindex uncertain
+@enumerate
+@item
+「完全に打ち方を覚えた漢字の表」(@file{certain})と、
+「まだ完全には覚えていない漢字の表」(@file{uncertain})の二つのファイルを
+作ります。
+
+これは、@file{t*.dat}ファイルを適当につなぎ合わせて作ればよいでしょう。
+@file{t*.dat}の内容をざっと見て、「大体この中にある漢字は全部覚えたな」
+と思ったファイルを@code{cat}などでつなぎ合わせて、@file{certain}ファイル
+を作ります。同様に、「今練習中だけど、まだ完全には覚えていないな」という
+漢字の含まれるファイル群をつなぎ合わせて、@file{uncertain}ファイルを作り
+ます。
+
+@quotation
+■ただし、@file{t*.dat}はTコード用のデータですので、TUTコードを利用する
+場合では、@file{certain}、@file{uncertain}を、@file{t*.dat}を使わず自分
+で用意しなければなりません。書き方は@file{t*.dat}を参考にしてください。
+□
+@end quotation
+
+たとえば、@file{t225.dat}と@file{t300.dat}中の漢字は全部覚えたが、
+@file{t400.dat}と@file{t450.dat}中の漢字はまだ不完全、それ以外の漢字は全
+然打てない、という場合には、次のように@file{certain}と@file{uncertain}ファ
+イルを作ることになります。@file{certain}と@file{uncertain}は、
+@code{tcode-data-directory}で指定されたディレクトリに置きます。
+(例では@var{~/tcode/}になっています。)
+
+@example
+% cd @code{tcode-site-data-directory}で指定されたディレクトリ
+% cat t225.dat t300.dat > @var{~/tcode/}certain
+% cat t400.dat t450.dat > @var{~/tcode/}uncertain
+@end example
+
+@pindex mkcertain.pl
+Perl5を持っている場合には、@file{mkcertain.pl}という
+プログラムを使って、この作業を対話的に行うことができます。
+
+@quotation
+■生成される辞書が、@file{certain}、@file{uncertain}で指定した文字
+および指定しなかった文字によってどう違ってくるのかを簡単に補足します。交
+ぜ書き変換辞書では、ある漢字(変換候補)に対して、漢字を含む読みがあり得ま
+す。@file{certain}、@file{uncertain}の指定の仕方によって、読み中に現れる
+漢字が変わります。次の対応になっています。
+
+@ifinfo
+@example
+            読み中にその字が現れる 読み中にその字の読みが現れる
+certain              ○                         ×
+uncertain            ○                         ○
+どちらでもない       ×                         ○
+@end example
+@end ifinfo
+@iftex
+@example
+            読み中にその字が現れる 読み中にその字の読みが現れる
+certain              ○                         ×
+uncertain            ○                         ○
+どちらでもない        ×                         ○
+@end example
+@end iftex
+
+たとえば、「茶飯事」という漢字について、
+「茶」を@file{uncertain}に含め、
+「事」を@file{certain}に含め、
+「飯」はどちらにも含めないとすると、読みは「さはん事」、
+「茶はん事」になります。
+□
+@end quotation
+
+@item
+@kbd{M-x tcode-make-mazegaki-dictionary}を実行します。
+@end enumerate
+
+@node Incremental search, Completion, Mazegaki conversion, Using tc2
+@section インクリメンタルサーチ
+@cindex インクリメンタルサーチ
+
+@findex isearch
+Tコードで文字の入力ができるようになると、インクリメンタルサーチのときにも
+文字をTコードで入力したくなるのは当然です。tc2で
+は、@code{isearch}を再定義して、インクリメンタルサーチ時にTコードで文字を
+入力できるようにしています。
+
+@findex isearch-forward
+@kbd{C-s} (@code{isearch-forward})と打つと、元のバッファがTコードモード
+だった時にはインクリメンタルサーチのプロンプトに@samp{I-Search [TC]}と表
+示されます。このときキー入力をすると、それをTコードストロークと解釈して
+サーチ文字列に加えます。
+
+また、インクリメンタルサーチ機能を日本語用に拡張しています。
+具体的には、以下の点です。
+
+@itemize @bullet
+@item 行の折り返しも含めた検索
+
+文中で、語の途中で改行している場合でも、検索することができます。
+
+@item @kbd{C-w}の拡張
+
+もともとのインクリメンタルサーチでは、@kbd{C-w}で、現在のカーソル位置か
+ら1語を検索文字列として取り出すという機能がありますが、
+日本語に対しては、1文字を対象にします。
+この主な理由は、日本語では単語の区切りを構文的に判断しにくいためです。
+けれども、@kbd{C-w}を繰り返し用いることで、
+入力の手間を削減することができます。
+
+また、英単語の場合は、そのまま単語が
+検索文字列に追加され、さらに、語と語の
+間に改行が入っていても検索できます(ハイフネーションには対応していません)。
+@end itemize
+
+ただし、上述の拡張は、インクリメンタルサーチ中でTコードモードに
+なっている場合でのみ有効です。
+そうでない場合は、期待する動作を行わない場合があります。
+
+@iftex
+@cindex ---インクリメンタルサーチ[ぶしゅごうせいへんかん---インクリメンタルサーチ]
+@cindex ---インクリメンタルサーチ[まぜがきへんかん---インクリメンタルサーチ]
+@end iftex
+@ifinfo
+@cindex 部首合成変換---インクリメンタルサーチ
+@cindex 交ぜ書き変換---インクリメンタルサーチ
+@end ifinfo
+@findex isearch-fep-string
+インクリメンタルサーチ時の文字入力でも、部首合成変換や
+交ぜ書き変換が使用できます。ただし、交ぜ書き変換の場合は、
+一旦文字入力モードに入りますので、変換後、@key{RET}を入力してください。
+
+@findex isearch-toggle-tcode
+サーチを開始してからTコードモードを切り替えるには、
+@code{isearch-toggle-tcode}コマンドを実行します。デフォールトでは@kbd{C-\}
+になっています。このとき、元のバッファのTコードモードも連動して切り替わり
+ます。モード切り替えキーはカスタマイズすることがで
+きます(@pxref{Changing Hot Key, Tコードモード切り替えキーの変更,
+Tコードモード切り替えキーの変更})。
+
+@findex tcode-isearch-start-state
+Cプログラムを書いていて、コメントに日本語をTコードで入力したい場合があり
+ます。
+ところが、コメントを記述している途中で関数名や変数名などを探そうとすると、
+モードの切り替えを行わなければなりません。
+このように、元バッファのTコードモードに関係なく非Tコードサーチを
+したい場合があります。ユーザ変数@code{tcode-isearch-start-state}を
+@code{0}に設定するとサーチは常に非Tコードサーチから開始されます
+(@pxref{User variables, ユーザ変数, ユーザ変数})。
+
+@node Completion, Various help, Incremental search, Using tc2
+@comment  node-name,  next,  previous,  up
+@section 補完機能
+@iftex
+@cindex 補完機能[ほかんきのう]
+@end iftex
+@ifinfo
+@cindex 補完機能
+@end ifinfo
+
+tc2には、入力の補完機能があります。
+補完機能とは、入力に応じて、その入力した文字列で始まる単語の
+残りの部分を補う機能です。
+実際には、補完できる候補がある場合は自動的に表示されますので、
+その候補でよければそれを選択することになります。
+
+補完機能はデフォールトでは使わないようになっています。
+使えるようにするには、@file{.tc}に次のコードを追加します。
+
+@lisp
+(add-hook 'tcode-ready-hook
+          (function
+           (lambda ()
+             (require 'tc-complete))))
+@end lisp
+
+@iftex
+@cindex 補完用辞書[ほかんようじしょ]
+@cindex 補完用辞書名[ほかんようじしょめい]
+@end iftex
+@ifinfo
+@cindex 補完用辞書
+@cindex 補完用辞書名
+@end ifinfo
+@cindex complete.dic
+補完機能では、補完用の辞書を用います。
+この辞書に語を登録しておくことで、
+先頭の何文字かを入力すると、登録してある語が補完できるように
+なります。辞書は@code{tcode-data-directory}に@file{complete.dic}
+という名前で作成します。
+
+辞書の形式は次のとおりです。
+1行に一つの候補を記述します。
+また、ファイルの先頭に近い方が優先度が高くなります。
+記述の仕方は2通りあります。
+一つ目は、候補をそのまま記述する方法です。
+二つ目は、補完の際にマッチするときに使う文字列と補完した後の文字列の
+両方を空白で区切って記述する方法です。
+記述例を次に示します。
+
+@example
+@group
+シミュレーション
+シミュレータ
+四じょうなわて 四條畷
+@end group
+@end example
+
+上の例で、1行目と2行目は候補をそのまま記述しています。
+1行目と2行目は、「シミュレー」まで同じ文字列ですが、
+この場合、「シミュレーション」の方がファイルの先頭に近いので、
+優先度が高くなります。
+また、3行目では、「四じょ……」と入力して補完すると
+「四條畷」が挿入されます。補完というよりは変換かもしれません。
+
+
+@vindex tcode-complete-mazegaki-prefix-length
+交ぜ書き変換用辞書も補完に利用できます。ただし、
+交ぜ書き変換用辞書は補完候補を探すのには向いていない
+形式ですので、@code{tcode-complete-mazegaki-prefix-length}で
+指定された文字数(デフォールトでは3)の文字列に対してのみ候補を表示します。
+一度補完すると自動的に補完用辞書にその候補を登録しますので、
+次回以降は、その候補については入力文字数の制約はなくなります。
+
+さて、準備が整ったところで、補完機能を使って実際に補完する方法を説明しま
+す。例えば、上に挙げた辞書を使うとします。
+「シミュ」と入力すると、その続きに、
+@samp{>シミュレーション [2) シミュレータ]<}と表示されます。
+これは、第1候補として「シミュレーション」が
+あり、第2候補として「シミュレータ」があることを示しています。
+「シミュレーション」を選択する場合は@kbd{M-RET}を入力します。
+「シミュレータ」を選択する場合は@kbd{M-2 M-RET}を入力します。
+どちらも選択しない場合はそのまま入力し続けてください。
+なお、補完候補の表示は、しばらく経つと消えるようになっています。
+すぐに消したい場合は@kbd{C-g}を入力するとよいでしょう。
+
+@vindex tcode-complete-max-candidate-count
+@vindex tcode-complete-context-length-min
+@vindex tcode-complete-context-length-max
+@vindex tcode-complete-dictionary-name
+変数@code{tcode-complete-max-candidate-count}で補完の際の最大候補数を
+指定できます。また、変数@code{tcode-complete-context-length-min}と
+@code{tcode-complete-context-length-max}により、入力した文字列の
+どの範囲を補完のために用いるのか指定できます。
+辞書の名前を変えたい場合は、変数@code{tcode-complete-dictionary-name}で
+指定します。
+
+@findex tcode-complete-add-to-dictionary
+辞書への登録は、リージョンで登録したい語を指定して、コマンド
+@code{tcode-complete-add-to-dictionary}を実行することでも行えます。
+
+@node Various help, Other utilities, Completion, Using tc2
+@comment  node-name,  next,  previous,  up
+@section 様々なヘルプ機能
+
+tc2では、様々なヘルプ機能を提供しています。
+
+@table @asis
+@item 仮想鍵盤表示機能
+@iftex
+@cindex 仮想鍵盤[かそうけんばん]
+@end iftex
+@ifinfo
+@cindex 仮想鍵盤
+@end ifinfo
+まず、@dfn{仮想鍵盤}とは何か説明します。Tコードでは、1ストローク目をどう
+入力するかによって、2ストローク目を入力したときに挿入される文字が違いま
+す。つまり、1ストローク目の入力に応じて、キーボードの各キーの役割
+が変化するとみなせるわけです。(ある状態での)仮想鍵盤とは、その状態で持つ各
+キーの役割がそれぞれのキーに直接結びついているとみなしたときのキーボード
+(鍵盤)のことです。
+
+1ストローク目を入力し、しばらく待つと、ウインドウが開き、
+次のストロークでどの文字が入力されるか(仮想鍵盤)が表示されます。たとえば、
+@kbd{j}を押すと次のように表示されます。
+
+@example
+@group
+ 革   援   徒   舞    節        -    曹    -    -    -
+[員   よ   か   っ  ] く       題 [  制   運   び   公]
+[と   し   、   *   ] は       設 [  鉄   現   成   映]
+[ド   カ   り   」  ] 田       協 [  多   混   選   以]
+@end group
+@end example
+
+@noindent
+続いて、@kbd{g}を押せば@samp{は}が挿入されます。
+ここで、@samp{-}は無効な入力、@samp{*}は特殊な機能(上の場合は部首合成変換)を
+表します。
+
+1打目を入力してから仮想鍵盤が表示されるまでの時間は、
+変数@code{tcode-display-help-delay}で指定できます
+(@pxref{User variables, ユーザ変数, ユーザ変数})。
+
+@item ストローク表表示機能
+ストローク表(@pxref{Stroke chart, ストローク表の見方, ストローク表の見方})を
+表示します。@xref{Usage, 使用法, 使用法}@value{KUTEN}
+
+@iftex
+@cindex ヘルプ表[へるぷひょう]
+@end iftex
+@ifinfo
+@cindex ヘルプ表
+@end ifinfo
+@item 文字ヘルプ機能
+@kbd{44}や@kbd{55}により、文字の打ち方(@dfn{ヘルプ表})を表示します
+(@pxref{Usage, 使用法, 使用法})。
+たとえば、「字」という字の打ち方は次のように表示されます。
+
+@ifinfo
+@example
+                           字 = @{ウ, 子@}
+・・・・      ・・・・
+・・・・      ・・・・     ●…第1打鍵
+●・・・      ・・・○     ○…第2打鍵
+@end example
+@end ifinfo
+@tex
+\example
+\halign{\hskip\tableindent\hskip\itemindent#&#&#&#&#&#&#&#&#&#&#\cr
+  &  &  &  &  &  &  &  &  &  &字 = {ウ, 子}\cr
+・&・&・&・&  &・&・&・&・&  &\cr
+・&・&・&・&  &・&・&・&・&  &●…第1打鍵\cr
+●&・&・&・&  &・&・&・&○&  &○…第2打鍵\cr}
+\end example
+@end tex
+
+@noindent
+ここで、@samp{字 = @{ウ, 子@}}は、その文字を構成する
+部首を表しています
+(@pxref{Bushu conversion, 部首合成変換, 部首合成変換})。
+
+ヘルプ表は@kbd{99}で消すことができます。
+また、設定を行えば、
+自動的に消すこともできます(@pxref{User variables, ユーザ変数, ユーザ変数})。
+
+へルプ表の表示の仕方を変更することもできます。
+例えば、音声による読み上げなどを行いたい場合など、
+視覚的な情報よりも、入力キーストロークの情報を利用したい場合が
+あります。この場合、変数@code{tcode-help-with-real-keys}を
+tにすることで可能になります。更に、出力の形式は、
+設定により変更できます。詳しくは関数@code{tcode-stroke-to-string}の
+説明を見てください。
+
+
+@item 自動ヘルプ機能
+@iftex
+@cindex 自動ヘルプ[じどうへるぷ]
+@end iftex
+@ifinfo
+@cindex 自動ヘルプ
+@end ifinfo
+部首合成変換や交ぜ書き変換により文字(列)を入力したとき、その中に直接入力でき
+る文字があれば、その字のヘルプ表を自動的に表示します。
+@end table
+
+
+@node Other utilities,  , Various help, Using tc2
+@comment  node-name,  next,  previous,  up
+@section その他の補助機能
+
+これまでに説明した機能のほかにも、いくつかの便利な機能があります。
+ただし、設定をしないと使用できないものもあります。
+
+@menu
+* Changing cursor color::       カーソルの色でモードを表す機能.
+* Toggle mode without control key::  コントロールキーを伴わない
+                                       モード切り替え.
+* Yet another outset::          もう一つの外字入力.
+* Showing yomi in mazegaki dictionary::  漢字に対する交ぜ書き変換辞書中の
+                                           読みの表示.
+* Translating hiragana to katakana::  ひらがなからカタカナへの変換.
+* Inputting by kuten code and JIS code::  区点コード・JISコードによる
+                                            文字の入力.
+* Automatic switching kutouten::  句読点自動切り替え.
+* Zap to char::                 zap-to-charの拡張.
+* Input statistics::            入力文字の統計管理.
+@end menu
+
+@node Changing cursor color, Toggle mode without control key, Other utilities, Other utilities
+@comment  node-name,  next,  previous,  up
+@subsection カーソルの色でモードを表す機能
+
+@vindex tcode-mode-off-cursor-color
+@vindex tcode-mode-on-cursor-color
+Tコードモードと通常(非Tコード)モードとでカーソルの色を変えること
+ができます(設定が必要です)。変数@code{tcode-mode-off-cursor-color}および
+@code{tcode-mode-on-cursor-color}により、
+各モードを表すカーソルの色を指定できます。
+
+この機能はX Window System上のEmacsでのみ使用できます
+(他のウィンドウシステムでも使用できるかもしれません)。
+
+この機能を使うには、以下を@file{.tc}に加えて下さい。
+
+@findex tcode-enable-cursor-to-change-color
+@lisp
+@group
+(add-hook 'tcode-ready-hook
+          (function (lambda ()
+                      (and window-system
+                           (tcode-enable-cursor-to-change-color)))))
+@end group
+@end lisp
+
+@node Toggle mode without control key, Yet another outset, Changing cursor color, Other utilities
+@comment  node-name,  next,  previous,  up
+@subsection コントロールキーを伴わないモード切り替え
+
+モードの切り替えは通常@kbd{C-\}により行いますが、これを特定の(コントロー
+ルキーを使わない)キーシーケンスによって行うことができます(設定が必要です)。
+
+具体的には、@key{SPC}・@key{TAB}・@key{,}のキーを使用し、次のように切り
+替えます。
+
+@table @asis
+@item 非TコードモードからTコードモードへ
+@table @kbd
+@item ,
+カーソルの直前の文字により動作が異なります。
+行頭または空白ならモード切り替え、
+それ以外ならそのまま@code{,}を挿入します。
+
+@item SPC ,
+スペースを挿入後、モードを切り替えます。
+
+@item SPC TAB
+スペースは、一旦挿入されますが、モードを切り替えた後取り除かれます。
+@end table
+
+@item Tコードモードから非Tコードモードへ
+@table @kbd
+@item SPC
+直前に行われた動作(キー入力)により動作が異なります。
+Tコードによる入力の直後(前置型の交ぜ書き変換中のときを除く)では、
+モード切り替えを行い、かつスペースを挿入します。
+そうでない場合は、そのままスペースを挿入します。
+
+@item SPC TAB
+スペースは、一旦挿入されますが、モードを切り替えた後取り除かれます。
+@end table
+@end table
+
+少し複雑に見えますが、実際は簡単です。
+たとえば、Tコードモードの時に、@samp{たとえば、Emacs では}と入力しようとし
+たとします。この場合は、@samp{たとえば、}の後@kbd{SPC}を入力し、
+続けて@samp{Emacs }を入力します。次に、@kbd{,}の後@samp{では}と入力す
+ればよいのです。ここで、句読点の直後では、@kbd{SPC}による切り替えでも空
+白は挿入されません。
+
+@vindex tcode-electric-space-without-inserting
+@kbd{SPC}や@kbd{SPC ,}による切り替えの際に挿入される空白を自動的に
+削除したい場合は
+@code{tcode-electric-space-without-inserting}を@code{t}にしてください。
+
+この機能を使用するには、以下を@file{.tc}に追加してください。
+
+@findex tcode-electric-space
+@findex tcode-electric-comma
+@lisp
+@group
+;;; コントロールキーを伴わないモード切り替え
+(global-set-key " " 'tcode-electric-space)
+(global-set-key "," 'tcode-electric-comma)
+
+(add-hook 'tcode-mazegaki-init-hook
+          (function (lambda ()
+                      (tcode-set-key " " 'tcode-electric-space))))
+@end group
+@end lisp
+
+@node Yet another outset, Showing yomi in mazegaki dictionary, Toggle mode without control key, Other utilities
+@comment  node-name,  next,  previous,  up
+@subsection もう一つの外字入力
+
+@findex tcode-insert-ya-outset
+Tコードで直接入力できない文字を手軽に入力したい時があります。
+この場合に、コマンド@code{tcode-insert-ya-outset}を用いて、
+Tコードで用いるキー以外のキーを利用して、2ストローク(またはそ
+れ以上)で自分の定義した字を入力することができます(設定が必要です)。
+
+@findex tcode-ya-outset-map-list
+たとえば、Tコードモードで、Tコードで用いるキー以外のキー@key{[}にこの機能
+を割り当てたとします。@kbd{[}を入力し、次にTコードに用いるキーを入力すれば、
+変数@code{tcode-ya-outset-map-list}で定義された表に基づき字が入力できます。
+@kbd{[}をさらに入力すると、@code{tcode-ya-outset-map-list}のリストを順
+次切り替えます。なお、@kbd{[}を入力して1秒ほど待つと、仮想鍵盤が次のよう
+に表示されるようになっていますの
+で、変数@code{tcode-ya-outset-map-list}での字の並び方を覚える必要はあり
+ません。
+
+@example
+@group
+ ￥   †   ‡   ¶    ▼       《    》   【   】   “
+[★   ◆   ■   ●  ] ▲       〈 [  〉   〔   〕   〃]
+[☆   ◇   □   ○  ] △       ← [  ↓   ↑   →   §]
+[※   ‥   …   ◎  ] ▽       ♪ [  〒   ♂   ♀   ‐]     (1/3)
+@end group
+@end example
+
+設定は、コマンド@code{tcode-insert-ya-outset}を適当なキーに割り当てて
+ください(@pxref{Changing T-Code mode key,
+Tコードモードでのキー割り当ての変更, Tコードモードでのキー割り当ての変更})。
+
+@node Showing yomi in mazegaki dictionary, Translating hiragana to katakana, Yet another outset, Other utilities
+@comment  node-name,  next,  previous,  up
+@subsection 漢字に対する交ぜ書き変換辞書中の読みの表示
+
+@findex tcode-mazegaki-show-yomi-region
+オンラインドキュメントで読み方のわからない漢字があった場合、交ぜ書き
+変換辞書を利用して、その読みを調べることができます。その漢字をリージョンで指
+定して、@kbd{M-x tcode-mazegaki-show-yomi-region}とすると、その漢字の読
+みを交ぜ書き変換辞書から探してきて、もし見つかれば、それを表示します。活
+用する語に対しては、語幹のみをリージョンで指定し、@kbd{C-u M-x
+tcode-mazegaki-show-yomi-region}とすることで、その語幹を持つ読みを探すこ
+とができます。
+
+
+@node Translating hiragana to katakana, Inputting by kuten code and JIS code, Showing yomi in mazegaki dictionary, Other utilities
+@comment  node-name,  next,  previous,  up
+@subsection ひらがなからカタカナへの変換
+
+@iftex
+@cindex カタカナの入力[カタカナのにゅうりょく]
+@end iftex
+@ifinfo
+@cindex カタカナの入力
+@end ifinfo
+@findex tcode-katakana-previous-char
+入力済みのひらがなをカタカナへと変換できます。
+@code{M-x tcode-katakana-previous-char}でカーソル直前の1文字をカタカナ
+へ変換します。
+また、数引数を与えることによって、point の@var{n}文字前までにあるひらがなすべ
+てをカタカナへ変換します。
+
+1文字だけ変換した場合、その字は
+自動ヘルプ(@pxref{Various help, 様々なヘルプ機能, 様々なヘルプ機能})の対象と
+なります。
+
+適当なキーに割り当てて使用するとよいでしょう(@pxref{Changing T-Code mode key,
+Tコードモードでのキー割り当ての変更, Tコードモードでのキー割り当ての変更})。
+
+@findex tcode-katakana-preceding-chars
+また、これとは別の方法として、コマンド
+@code{tcode-katakana-preceding-chars}を用いる方法もあります。
+これは、たとえば、この機能を@key{%}に割り当てているとすると、
+@kbd{%}を1回入力すると、直前の1字がひらがなならカタカナになります。
+さらに@kbd{%}を入力すれば、2字前の字がその対象となります。
+このように、対象文字列を対話的に伸ばすことができます。
+また、@kbd{DEL}を入力することで、対象文字列を縮めることができます。
+
+@node Inputting by kuten code and JIS code, Automatic switching kutouten, Translating hiragana to katakana, Other utilities
+@comment  node-name,  next,  previous,  up
+@subsection 区点コード・JISコードによる文字の入力
+
+入力法のわからない漢字の区点コードまたはJISコードが分かれば、そのコード
+により文字入力ができます。
+
+@findex tcode-insert-kanji-by-kuten-code
+@findex tcode-insert-kanji-by-jis-code
+区点コードで入力するには、@code{M-x tcode-insert-kanji-by-kuten-code}の
+後にそのコードを入力してください。JISコードの場合は
+@code{M-x tcode-insert-kanji-by-jis-code}です。
+
+これらの方法で入力した字は自動ヘルプ(@pxref{Various help,
+様々なヘルプ機能, 様々なヘルプ機能})の対象となります。
+
+@node Automatic switching kutouten, Zap to char, Inputting by kuten code and JIS code, Other utilities
+@comment  node-name,  next,  previous,  up
+@subsection 句読点自動切り替え
+
+書く文章の内容によって句読点を変えることがある場合、
+その内容に応じて自動的に句読点を切り替えるようにしておけば、
+うっかり句読点を混在させてしまうことがふせげます。
+設定をすれば、この機能が使えるようになります。
+
+@vindex tcode-auto-identify-kutouten-mode-list
+設定は以下のように行います。
+自動切り替えを行う主モードを
+変数@code{tcode-auto-identify-kutouten-mode-list}で指定します。
+たとえば、@code{text-mode}と@code{tex-mode}で自動切り替えを
+有効にするには、以下のように@file{.tc}に記述します。
+
+@findex tcode-auto-switch-kutouten
+@lisp
+(add-hook 'tcode-mode-hook 'tcode-auto-switch-kutouten)
+(setq tcode-auto-identify-kutouten-mode-list
+      '(text-mode tex-mode))
+@end lisp
+
+設定したモードにかかわらず、強制的に自動切り替えを行うには、
+@kbd{C-u M-x tcode-auto-switch-kutouten}とします。
+
+@vindex tcode-kutouten-regexp-alist
+なお、句読点の判定は変数@code{tcode-kutouten-regexp-alist}に基づき行わ
+れます。
+
+@node Zap to char, Input statistics, Automatic switching kutouten, Other utilities
+@comment  node-name,  next,  previous,  up
+@subsection zap-to-charの拡張
+
+@findex tcode-auto-switch-kutouten
+Emacsでは@kbd{M-z}で@code{zap-to-char}というコマンドが実行できますが、
+コマンド@code{tcode-zap-to-char}では、
+これをTコードでも入力できるように拡張しています。
+
+この機能を使用したい場合は、次のとおり@file{.tc}に記述してください。
+
+@lisp
+(global-set-key "\M-z" 'tcode-zap-to-char)
+@end lisp
+
+@node Input statistics,  , Zap to char, Other utilities
+@comment  node-name,  next,  previous,  up
+@subsection 入力文字の統計管理
+
+入力された文字の統計情報を記録することができます。
+
+次のコードを@file{.tc}に記述すれば自動的に統計情報が集められるようになりま
+す。
+@lisp
+(add-hook 'tcode-after-load-table-hook
+	  (lambda ()
+	    (when (eq tcode-input-method 'tcode)
+              (setq tcode-input-statistics-file-name "tcode-stat")
+	      (tcode-initialize-input-statistics))))
+@end lisp
+
+コマンド@code{tcode-list-input-statistics-display}を実行することにより、
+文字ごとに何文字入力したか、またヘルプ表で何文字確認したかが表示されます。
+
+変数@code{tcode-input-statistics-file-name}に名前を設定しなければ、
+つまり、nilに設定しておけば、統計情報は保存されません。
+
+@node Customization, TUT-Code, Using tc2, Top
+@chapter カスタマイズ
+@cindex カスタマイズ
+
+ここではtc2でカスタマイズできる主な部分を簡単に説明します。もっ
+と詳しく知りたい方はソースファイルを読んでください。
+なお、本マニュアルでは取り上げませんが、
+customパッケージの機能を用いてカスタマイズすることもできます。
+
+@menu
+* Private configuration file::  個人設定用ファイル.
+* Customizing code table::      コード表のカスタマイズ.
+* Input Filters::               入力フィルタ.
+* User variables::              ユーザ変数.
+* Hooks::                       フック.
+* Changing keys::               キー割り当ての変更.
+* Sample configuration file::   個人用設定ファイルの見本.
+@end menu
+
+@node Private configuration file, Customizing code table, Customization, Customization
+@comment  node-name,  next,  previous,  up
+@section 個人設定用ファイル
+@iftex
+@cindex 個人設定用ファイル[こじんせっていようふぁいる]
+@end iftex
+@ifinfo
+@cindex 個人設定用ファイル
+@end ifinfo
+
+@cindex .tc
+Tコードに関するカスタマイズは@file{~/.tc}で行います。
+初期設定の方法については、@xref{How to setup, 個人環境の構築,
+個人環境の構築}@value{KUTEN}
+
+ファイル名@file{.tc}は変数@code{tcode-init-file-name}で変更できます。
+この場合、@file{.emacs}で、その中の@code{(require 'tc-setup)}よりも前に
+設定しなければ有効になりません。
+
+@node Customizing code table, Input Filters, Private configuration file, Customization
+@comment  node-name,  next,  previous,  up
+@section コード表のカスタマイズ
+
+Tコードのコード表(キーストロークと入力される文字との対応)は、自由に変更
+して構いません。例えば自分の名前に含まれる漢字が直接入力できない場合など、
+デフォールトのTコードで直接入力できるけれど自分ではめったに使わない字と
+入れ替えるとよいでしょう。
+
+変更の例を次に示します。
+次のように@file{.tc}に記述してください。
+
+@lisp
+(add-hook 'tcode-after-load-table-hook
+	   (lambda ()
+	     (when (eq tcode-input-method 'tcode)
+	       ;; 坂→阪
+	       (tcode-set-action-to-table '(34 29) "阪")
+	       ;; ―→…
+	       (tcode-set-action-to-table '(27 32) "…"))))
+@end lisp
+
+@noindent
+上の例では、「坂」という字を「阪」に、「―」を「…」に
+それぞれ変更しています。
+@samp{'(34 29)}の部分はキーストロークを表しています。
+数字については@xref{Changing T-Code mode key, 入力文字と仮想鍵盤との対応,
+入力文字と仮想鍵盤との対応}@value{KUTEN}
+
+@node Input Filters, User variables, Customizing code table, Customization
+@comment  node-name,  next,  previous,  up
+@section 入力フィルタ
+
+@cindex 入力フィルタ[にゅうりょくふぃるた]
+キー入力をもとに文字表から引いてきたデータに対して、
+さらに変更を加えることができます。たとえば、1バイト文字から
+2バイト文字への変換などは、このフィルタ機能を利用しています。
+
+@vindex tcode-input-filter-functions
+フィルタの設定は、変数@code{tcode-input-filter-functions}で行います。
+フィルタを適用する条件と、フィルタの関数名の組を順に記述します。
+フィルタは、リストの順に、条件が成立した場合に、適用されます。
+フィルタ関数は、文字を入力して文字を出力しなければなりません。
+
+フィルタの応用例を示します。
+
+@noindent
+○SKK風の前置型交ぜ書き変換
+
+シフトさせて入力することによって、前置型の変換モードに切り替える
+ことができます。シフトを有効にして(@pxref{Usage, 使用法, 使用法})、
+次のコードを@file{.tc}に記述します。
+
+@lisp
+(setq tcode-input-filter-functions
+  '(((or tcode-katakana-mode tcode-shift-state) . japanese-katakana)
+    ((and (boundp 'tcode-bushu-prefix-list)
+	  tcode-bushu-prefix-list) 
+     . tcode-bushu-prefix-convert)
+    (tcode-alnum-2-byte . tcode-1-to-2)
+    (tcode-shift-state . tcode-mazegaki-add-prefix)))
+@end lisp
+
+@node User variables, Hooks, Input Filters, Customization
+@section ユーザ変数
+
+ここでは、ユーザが変更できる主な変数を説明します。
+
+@unnumberedsubsec パス
+
+@vindex tcode-data-directory
+@cindex ディレクトリ
+@defvar tcode-data-directory
+Tコードの各種データファイルを置くディレクトリ。ディレクトリ名の最後が
+@code{/}で終わっていなければなりません。
+デフォールトでは@file{~/tcode/}。今後出てくる変数の中で、
+値が@file{~/tcode}で始まるものはすべて、
+この@code{tcode-data-directory}の値を変えることで、そのデフォールト
+値が変わります。ただし、この変数の値は
+@file{tc.el}ロード時にだけ参照されるので、
+Tコード起動後に@code{tcode-data-directory}の値を変更しても意味は
+ありません。
+@end defvar
+
+@iftex
+@cindex ---辞書のファイル名[まぜがきへんかん---じしょのふぁいるめい]
+@end iftex
+@ifinfo
+@cindex 交ぜ書き変換---辞書のファイル名
+@end ifinfo
+@vindex tcode-mazegaki-dictionary-name
+@defvar tcode-mazegaki-dictionary-name
+交ぜ書き変換辞書のファイル名。デフォールトでは@file{mazegaki.dic}。
+@end defvar
+
+@vindex tcode-bushu-dictionary-name
+@iftex
+@cindex ---辞書のパス[ぶしゅへんかん---じしょのふぁいるめい]
+@end iftex
+@ifinfo
+@cindex 部首合成変換---辞書のファイル名
+@end ifinfo
+@defvar tcode-bushu-dictionary-name
+部首合成変換辞書のファイル名。デフォールトでは
+@file{bushu.rev}。
+@end defvar
+
+@vindex tcode-record-file-name
+@defvar tcode-record-file-name
+Tコード使用の統計を記録するファイルのパス名。@code{nil}なら記録しません。
+デフォールトでは@file{~/.tc-record}。
+@end defvar
+
+@unnumberedsubsec 部首合成変換
+
+@vindex tcode-bushu-on-demand
+@defvar tcode-bushu-on-demand
+部首合成変換辞書の初期化をいつ行うかを指定します。数字が大きい方がより強い
+要求があったときにしか初期化を
+行いません。@code{tcode-bushu-on-demand}に指定された数以上の要
+求が来ると、部首合成変換辞書の初期化を行います。
+
+@table @code
+@item 0
+@file{tc.el}ロード時。
+@item 1
+Tコードモードに入ったとき(デフォールト)。
+@item 2
+部首合成変換を開始したとき。ストロークヘルプを実行したとき。
+@end table
+@end defvar
+
+@vindex tcode-use-postfix-bushu-as-default
+@defvar tcode-use-postfix-bushu-as-default
+@code{nil}でないときに、@kbd{jf}で後置型部首合成変換を行い、@kbd{77}で前置型部
+首変換を行います。@code{nil}のときは逆になります(デフォールト)。
+@end defvar
+
+@unnumberedsubsec 交ぜ書き変換
+
+@vindex tcode-use-prefix-mazegaki
+@defvar tcode-use-prefix-mazegaki
+前置型の交ぜ書き変換(@pxref{Mazegaki prefix type,
+tc2での交ぜ書き変換---前置型,
+tc2での交ぜ書き変換---前置型})を使う時に@code{t}。
+デフォールトでは@code{nil}。
+@end defvar
+
+@vindex tcode-mazegaki-stroke-priority-list
+@defvar tcode-mazegaki-stroke-priority-list
+候補選択時の候補の並べ方を指定します。キーアドレスのリストです
+(@pxref{Sample configuration file,
+個人用設定ファイルの見本,
+個人用設定ファイルの見本})。
+@end defvar
+
+@vindex tcode-mazegaki-fixed-priority-count
+@defvar tcode-mazegaki-fixed-priority-count
+学習(候補の入れ替え)する際の、学習の対象外となる候補の数です
+(@pxref{Selecting an entry in mazegaki conversion, 候補の選択法, 候補の選択法})。
+十分大きな値にしておけば、候補の入れ替えをしなくなります。
+@end defvar
+
+@vindex tcode-mazegaki-yomi-max
+@defvar tcode-mazegaki-yomi-max
+交ぜ書き変換の対象とする読みの長さの最大値を指定します。
+活用語の場合は活用語尾の長さも含みます。
+
+長くすると変換効率が悪くなるので、長くしすぎないようにしてください。
+@end defvar
+
+@vindex tcode-mazegaki-enable-inflection
+@defvar tcode-mazegaki-enable-inflection
+nil でないとき、活用語の変換(@pxref{Dealing with inflection,
+活用する語に対する変換候補の検索法,
+活用する語に対する変換候補の検索法})をします。そうでないときは、活用語の
+変換をしません。
+@end defvar
+
+@unnumberedsubsec ヘルプ
+
+@vindex tcode-display-help-delay
+@defvar tcode-display-help-delay
+Tコードモードで、1打目を入力してから仮想鍵盤(@pxref{Various help,
+様々なヘルプ機能, 様々なヘルプ機能})が表示されるまでの時間(秒)。
+
+NEmacs では整数しか指定できませんが、Mule/Emacs では小数も指定できます。
+@end defvar
+
+@vindex tcode-auto-help
+@defvar tcode-auto-help
+@code{nil}でないとき自動ヘルプを
+行います(@pxref{Various help, 様々なヘルプ機能, 様々なヘルプ機能})。
+
+また、この変数の値を@code{'delete-the-char}に設定すると、
+直接入力できる字は削除します。つまり、
+表示された打ち方を見ながら再入力する必要があります。
+@end defvar
+
+@vindex tcode-auto-remove-help-count
+@defvar tcode-auto-remove-help-count
+ヘルプ用のバッファを自動的に消す
+関数@code{tcode-auto-remove-help}は、この変数で指定した回数だけ呼ばれる
+とヘルプ用のバッファを消します。たとえば、次の設定では、Tコードモードのト
+グルを行ったときにヘルプ用のバッファが表示されていたら、そのバッファを消
+します。
+
+@lisp
+;;; モード切り替え時にヘルプ用のバッファを消す。
+(add-hook 'tcode-ready-hook
+          (function
+           (lambda ()
+             (setq tcode-auto-remove-help-count 1)
+             (add-hook 'tcode-toggle-hook
+                       'tcode-auto-remove-help))))
+@end lisp
+
+@noindent
+上の例について、
+NEmacs以外のEmacsでは、@code{tcode-toggle-hook}の代わりに@code{post-command-hook}を使
+ってもよいでしょう。
+@end defvar
+
+@vindex tcode-adjust-window-for-help
+@defvar tcode-adjust-window-for-help
+@code{nil}でないとき、ヘルプ用のウィンドウの高さを自動的に調整します。
+
+@code{nil}でも、もともとウィンドウが分割されていなかった場合では、
+自動的に調整します。
+@end defvar
+
+@vindex tcode-help-with-real-keys
+@defvar tcode-help-with-real-keys
+@code{nil}でないとき、ヘルプ表を用いずに、
+キーストロークによりヘルプを表示します。
+@end defvar
+
+@unnumberedsubsec インクリメンタルサーチ
+
+@vindex tcode-isearch-start-state
+@defvar tcode-isearch-start-state
+Tコードインクリメンタルサーチ開始時のTコードモードを指定します。
+@table @code
+@item nil
+バッファのTコードモードに同期(デフォールト)。
+@item t
+バッファのTコードモードと独立。開始時はバッファと同じ。
+@item 0
+バッファのTコードモードと独立。常に非Tコードサーチから開始。
+@item 1
+バッファのTコードモードと独立。常にTコードサーチから開始。
+@end table
+
+バッファローカル変数です。
+@end defvar
+
+@defvar tcode-isearch-enable-wrapped-search
+@code{nil}でなければ、行を折り返している日本語も検索します。
+@end defvar
+
+
+@unnumberedsubsec その他
+
+@vindex tcode-load-immediate
+@defvar tcode-load-immediate
+@code{nil}でないとき初期設定時(@file{tc-setup.el}ロード時)にTコードで使用
+するLispライブラリをすべてロードします。
+@end defvar
+
+@vindex tcode-verbose-message
+@defvar tcode-verbose-message
+@code{nil}でないとき様々なメッセージを表示します。
+@end defvar
+
+@vindex tcode-input-command-list
+@defvar tcode-input-command-list
+Tコードモードのとき通常のTコード入力
+を行うためのコマンドのリスト。
+
+たとえば、c-mode の @kbd{;} (@code{electric-c-semi})を、
+TコードモードではTコード入力に使いたい場合、
+そのコマンドをこのリストに追加します。
+@end defvar
+
+@node Hooks, Changing keys, User variables, Customization
+@comment  node-name,  next,  previous,  up
+@section フック
+@cindex フック
+
+@vindex tcode-ready-hook
+@defvar tcode-ready-hook
+Tコードに関する初期化を行った直後に呼ばれます。これはEmacsを起動してから
+初めて@code{toggle-input-method}を行った時におこります。
+
+Tコードモードでのキー割り当ての変更などに使用します。
+@end defvar
+
+@vindex tcode-bushu-ready-hook
+@defvar tcode-bushu-ready-hook
+部首合成変換に関する初期化を行った後に呼ばれます。
+@end defvar
+
+@vindex tcode-mode-hook
+@defvar tcode-mode-hook
+各バッファにおいて初めてTコードを使おうとしたときに呼ばれます。
+@end defvar
+
+@vindex tcode-toggle-hook
+@defvar tcode-toggle-hook
+Tコードモードを切り替えるたびに呼ばれます。
+@end defvar
+
+@vindex tcode-after-load-table-hook
+@defvar tcode-after-load-table-hook
+文字表を読み出すたびに呼ばれます。正確には、読み出した直後に呼ばれ
+ます。
+
+コード入力に対する動作を一部変更する場合などに使用します。
+@end defvar
+
+@vindex tcode-before-read-stroke-hook
+@defvar tcode-before-read-stroke-hook
+Tコードモードで、2ストローク目以降の入力を入力する前に呼ばれます。
+
+入力待ち状態でカーソルの色を変えたい場合などに使用します。
+@end defvar
+
+@vindex tcode-mazegaki-init-hook
+@defvar tcode-mazegaki-init-hook
+最初に交ぜ書き変換モジュールをロードするときに呼ばれます。
+
+交ぜ書き変換に関する設定を行うときに使用します。
+@end defvar
+
+
+@node Changing keys, Sample configuration file, Hooks, Customization
+@comment  node-name,  next,  previous,  up
+@section キー割り当ての変更
+
+@menu
+* Changing Hot Key::            Tコードモード切り替えキーの変更.
+* Mapping real keymap to virtual keymap::  入力文字と仮想鍵盤との対応.
+* Changing T-Code mode key::    Tコードモードでのキー割り当ての変更.
+* Changing stroke-action::      コード入力に対する動作の変更.
+@end menu
+
+@node Changing Hot Key, Mapping real keymap to virtual keymap, Changing keys, Changing keys
+@subsection Tコードモード切り替えキーの変更
+@iftex
+@cindex Tコードモード切り替えキーの変更[Tコードもーどきりかえきーのへんこう]
+@end iftex
+@ifinfo
+@cindex Tコードモード切り替えキーの変更
+@end ifinfo
+
+@findex toggle-input-method
+Tコードモードの切り替えを行うコマンドは@code{toggle-input-method}です。
+tc2では@kbd{C-\}
+に割り当てられています。
+
+これを他のキーに割り当てるにはEmacsの@code{define-key}を使って普通に設定
+すればよいのです。たとえば@kbd{C-j}にこの機能を割り当てたい時には下のように記述
+します。
+
+@lisp
+(define-key global-map "\C-j" 'toggle-input-method)
+@end lisp
+
+また、@kbd{C-\}への割り当てを取り消すには、以下のように記述します。
+
+@lisp
+(global-unset-key "\C-\\")
+@end lisp
+
+インクリメンタルサーチ時の切り替えキーの変更は次のとおりです。
+
+@lisp
+(define-key isearch-mode-map "\C-j" 'isearch-toggle-tcode)
+(define-key isearch-mode-map "\C-\\" nil)
+@end lisp
+
+@noindent
+ただし、インクリメンタルサーチ時の切り替えは、NEmacsの場合、次のとおりです。
+
+@lisp
+(setq search-tcode-char ?\C-j)
+@end lisp
+
+@node Mapping real keymap to virtual keymap, Changing T-Code mode key, Changing Hot Key, Changing keys
+@comment  node-name,  next,  previous,  up
+@subsection 入力文字と仮想鍵盤との対応
+
+tc2でのキー割り当ては、入力文字(実際のキー)ではなく、
+仮想鍵盤で用いるキーのアドレスにより行います。デフォールトでは、
+次の対応になっています。
+
+@itemize @bullet
+@item
+実際のキー配置
+
+@example
+@group
+ 1  2  3  4  5   6  7  8  9  0
+ q  w  e  r  t   y  u  i  o  p
+ a  s  d  f  g   h  j  k  l  ;
+ z  x  c  v  b   n  m  ,  .  /
+@end group
+@end example
+
+@item
+仮想鍵盤で用いるキーのアドレス
+
+@example
+@group
+ 0  1  2  3  4   5  6  7  8  9
+10 11 12 13 14  15 16 17 18 19
+20 21 22 23 24  25 26 27 28 29
+30 31 32 33 34  35 36 37 38 39
+@end group
+@end example
+@end itemize
+
+@findex tcode-set-key-layout
+この対応の変更は、@code{tcode-set-key-layout}で行えます。
+たとえば、Dvorak配列用に変更したい場合は、以下を@file{.tc}に
+追加します。
+
+@lisp
+(add-hook 'tcode-ready-hook
+	  (function (lambda ()
+		      (tcode-set-key-layout "dvorak"))))
+@end lisp
+
+@vindex tcode-key-layout-list
+このように、よく使用すると思われるキー配列は、
+あらかじめ@code{tcode-key-layout-list}に登録されています。
+独自のキー配列を用いたい場合は、この変数に新たに登録してください。
+
+@node Changing T-Code mode key, Changing stroke-action, Mapping real keymap to virtual keymap, Changing keys
+@comment  node-name,  next,  previous,  up
+@subsection Tコードモードでのキー割り当ての変更
+
+@findex tcode-set-key
+Tコードモードでのキー割り当ての変更は、関数@code{tcode-set-key}で行
+います。
+
+たとえば、「Tコードモードを抜けてからその文字を入力する機能」を定義し、
+それを@kbd{\}に割り当てるには、以下を@file{.tc}に記述します。
+
+@lisp
+@group
+(add-hook 'tcode-ready-hook
+          (function
+           (lambda ()
+             ;; 「\」でモード切り替え後挿入
+             (tcode-set-key "\\" 'tcode-inactivate-and-self-insert))))
+@end group
+@end lisp
+
+関数@code{tcode-set-key}は次のように定義してあります。
+
+@defun tcode-set-key key func &optional type
+@var{key}は割り当てを変更するキーです。
+@var{func}はコマンドのシンボルまたは@code{nil}です。
+@var{type}はキーのアドレスを指定する時などに用います。
+@end defun
+
+
+@node Changing stroke-action,  , Changing T-Code mode key, Changing keys
+@comment  node-name,  next,  previous,  up
+@subsection コード入力に対する動作の変更
+
+@findex tcode-set-action-to-table
+Tコードのコード入力に対する、挿入される文字列や機能の変更
+は、関数@code{tcode-set-action-to-table}で行います。
+
+ここでは、例として、通常Tコードで`「'を入力するコード
+(@kbd{,g}のストローク)に対し、鍵括弧の対`「」'を入力する機能を
+割り当ててみまし
+ょう。@kbd{,g}のストロークは@code{'(37 24)}になります。
+以下を@file{.tc}に追加します。
+
+@lisp
+@group
+(defun tcode-insert-matching-kagikakko (&optional arg)
+  "`「」'を挿入し、その間にカーソルを移動する。
+整数 ARG を指定すると、挿入前のカーソル位置から ARG 文字を
+`「'の前に入れる。この場合、カーソルは`」'の手前である。"
+  (interactive "P")
+  (insert "「")
+  (and arg (tcode-forward-char (prefix-numeric-value arg)))
+  (save-excursion
+    (insert "」")))
+@end group
+
+@group
+(add-hook 'tcode-after-load-table-hook
+          (function
+           (lambda ()
+             (if (eq tcode-input-method 'tcode)
+                 ;; 対応する「」を挿入する。
+                 (tcode-set-action-to-table
+                  '(37 24)
+                  'tcode-insert-matching-kagikakko)))))
+@end group
+@end lisp
+
+関数@code{tcode-set-action-to-table}は次のように定義してあります。
+
+@defun tcode-set-action-to-table sequence value
+@var{sequence}は割り当てを変更するキーストロークです。
+キーアドレスのリストまたはキーアドレスを指定します。
+キーアドレスを指定した場合、続いて@kbd{SPC}を入力した時の動作を変更します。
+
+@var{value}は以下が指定できます。
+
+@table @asis
+@item コマンド(symbol)
+そのコマンドを実行します。
+
+@item 関数(symbol, lambda式)
+その関数を引数なしで呼びます。
+
+@item 変数(symbol)
+その変数を評価した結果の動作を行います。
+
+@item 表(vector)
+更にその表に従った動作を行います。
+
+@item リスト(list)
+更にそのリストに従った動作を行います。
+
+@item 文字列(string)
+その文字列を挿入します。
+
+@item 文字(char)
+その文字を挿入します。
+
+@item @code{nil}
+キーストロークを無効にします。
+@end table
+@end defun
+
+@node Sample configuration file,  , Changing keys, Customization
+@comment  node-name,  next,  previous,  up
+@section 個人用設定ファイルの見本
+
+@file{.tc}の記述例を以下に挙げます。ただし、何を設定しているかを
+理解せずに以下の例をそのまま自分の@file{.tc}にしてはいけません。
+初めてTコードを使う場合は、最初は変数@code{tcode-data-directory}を
+自分の環境に合わせて設定するだけにしておき、徐々に変更していく方がよいで
+しょう。
+
+@smalllisp
+@include sample.tc
+@end smalllisp
+
+@node TUT-Code, Support softwares, Customization, Top
+@comment  node-name,  next,  previous,  up
+@chapter TUTコードで入力するには
+@cindex TUT-Code
+
+TUTコードはTコードと同様の漢字直接入力法です。tc2は、
+TUTコードの入力環境としても使用することができます。
+ここでは、TUTコード用の設定法と、Tコード入力環境tc2の様々な機能を
+どうTUTコード用に割り当てているかを簡単に説明します。
+
+@menu
+* Setup for TUT-Code::          TUTコード用の設定.
+* TUT-Code specific key strokes::  各機能の割り当て.
+@end menu
+
+@node Setup for TUT-Code, TUT-Code specific key strokes, TUT-Code, TUT-Code
+@comment  node-name,  next,  previous,  up
+@section TUTコード用の設定
+
+@cindex ---設定法[TUTコード---せっていほう]
+TUTコード用の設定は、以下を@file{.tc}に記述します。
+
+@lisp
+;;; 基本設定(TUTコード)
+(setq tcode-default-input-method "japanese-TUT-Code")
+
+;;; カタカナモードのトグルを「'」に割り当てる。
+(add-hook 'tcode-after-load-table-hook
+          (function
+           (lambda ()
+             (tcode-set-key "'" 'tcode-toggle-katakana-mode))))
+
+;;; ストローク表を3段表示にする。
+(setq tcode-help-draw-top-keys nil)
+@end lisp
+
+カタカナモードのトグルを行うキーは、
+お使いのキー配列や好みに合わせて変更してください。
+
+以上の設定は特にTUTコードで入力するときに必要となる設定ですが、
+これ以外の設定項目もTコードと同様に変更できます。
+
+@node TUT-Code specific key strokes,  , Setup for TUT-Code, TUT-Code
+@comment  node-name,  next,  previous,  up
+@section 各機能の割り当て
+
+Tコードで使用される機能
+(@pxref{Using tc2, Tコードを使う, Tコードを使う})は、
+TUTコードでも同様に利用できます。
+
+最上段のキーの組み合わせは、Tコードと同様の割り当てです。
+数字を入力したい場合は、数字キーのあとにスペースを入力してください。
+
+@kbd{fj} (交ぜ書き変換)は@kbd{alj}、@kbd{jf} (部首合成変換)は@kbd{ala}にそれぞ
+れ割り当てています。これらの機能を、TUT記号を変更して使用することもでき
+ます。たとえば次のように@file{.tc}に記述してください。
+
+@lisp
+(add-hook 'tcode-after-load-table-hook
+          (function
+           (lambda ()
+             (if (eq tcode-input-method 'tutcode)
+                 (progn
+@group
+                   ;; 「k SPC」で交ぜ書き変換
+                   (tcode-set-action-to-table 27 'tcode-mazegaki-begin-conversion)
+                   ;; 「l SPC」で部首合成変換
+                   (tcode-set-action-to-table 28 'tcode-bushu-begin-conversion))))))
+@end group
+@end lisp
+
+Tコードモードでは、@kbd{?}や@kbd{!}が、それぞれヘルプ・交ぜ書き変換辞書か
+らの漢字の削除の機能に
+割り当てられています。@code{?}や@code{!}を入力したいとき
+は、@kbd{C-q}の後にそのキーを押して入力してください。
+
+@node Support softwares, Concept Index, TUT-Code, Top
+@chapter 補助ソフトウェア
+
+@menu
+* hasida-table::                打ち方表作成プログラム hasida-table.
+* DOGGG::                       Tコード練習プログラム DOGGG.
+* skkinput3::                   skkinput3を利用するには.
+* kinput2::                     kinput2を利用するには.
+@end menu
+
+@node hasida-table, DOGGG, Support softwares, Support softwares
+@comment  node-name,  next,  previous,  up
+@section 打ち方表作成プログラム hasida-table
+
+直接入力できる文字の打ち方をA4紙2枚分の表にしたものを、
+橋田(@code{hasida@@etl.go.jp})さんが考案さ
+れました。これは@TeX{}で処理するものでしたが、これをPSで出力できるように
+し、また、どの文字を表に入れるかを簡単にカスタマイズできるようにしたプロ
+グラム(Perlスクリプト)を藤原(@code{makoto@@ki.nu})さん
+が作成されました。
+
+このプログラム(@code{hasida-0.6.tar.gz})は、WWWで
+入手できます(@pxref{Obtaining T-Code Information,
+Tコード情報の入手方法, Tコード情報の入手方法})。プログラムの詳しい内容は、
+プログラムに付属の文書を参照してください。
+
+@node DOGGG, skkinput3, hasida-table, Support softwares
+@section Tコード練習プログラム DOGGG
+@cindex DOGGG
+@iftex
+@cindex Tコードの練習[Tコードのれんしゅう]
+@end iftex
+@ifinfo
+@cindex Tコードの練習
+@end ifinfo
+
+@dfn{DOGGG}は端末画面用のTコード練習プログラムです。
+現在、Sun OS 4.1.@var{x}とSolaris 2.@var{x}上での動作が確認されています。
+また、Windows95 / 98などのDOSプロンプト、または WindowsNTのコマンドプロ
+ンプトでも動作します。
+ソースファイルは@file{doggg.lzh}という名前でウェブサイト
+(@pxref{Obtaining T-Code Information,
+Tコード情報の入手方法, Tコード情報の入手方法})から入手できます。
+また、DOS用のバイナリーパッケージも入手可能です。
+
+@node skkinput3, kinput2, DOGGG, Support softwares
+@comment  node-name,  next,  previous,  up
+@section skkinput3を利用するには
+@cindex skkinput3
+
+tc2はEmacs上でしか利用できませんが、Xで動作する
+日本語入力プログラムskkinput3を利用すれば、
+X上の他のアプリケーションに対しても、Tコードを使用することができます。
+
+skkinput-3.0.5以降(skkiput-3.0.4以前は不可)のバージョンに対して
+使用できます。skkinpt3がインストールされていれば、
+コマンドtcinputを実行することにより、Tコード用の設定で
+skkinput3を起動します。
+
+個人用の設定は@file{~/.tc-skk}で行います。
+@file{~/.tc-skk}では、少なくとも、@code{tcode-data-directory}の設定と、
+次のコードを記述してください。
+
+@lisp
+;;; isearchでTコードを使用しない。(skkinput3では使えない。)
+(setq tcode-use-isearch nil)
+@end lisp
+
+skkinput3では、tc2の機能に対して以下の制約があります。
+
+@table @asis
+@item ヘルプ関係は対応していません。
+  skkinput3で複数のバッファを表示する機能が実装されない限りは
+  対応する予定はありません。
+
+@item 交ぜ書き変換辞書に対する登録や削除のコマンドは使用できません。
+@end table
+
+デフォールトでは、交ぜ書き変換用辞書の保存は行わないようになっています。
+次のコードを@file{~/.tc-skk}に記述することで、
+学習による交ぜ書き変換用辞書の変更があった場合に、
+モードをオフにした時点で保存されるようになります。
+
+@lisp
+(add-hook 'tcode-im-end-conversion-hook 'tcode-save-dictionaries)
+@end lisp
+
+@node kinput2,  , skkinput3, Support softwares
+@comment  node-name,  next,  previous,  up
+@section kinput2を利用するには
+@cindex kinput2
+
+tc2はEmacs上でしか利用できませんが、Xで動作する
+日本語入力プログラムkinput2 (ただし、Wnn用)をカスタマイズすれば、
+X上の他のアプリケーションに対しても、Tコードを使用することができます。
+
+このパッケージ中の@file{kinput2}ディレクトリ
+に、@file{ccdef.tcode}と@file{tc-ki2.el}の二つのファイルがあります。
+以下、kinput2でTコード入力ができるようにするための方法を説明します。
+
+@enumerate
+@item
+Emacsを起動し、一旦Tコードモードにしてから、@file{tc-ki2.el}をロードします。
+@file{tc-ki2.el}をロードするには、@kbd{M-x load-file RET}の後、
+@file{tc-ki2.el}を指定します。
+
+@item
+@file{rule.tcode}というバッファが生成されていますので、これを
+適当なディレクトリに保存します。
+これは、@kbd{C-x b rule.tcode}の後、@kbd{C-x C-w}で保存すればよいでしょう。
+また、保存したディレクトリに、付属の@file{ccdef.tcode}も移します。
+
+@item
+@file{rule.tcode}をEUCコードに変換します。
+たとえば@code{nkf}という漢字コード変換プログラムを利用して、
+次のようにすることで変換できます。
+
+@example
+% nkf -e rule.tcode > foo
+% mv foo rule.tcode
+@end example
+
+@item
+@file{ccdef.tcode}を編集して、@file{rule.tcode}のパスを、
+先ほど@file{rule.tcode}を置いたパスと一致するように変更します。
+@end enumerate
+
+以上です。
+
+kinput2を使用するときは、@file{ccdef.tcode}のあるディレクトリで
+
+@example
+% kinput2 -ccdef ccdef.tcode
+@end example
+
+@noindent
+のように起動してください。
+
+@node Concept Index, Function and Variable Index, Support softwares, Top
+@unnumbered 概念索引
+
+@printindex cp
+
+@node Function and Variable Index,  , Concept Index, Top
+@unnumbered 関数と変数索引
+
+@printindex fn
+
+@contents
+@bye
+
+@comment Local Variables: ---
+@comment fill-column: 72 ---
+@comment End: ---

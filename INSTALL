@@ -1,0 +1,182 @@
+
+■  インストールの手引き
+
+  この文書では、EmacsでのTコード入力環境tc2をインストールする方法を
+説明しています。個人環境の設定方法などは、Infoを参照してください。
+
+
+  目次
+
+  1 個人で使用する場合(ホームディレクトリの下にインストールする場合)
+  2 インストール先の計算機で誰でも使えるようにする場合
+  3 インストールされるファイルとそのインストール先
+  4 Windows でのインストール
+  5 パッケージの内容
+
+
+はじめに
+
+    インストールは configure で行います。
+  configure のオプションとしては、使用する Emacs のパス名を指定する
+  ための「--with-emacs=Emacs のフルパス名」と、インストール先の
+  ディレクトリを指定するためのオプションがあります。後者については、
+  「3 インストールされるファイルとそのインストール先」で説明します。
+
+    Windows でインストールする場合、configure が使えないことがあります。
+  その場合のインストール方法については「4 Windows でのインストール」
+  を見てください。
+
+
+1 個人で使用する場合(ホームディレクトリの下にインストールする場合)
+
+    以下のとおりコマンドを実行すると、インストールができます。
+  % ./configure --prefix=$HOME && make install 
+
+    インストール先のディレクトリを指定したい場合は、
+  「3 インストールされるファイルとそのインストール先」を
+  参照してください。
+
+
+2 インストール先の計算機で誰でも使えるようにする場合
+
+    通常のユーザーで ./configure && make したあと、
+  スーパーユーザーで make install します。
+
+    インストール先のディレクトリを指定したい場合は、
+  「3 インストールされるファイルとそのインストール先」を
+  参照してください。
+
+
+3 インストールされるファイルとそのインストール先
+
+      以下の説明で、${prefix} は、 configure 実行時に
+    「--prefix=ディレクトリ」で指定するディレクトリを表しています。
+    何も指定しない場合は /usr/local になります。
+
+      また、【オプション】は configure のオプションで
+    どう指定すればよいかを示しています。
+
+  ★Emacs Lispファイル
+    →${prefix}/share/emacs/site-lisp/tc
+
+    【オプション】 --with-lispdir=ディレクトリ
+
+  ★Infoファイル
+    →${prefix}/info
+
+    【オプション】 --infodir=ディレクトリ
+
+  ★実行形式ファイル
+   →${prefix}/bin
+
+    【オプション】 --bindir=ディレクトリ
+
+  ★様々なデータファイル(各ユーザー共通)
+    →${prefix}/share/tc
+
+    【オプション】 --datadir=ディレクトリ
+
+
+4 Windows でのインストール
+
+    Windows でのインストールは次のとおりです。
+  以下では ~ でホームディレクトリ(.emacs のあるフォルダ)を表します。
+
+  (1) ~ に emacs ディレクトリを作成し、その下に lisp ディレクトリ
+    とtcodeディレクトリを作成します。
+    (M-x make-directory [RET] ~/emacs/lisp [RET]
+     M-x make-directory [RET] ~/emacs/tcode [RET])
+
+  (2) tc2 の lisp ディレクトリの中身を ~/emacs/lisp ディレクトリに
+    すべて copy します。
+    また、tc2 の etc ディレクトリの EELLLTXT 
+    (TUTコードの場合はEELLLTXT.tut) と bushu.rev・symbol.rev を ~/emacs/tcode
+    ディレクトリにコピーします。
+    tc2 の mazegaki ディレクトリの中身もすべて ~/emacs/tcodeにコピーします。
+
+  (3) 上記(2)でのlispファイルのコピー先のディレクトリで、tc-pre.el を
+    編集します。「(defconst tcode-site-data-directory」の次の部分を、
+    現在のディレクトリ名(~/emacs/tcode/)に書き換えます。
+    ディレクトリ名の最後は「/」で終わるようにしてください。
+
+  (4) MS-DOS プロンプトで、(1)で作成した~/emacs/lisp ディレクトリに
+    移動します。その後、
+    mule.exe (Mule for Windows の場合) または meadow95.exe
+    (Meadow で Windows 9x の場合) または meadownt.exe 
+    (MeadowでWindows NTや2000などの場合)を用いて以下のように入力します。
+
+    > mule.exe -batch -q -no-site-file -l make-elc tc.el
+
+    「Loading tc.el...」から始まって「Done」で終われば正常です。
+    その間に表示されるメッセージは無視してください。
+
+    上の tc.el の部分を順に以下のファイルに変えて、同様に実行します。
+
+      tc-help.el, tc-bushu.el, tc-mazegaki.el, tc-util.el, 
+      tc-tbl.el, tutc-tbl.el, eelll.el, tc-is19.el
+
+    なお、この(4)は必須ではありません。
+    ただし、行った方が処理速度が向上します。
+
+  (5) MS-DOS プロンプトで、(1)で作成した~/emacs/tcode ディレクトリに
+    移動します。その後、(4)と同様に、次のコマンドを実行します。
+
+    > mule.exe -batch -q -no-site-file -l mk-mzdic
+
+  (6) ~/.emacs に以下を追加します。
+
+    (setq load-path (cons "~/emacs/lisp" load-path))
+    (require 'tc-setup)
+
+5 パッケージの内容
+
+Emacs用Tコード入力環境tc2パッケージの主要な部分は次の内容より成ります。
+
+* Emacs用のマクロファイル, および補助ファイル群
+Tコードで使用するEmacs Lispのファイルは以下のとおりです。
+
+- tc.el          Tコード入力環境主要部
+- tc-sysdep.el   Emacsバージョン依存吸収部
+- tc-setup.el    初期設定部
+- tc-bushu.el    部首合成変換部
+- tc-mazegaki.el 交ぜ書き変換部
+- tc-help.el     ヘルプ部
+- tc-complete.el 補完機能部
+- tc-jiscode.el  JISコード表入力部
+- tc-util.el     補助機能部
+- tc-is18.el, tc-is19.el, tc-is20.el
+                 インクリメンタルサーチ部
+- tc-tbl.el, tutc-tbl.el
+                 文字表定義部
+- tc-inst.el     個人用初期設定部
+- tc-stat.el     統計管理部
+- tc-ja-alnum.el 2バイト英数字直接入力部
+
+* Emacs用のTコード練習キット EELLL
+EELLL (うなぎぎぎ)は、Emacsを使ってTコードやTUTコードを練習するための
+プログラムです。
+
+* 交ぜ書き変換辞書作成キット
+
+自分のTコード習熟度に合わせて交ぜ書き変換辞書を作成するためのキットです。
+交ぜ書き変換とは、Tコードを使った一種のかな漢字変換です。辞書作成キットは
+mazegakiディレクトリの下にあります。
+
+* skkinput3用Tコードキット
+skkinput3でTコード入力をするためのキットです。
+インストールが正しく行われていれば、コマンドtcinputを実行することで、
+Tコードの設定でskkinputを起動します。
+
+* kinput2用Tコードキット
+kinput2でTコード入力をするためのキットです。文字入力のデータを
+tc2の文字表データを元に生成します。
+
+* 部首合成へルプ作成キット
+部首合成用のヘルプ表を作成するキットです。bushu-utilディレクトリの
+下にあります。
+
+
+                                                            【以上】
+-----------------------------------------------------------------------
+お気づきの点や疑問点があれば、北嶋(kitajima@isc.osakac.ac.jp)まで
+メールでお願いします。

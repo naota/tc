@@ -1,0 +1,19 @@
+; -*-emacs-lisp-*-
+;; making mazegaki.dic
+(and (fboundp 'set-language-environment)
+     (set-language-environment "Japanese"))
+(setq load-path (cons "../lisp" load-path))
+(let (tcode-init-file-name
+      set-auto-coding-function)
+  (load "tc-pre-base")
+  (provide 'tc-pre)
+  (setq tcode-site-data-directory nil)
+  (load "tc-setup")
+  (setq tcode-data-directory nil)
+
+  (setq tcode-mazegaki-certains nil
+	tcode-mazegaki-uncertains 
+	(list "t225.dat" "t300.dat" "t400.dat" "t450.dat" "t575.dat"
+	      "t675.dat" "t900.dat" "t1200.dat" "t1353.dat"))
+  (tcode-make-mazegaki-dictionary))
+(kill-emacs)

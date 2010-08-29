@@ -1,0 +1,1443 @@
+2003-05-18  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/tc-mazegaki.el: 交ぜ書き変換中にC-gを入力すると、変換を中断
+	して変換前に戻すようにした。(ょゎさんより)
+
+	* lisp/tc-is18.el: 
+	* lisp/tc-is19.el: 
+	* lisp/tc-is20.el: 前置型部首変換をしようとすると無限ループになる
+	不具合を修正した。 (大石さんより)
+
+	* lisp/tutc-tbl.el: 表の間違いを訂正した。(ょゎさんより)
+
+	* lisp/eelll.el: ビットマップ表示のときに、背景の色も着けるように
+	した。(大石さんより)
+
+	* skkinput3/Makefile.am (INSTALL_SCRIPT): 適切に変更した。(上林さ
+	んより)
+
+2003-03-29  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3 リリース
+
+	* lisp/tc.el (tcode-initialize): skkinupt3でも動作するように直した。
+
+2003-03-27  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/tc.el (tcode-initialize): `tcode-data-directory'のディレク
+	トリがあるかどうかをチェックするようにした。
+
+2003-03-25  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/eelll.el: 初期化部分などの不具合を直した。(矢木さんより)
+
+	* lisp/tc-stat.el (tcode-save-input-statistics): 
+	* lisp/tc.el (tcode-save-buffer): 
+	* lisp/eelll.el: 
+	* lisp/tc-setup.el: `tcode-data-directory'の値をユーザが
+	指定していないときは、データの書き込みを禁止するようにした。
+	(高橋さんより)
+
+	* lisp/tc-mazegaki.el (tcode-mazegaki-prefix-mark): XEmacsでウイン
+	ドウ表示ではない場合に交ぜ書き変換の印が出せなかったのを直した。
+
+2003-03-21  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre20 リリース
+
+	* skkinput3/skk-startup.el (im-tab): バッファが空のときはイベント
+	を送るようにした。
+
+	* lisp/tc-help.el: `tcode-bushu-compose-explicitely' による拡張に
+	伴う変更を行った。
+
+	* lisp/tc-bushu.el (tcode-bushu-compose-explicitly): 新しく追加し
+	た。(矢木さんより)
+
+	* lisp/tc-sysdep.el (tcode-preceding-char): NEmacs での不具合を直
+	した。
+
+2003-03-17  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre19 リリース
+
+	* etc/bushu.rev: 登録項目の誤りをいくつか修正した。(矢木さん報告)
+
+	* lisp/tc-bushu.el (tcode-bushu-functions): 順番を一部変更した。
+
+	(tcode-bushu-weak-diff-set): 候補の順番を少し変えた。
+	
+	indexの形式を変え、高速化した。(矢木さんのパッチ)
+
+	* lisp/tc-sysdep.el (string): 新たに追加した。
+
+2003-03-15  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/tc-bushu.el (tcode-bushu-weak-diff-set): アルゴリズムを少し
+	変えた。(矢木さんの指摘より)
+
+	(tcode-bushu-functions): デフォールトの値を変えた。
+
+	(tcode-count, tcode-uniq,
+	tcode-bushu-include-all-chars-bushu-p,
+	tcode-bushu-strong-diff-set): 処理を高速化した。(矢木さんの報告・
+	パッチなどより)
+
+2003-03-14  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre18 リリース
+
+	* etc/bushu.rev: 登録項目の誤りをいくつか修正した。(矢木さん報告)
+
+	* lisp/tc-bushu.el (tcode-subtract-set): 要素に重複がある場合がお
+	かしかったのを直した。(矢木さんの指摘より)
+	
+	(tcode-bushu-all-compose-set, tcode-bushu-all-diff-set): 不要な候
+	補が交ざる場合があったのを直した。(矢木さんの指摘より)
+
+	* lisp/tc-mazegaki.el
+	(tcode-mazegaki-alternative-select-first-keys,
+	tcode-mazegaki-alternative-select-second-keys): デフォールトの値を
+	変えた。 (矢木さんの指摘より)
+
+2003-03-08  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/eelll.el: 禁則処理を加えた。(矢木さんのパッチ)
+
+2003-03-03  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/eelll.el (eelll-region): 新しく追加した。 (矢木さんのパッチ)
+
+	* lisp/tc-mazegaki.el (tcode-mazegaki-stroke-priority-list): デフォー
+	ルトの値を変えた。(矢木さんの報告より)
+
+	* lisp/tc-complete.el (tcode-complete-insert): 上書きモードでの挙
+	動を直した。
+
+	* lisp/tc-setup.el: eelll-regionのautoloadを追加した。
+
+	* lisp/tc-is18.el: 
+	* lisp/tc-is19.el: 
+	* lisp/tc-is20.el: 部首合成変換すると検索文字列がおかしくなる場合
+	があったのを直した。(矢木さん報告)
+
+	* etc/EELLLTXT.tut: 誤植を直した。(ゆせさんのパッチ)
+
+	* lisp/tc-util.el (tcode-katakana-preceding-chars): 繰返し時の動作
+	がおかしかったのを直した。(ゆせさんのパッチ)
+
+2003-02-11  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre17 リリース
+
+	* lisp/tc.el (tcode-key-layout-list): データが間違っていた部分があっ
+	たのを直した。(矢木さん報告)
+
+	* mazegaki/mkcertain.pl: certainまたはuncrtainにファイルを指定しな
+	かったときの問題を直した。(ゆせさんのパッチ)
+
+	* etc/EELLLTXT.tut: 誤植を直した。(ゆせさんのパッチ)
+
+	* lisp/tc-mazegaki.el (tcode-mazegaki-make-entry): 登録がうまくい
+	かない場合があったのを直した。(ゆせさんのパッチ)
+
+2003-02-01  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre16 リリース
+
+	* lisp/tc-mazegaki.el (tcode-mazegaki-recursive-convert-backward,
+	tcode-mazegaki-cancel-previous-recursive-convert): 新しく追加した。
+
+2003-01-29  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/tc.el (tcode-befor-load-table-hook): 新しく追加した。
+
+	tcode-cancel-stroke-list の文字は、キャンセルする直前の入力がない
+	場合はそのまま処理するようにした。(ゆせさん要望)
+
+	ストロークプロパティが正しく設定されない場合があったのを直した。
+	(ゆせさん報告)
+
+	(tcode-self-insert-command): self-insert-command を使うように変更
+	した。(ゆせさん報告)
+
+	* lisp/tc-setup.el: 古いemacsで初期化が失敗する場合があるのを直し
+	た。
+
+	* lisp/eelll.el: 統計情報の初期化がうまくいかない場合があるのを直した。
+
+	* lisp/tc-util.el (tcode-kkc-mazegaki-toroku): 名前の変更忘れを直
+	した。(安宅さん報告)
+
+2002-12-21  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre15 リリース
+
+	* lisp/tc.el: tcode-zenkaku-mode (2バイト英数字直接入力モード)を廃
+	止した。
+
+	オーバレイを用いた表示部分をtc-complete.elに移した。
+
+	ソースコードの内容を整理した。
+	tcode-get-context -> tcode-scan-backward
+	tcode-katakana-to-hiragana-string -> 削除
+	tcode-insert-register, tcode-transpose-strokes -> tc-util.elへ
+
+	* lisp/tc-complete.el: 補完対象の文字列の表示法を改善した。
+
+	* lisp/tc-is18.el: 
+	* lisp/tc-is20.el: 
+	* lisp/tc-is19.el: isearch用の関数が定義されていない場合は、そのま
+	ま入力した文字列を検索対象にするようにした。
+
+	* lisp/tc-mazegaki.el: 名前の変更忘れを直した。
+
+	* lisp/tc-setup.el: autoloadする関数を変更した。
+
+	* lisp/tc-util.el (tcode-inactivate-and-self-insert): 新たに追加し
+	た。
+
+	* lisp/tc-stat.el (tcode-list-unused-chars-display): 新たに追加し
+	た。
+
+2002-12-18  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/tc-stat.el (tcode-list-input-statistics-display): 合計の表
+	示もするようにした。
+
+	* lisp/tc-complete.el: 変数名の変更
+
+	tcode-complete-kouho-max ->
+	tcode-complete-max-candidate-count
+	tcode-complete-context-length-min ->
+	tcode-complete-min-context-length
+	tcode-complete-context-length-max ->
+	tcode-complete-max-context-length
+	tcode-complete-kouho-list -> tcode-complete-candidate-list
+
+	関数名の変更
+	tcode-complete-get-context ->
+	tcode-complete-scan-backward
+	tcode-complete-search-kouho -> tcode-complete-search-candidate
+	tcode-complete-make-kouho-list-string ->
+	tcode-complete-make-candidate-list-string	
+	
+	オーバレイを用いたメッセージ表示の部分をtc.elから移動した。
+
+	候補表示の際に、補完候補の文字列だけを現在の入力行に表示するように
+	した。
+
+	* lisp/tc-util.el: tcode-insert-registerとtcode-transpose-strokes
+	をtc.elから移動した。
+
+	* lisp/tc-ja-alnum.el: 新しく作成した。
+	2バイト英数字直接入力用input method。
+
+	* lisp/tc-sysdep.el: input-methodに対応していないEmacsについての、
+	input-methodの互換性を上げた。
+
+	* lisp/tc-mazegaki.el: 名前をより適切に変更した。
+
+	custom用グループ名の変更
+	mazegaki-henkan -> mazegaki-conversion
+
+	face名の変更
+	mazegaki-henkan -> mazegaki-conversion
+
+	変数名の変更
+	tcode-kakutei-register ->
+	tcode-mazegaki-selected-candidate-register
+	tcode-mazegaki-enable-variable-yomi-postfix ->
+	tcode-mazegaki-enable-inflection
+	tcode-mazegaki-priority-list -> tcode-mazegaki-stroke-priority-list
+	tcode-mazegaki-alternative-select-left-keys ->
+	tcode-mazegaki-alternative-select-first-keys
+	tcode-mazegaki-alternative-select-right-keys ->
+	tcode-mazegaki-alternative-select-second-keys
+	tcode-mazegaki-alternative-left-first -> 廃止
+	tcode-mazegaki-katuyou-gobi -> tcode-mazegaki-inflection-mark
+	tcode-mazegaki-katuyou-gobi-max -> tcode-mazegaki-max-suffix-length
+	tcode-mazegaki-gakusyu-kouho-offset ->
+	tcode-mazegaki-fixed-priority-count
+	tcode-mazegaki-inline-kouho-count ->
+	tcode-mazegaki-inline-candidate-count
+	tcode-mazegaki-yomi-postfix -> tcode-mazegaki-suffix
+	tcode-mazegaki-henkan-overlay -> tcode-mazegaki-conversion-overlay
+	tcode-mazegaki-katuyou-only -> tcode-mazegaki-inflection-only
+	tcode-mazegaki-in-katuyou -> tcode-mazegaki-with-inflection
+	tcode-mazegaki-kouho-state -> tcode-mazegaki-candidate-state
+	tcode-mazegaki-kouho-index -> tcode-mazegaki-candidate-index
+
+	関数名の変更
+	tcode-mazegaki-delete-henkan-face ->
+	tcode-mazegaki-delete-conversion-face
+	tcode-mazegaki-put-henkan-face ->
+	tcode-mazegaki-put-conversion-face
+	tcode-mazegaki-lookup-variable ->
+	tcode-mazegaki-lookup-with-inflection
+	tcode-mazegaki-lookup-variable-reverse ->
+	tcode-mazegaki-lookup-with-inflection-reverse
+	tcode-mazegaki-erase-previous-kouho ->
+	tcode-mazegaki-erase-previous-candidate
+	tcode-mazegaki-kouho-select-init ->
+	tcode-mazegaki-candidate-select-init
+	tcode-mazegaki-get-number-of-kouho ->
+	tcode-mazegaki-get-number-of-candidate
+	tcode-mazegaki-get-kouho-list ->
+	tcode-mazegaki-get-candidate-list
+	tcode-mazegaki-make-kouho-table -> 
+	tcode-mazegaki-make-candidate-table
+	tcode-mazegaki-show-kouho-inline ->
+	tcode-mazegaki-show-candidate-inline
+	tcode-mazegaki-select-kouho -> tcode-mazegaki-select-candidate
+	tcode-mazegaki-select-kouho-from-table ->
+	tcode-mazegaki-select-candidate-from-table
+	tcode-mazegaki-select-kouho-or-relimit ->
+	tcode-mazegaki-select-candidate-or-relimit
+	tcode-mazegaki-gakusyu -> tcode-mazegaki-prioritize
+	tcode-mazegaki-toroku -> tcode-mazegaki-make-entry
+	tcode-mazegaki-variable-yomi-p -> tcode-mazegaki-inflection-p
+	tcode-mazegaki-toroku-and-kakutei ->
+	tcode-mazegaki-make-entry-and-finish
+	tcode-mazegaki-delete-kanji -> tcode-mazegaki-delete-entry
+	tcode-mazegaki-ikkatu-region -> tcode-mazegaki-apply-entries-region
+	tcode-mazegaki-ikkatu-toroku-region ->
+	tcode-mazegaki-make-entries-region
+	tcode-mazegaki-ikkatu-toroku-buffer ->
+	tcode-mazegaki-make-entries-buffer
+	tcode-mazegaki-ikkatu-delete-region ->
+	tcode-mazegaki-delete-entries-region
+	tcode-mazegaki-ikkatu-delete-buffer ->
+	tcode-mazegaki-delete-entries-buffer
+	tcode-mazegaki-delete-by-last-yomi ->
+	tcode-mazegaki-delete-entry-by-last-yomi
+	tcode-mazegaki-complete-and-henkan ->
+	tcode-mazegaki-complete-and-convert
+	
+	* lisp/tutc-tbl.el: 
+	* lisp/tc-tbl.el: 2バイト英数字直接入力モードを、input-methodの変
+	更により行う方法に変更した。
+
+	* lisp/tc-setup.el: 
+	* lisp/tutc-tbl.el: 
+	* lisp/tc-tbl.el: 
+	* lisp/tc-bushu.el: 関数名・変数名の変更に伴う変更を行った。
+
+2002-11-25  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre14 リリース
+	
+	* lisp/tc.el: 関数・変数の整理を行った。
+
+	削除
+	- tcode-table-file-name 
+	- tcode-null-map
+	- tcode-replace-part-of-table
+
+	追加
+	- tcode-clear-hook
+	- tcode-all-chars
+
+	名前の変更
+	- tcode-keymap-table -> tcode-key-translation-rule-table
+	- tcode-stroke-for-char -> tcode-encode
+	- tcode-init -> tcode-initialize
+
+	移動
+	- tcode-bushu-nest -> tcode-bushu-prefix-list にしてtc-bushu.elに
+	移した。
+	- tcode-set-key: tc-util.elのset-tcode-mode-keyを改名して導入した。
+
+	* lisp/tc-stat.el: 新しく追加した。
+
+	* lisp/tc-sysdep.el: 互換性を保つための自前のtoggle-input-method
+	でテーブルが2重にロードされていたのを修正した。
+
+	* lisp/tc-help.el (tcode-help-stroke-hook): 新しく追加した。
+
+	* lisp/tc-bushu.el: 関数名を変更した。
+	tcode-bushu-compose -> tcode-bushu-compose-two-chars
+	tcode-compose-chars -> tcode-bushu-convert-preceding-chars
+	tcode-bushu-start -> tcode-bushu-put-prefix
+	tcode-bushu-end -> tcode-bushu-delete-prefix
+	tcode-do-prefix-bushu -> tcode-bushu-prefix-convert
+	tcode-bushu-henkan -> tcode-bushu-begin-conversion
+	tcode-bushu-henkan-interactively -> tcode-bushu-convert-interactively
+	tcode-bushu-another-henkan -> tcode-bushu-begin-alternate-conversion
+	tcode-compose-char-interactively
+	->tcode-bushu-convert-preceding-char-interactively
+
+	tcode-bushu-compose は、複数の部首から文字を合成する関数に変更した。
+
+	tcode-bushu-clear-prefix を新しく作成した。
+	
+	* lisp/tc-mazegaki.el: 関数名を変更した。
+	tcode-mazegaki-henkan -> tcode-mazegaki-convert
+	tcode-mazegaki-start -> tcode-mazegaki-begin-conversion
+	tcode-mazegaki-alternative-start ->
+	tcode-mazegaki-begin-alternate-conversion
+	tcode-mazegaki-kakutei -> tcode-mazegaki-finish
+	tcode-start-fixed-mazegaki -> tcode-mazegaki-put-prefix
+	tcode-mazegaki-prefix -> tcode-mazegaki-add-prefix
+	tcode-self-insert-or-henkan -> tcode-mazegaki-self-insert-or-convert
+
+	変数名を変更した。
+	tcode-mazegaki-in-prefix -> tcode-mazegaki-prefix
+
+	* lisp/tc-util.el: set-tcode-mode-key を、名前をtcode-set-keyに変
+	えて、tc.elに移した。後方互換性のため、しばらくは使えるように残し
+	ておく。
+
+	関数名の変更に伴う変更を行った。
+
+	* lisp/tc.el: 
+	* lisp/tc-help.el:
+	* lisp/tc-setup.el: 
+	* lisp/tutc-tbl.el: 
+	* lisp/tc-tbl.el: 
+	* lisp/tc-is20.el: 
+	* lisp/tc-is19.el: 
+	* lisp/tc-is18.el: 
+	* lisp/eelll.el: 関数名・変数名の変更に伴う変更を行った。
+	
+2002-11-15  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre13 リリース
+
+	* lisp/tc.el: シフトでも複数打鍵入力できる設定で、最後に空白を入力
+	した場合にエラーになるのを直した。(木原さん報告)
+
+	必要な場合以外にも他のモードのキー割当てを横取りしてしまう場合があ
+	るのを直した。(安宅さん報告)
+
+	キーストロークの登録を高速化した。
+
+2002-11-12  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre12.1 リリース
+
+	* lisp/tc-util.el (japanese-katakana-region): アルゴリズムを変更し
+	た。
+
+	* tc-2.3pre12 リリース
+
+	* lisp/tc-mazegaki.el: 処理の細部を変更した。
+
+	* lisp/tc.el: tcode-another-tableを用いた入力ができないのを直した。
+	(木原さん報告)
+
+	* lisp/tc-bushu.el (tcode-char-list-for-bushu): アルゴリズムを少し
+	変更した。
+
+	* lisp/tc-setup.el: 
+	* lisp/tc-help.el: 
+	* lisp/tutc-tbl.el: 
+	* lisp/tc-tbl.el: 44で直前に表示されたヘルプ表を再表示するようにし
+	た。
+
+	* lisp/tc-pre-base.in (tcode-version): メッセージの文を変更した。
+
+2002-11-02  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre11 リリース
+	
+	* lisp/tc-util.el (tcode-auto-switch-kutouten): interactiveの引数
+	を適切にした。(安宅さん報告)
+
+	* lisp/tc-complete.el: 候補を表示するまでの時間を
+	`tcode-complete-delay'で指定できるようにした。
+
+	変数`tcode-complete-self-insert-command-list'は
+	`tcode-input-command-list'で代用するようにした。
+
+	* lisp/tc-sysdep.el (tcode-redo-last-command): 使われていないので
+	削除した。
+
+	* lisp/tc.el: 現在のキーマップにかかわらずTコード入力をすることが
+	できるようにした。(安宅さん要望)
+
+2002-09-28  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre10 リリース
+
+	* lisp/eelll.el: `tcode-eelll-map' が正しく初期化されない場合があっ
+	たのを直した。
+
+2002-09-26  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/tc-sysdep.el: 関数 `tcode-define-key-for-all-chars' を削除
+	した。
+
+	* lisp/tc.el: 
+	* lisp/tc-sysdep.el:
+	* lisp/tc-util.el: (tcode-char-before (point)) を
+	(tcode-preceding-char)に変えた。
+
+	* lisp/tc.el: 
+	* lisp/tc-sysdep.el: 
+	* lisp/tc-util.el: 
+	* lisp/tc-mkmzdic.el (tc-mkmzdic-set-status-from-file): 
+	* lisp/tc-is18.el (isearch): 
+	* lisp/tc-help.el (tcode-help-stroke): (tcode-char-after (point))
+	を(tcode-following-char)に変えた。
+
+2002-09-23  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* kinput2/tc-ki2.el: 最新版で動作するように直した。
+
+	* lisp/tc.el: 
+	* lisp/tc-is20.el: 
+	* lisp/tc-is19.el: 
+	* lisp/tc-is18.el: 関数を再実装した。
+	  - 廃止した関数
+	      . `tcode-get-action-from-table'
+              . `tcode-read-strokes'
+	      . `tcode-get-action'
+              . `tcode-encode-sequence'
+	      . `tcode-buffer-init'
+	  - 追加した関数
+	      . `tcode-decode-chars'
+	      . `tcode-decode'
+	      . `tcode-lookup-table'
+	      . `tcode-eval-action'
+
+	* lisp/tc-is18.el: 
+	* lisp/tc-mazegaki.el: 
+	* lisp/tc-bushu.el: 
+	* lisp/tc-util.el: 
+	* lisp/tc-help.el: 関数名を変更した。
+	  - `tcode-unmap-key' → `tcode-key-to-char'
+	  - `tcode-get-key-address' → `tcode-char-to-key'
+
+	* lisp/tc-util.el: `tcode-self-inserting-commands' のコードを削除
+	した。
+
+2002-09-22  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/tc.el: マイナーモードによりキーマップを切り替えるようにした。
+	変数 `tcode-self-inserting-commands' は廃止した。
+	
+	Emacs 21でウィンドウの高さを調節すると下の方が見えなくなるのに対処
+	した。
+
+	アンドウの挙動を修正した。
+
+	複数の文字が入力できるように直した。
+
+	* lisp/tc-sysdep.el (toggle-input-method): tcode-mode用に直した。
+
+	* lisp/tc-bushu.el: 前置型部首合成変換開始の印(▲)がundo時に表れな
+	いようにした。
+
+	前置型の部首合成変換でも文字列が入力できるようにした。
+
+	* lisp/eelll.el: 成績表示の後に空行を入れるようにした。
+
+	* lisp/tc-complete.el: 交ぜ書き変換辞書からも補完するようにした。
+
+2002-08-21  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre9.1 リリース
+	
+	* lisp/tc-bushu.el (tcode-compose-char-interactively): 文字列が入
+	力できないのを直した。(r高橋さんより。)
+
+	* etc/mk-bdic: 
+	* mazegaki/mk-mzdic: tc-site の設定が残っていたのを直した。
+	(のしろさんより。)
+
+2002-08-17  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* tc-2.3pre9 リリース
+
+	* lisp/tc.el (tcode-draw-table): 文字列の幅に応じて表の大きさを調
+	整するようにした。 (矢木さんより。)
+	
+	* lisp/tc.el: 余計なundoの取消しを抑制した。 (矢木さんより。)
+
+	* lisp/tc-pre-base.in: tc-site を廃止して、tc-setupにある定義部分
+	と併合した。
+
+	* lisp/tc.el: 
+	* lisp/tc-setup.el: 
+	* lisp/tc-sysdep.el: 依存関係を分かりやすくした。(矢木さんより。)
+
+	* lisp/tc-is18.el: 
+	* lisp/tc-is19.el: 
+	* lisp/tc-is20.el: 2バイト英数字でも検索できるようにした。
+	また、\が表示されないのを直した。(矢木さんより。)
+
+	* lisp/tutc-tbl.el: 
+	* lisp/tc-tbl.el: 33 を関数tcode-toggle-alnum-modeで切り換えるよう
+	にした。(矢木さんより。)
+
+	* lisp/tc-image.el: 
+	* lisp/tc-bitmap.el: 依存関係を修正した。(矢木さんより。)
+
+	* lisp/eelll.el: eelll-randomが正しく動作しなかったのを直した。
+	
+	* lisp/tc.el: 
+	* lisp/tc-util.el: 
+	* lisp/tc-bushu.el: 
+	* lisp/tc-help.el: 
+	* lisp/tc-sysdep.el: 
+	* lisp/tc-is20.el: 
+	* lisp/eelll.el: 
+	* lisp/tc-mazegaki.el: 
+	* lisp/tc-complete.el: string-to-char-listをstring-to-listに、ま
+	た、tcode-char-widthをchar-widthに統一した。
+
+2002-08-14  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* 2.3pre8 リリース
+	
+	* lisp/eelll.el (eelll-random): 新しく追加した。
+
+	* lisp/tc-setup.el: tc-is?? とtc-sysdepとの依存関係の不具合を改善
+	した。(矢木さんより。)また、eelll-randomをautoloadに追加した。
+
+	* lisp/tc-help.el: `tcode-help-with-real-keys'がnilでない場合でも、
+	複数の文字に対するヘルプを表示できるようにした。(矢木さんより。)
+
+	* lisp/tc-mazegaki.el: 不要な空メッセージを表示しないようにした。
+	また、変換中にC-lが使えるようにした。(矢木さんより。)
+
+	* lisp/tc-site-base: concat ではなく、expand-file-name を用いるよ
+	うにした。(矢木さんより。)
+
+2002-08-02  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* 2.3pre7 リリース
+	
+	* lisp/tc-util.el (tcode-mazegaki-show-yomi-region): 不具合を修正
+	した。(ゆせさん報告。)
+
+2002-08-01  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* lisp/tc-is19.el (isearch-search): 
+	* lisp/tc-is20.el: tc-sysdepに依存している部分を減らした。
+	(矢木さんの報告より。)
+
+	* lisp/tc-setup.el: autoloadの設定を追加した。(矢木さんの報告より。)
+
+	* lisp/tc-sysdep.el (delete): 互換性のため追加した。
+
+	* lisp/tc-mazegaki.el (tcode-mazegaki-lookup-with-prefix): 新しい
+	関数。
+
+	* lisp/tc-bushu.el: 変換候補のリストが、文字だけでなく文字列でも扱
+	えるようにした。
+
+2002-07-23  Kitajima Akira  <kitajima@sldlab.osakac.ac.jp>
+
+	* 2.3pre6 リリース
+	
+	* lisp/tc-bushu.el: 変換速度を改善した。
+
+	* lisp/eelll.el: x 以外のウィンドウシステムでも、ビットマップが使
+	えれば使うようにした。(矢木さん報告)
+
+	* lisp/tc-bitmap.el: tc-bitmap-display-line-helpなど、不要な関数を
+	削除した。(矢木さん報告)
+
+	* lisp/tc-image.el: tc-image-display-line-helpなど、不要な関数を削
+	除した。(矢木さん報告)
+
+	* lisp/tc.el: 前置型の部首合成に失敗したときなど、入力結果が無しの
+	ときのエラーをちゃんと処理するようにした。
+
+	また、tcode-init-file-nameがnilの場合は、設定ファイルの作成を促さ
+	ないようにした。(矢木さん報告)
+
+	* lisp/tc-inst.el: tcode-modeでないときに.tcを作成しようとした場合
+	にtcode-default-input-methodがnilになる不具合を修正した。(矢木さん
+	報告)
+
+	* lisp/tc-mkmzdic.el: muleでmatch-stringがない場合の対処をした。
+	(北村さん報告)
+
+	* lisp/tc-util.el (tcode-insert-ya-outset): 数引数を指定すると、
+	テーブルの選択されるのはいいが、入力文字数も指定した数だけになって
+	しまう不具合を修正した。(安宅さん報告)
+
+2002-04-30  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* tc-2.3pre5.1 リリース
+	
+	* lisp/tc.el: 
+	* lisp/tc-bushu.el: `tcode-verbose-message'がnilのときは辞書作成中
+	のメッセージを抑制するようにした。
+
+2002-04-27  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* tc-2.3pre4 リリース
+	
+2002-03-28  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc-bitmap.el (tc-bitmap-cache-file): .tc-bitmap-8x16から
+	tc-bitmap-8x16に変更した。
+
+	* lisp/tc.el: 名前だけ指定しても読み出し、書き込みができるようにし
+	た。
+
+	* lisp/tc-site-base (tcode-path-for-read, tcode-path-for-write):
+	新しく追加した。
+
+	* lisp/tc-inst.el: 不要なファイルはコピーしないようにした。
+
+	* lisp/tc-help.el (tcode-bushu-help-dictionary-name): 
+	* lisp/tc-complete.el (tcode-complete-dictionary-name): 
+	* lisp/eelll.el (eelll-text): 
+	* lisp/tc-bushu.el (tcode-bushu-reverse-dictionary-name) 
+	(tcode-bushu-expand-file-name, tcode-bushu-index-file-name): 
+	* lisp/tc-mazegaki.el (tcode-mazegaki-dictionary-name): パスは含め
+	ず、名前だけ指定するようにした。
+
+2002-03-27  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* tc-2.3pre4 リリース
+
+	* etc/EELLLTXT.tut: 新しく追加した。
+	(木原さん作成。元のテキストは http://www.crew.sfc.keio.ac.jp/~chk/
+	にあるもの。)
+
+	* lisp/tc.el (tcode-use-input-method): 一旦無効にした。
+
+	* lisp/eelll.el: input-methodの切り替えに対応した。
+
+2002-03-26  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc.el (tcode-set-key-layout): `tcode-shift-lowercase'がtの
+	ときの不具合を修正した。(のしろさん報告)
+
+	* lisp/tutc-tbl.el: 
+	* lisp/tc-tbl.el: eelll-textを設定するようにした。
+
+2002-03-24  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* tc-2.3pre3 リリース
+	
+	* lisp/tc-sysdep.el: (require 'tc-setup)を加えた。(のしろさん要望)
+
+	* lisp/tc.el: 3ストローク以上でのシフト時の動作がおかしいのを直し
+	た。(木原さん報告)
+
+	* lisp/tc.el (tcode-set-key-layout): デフォールトの配置を選択でき
+	ない不具合を直した。(のしろさん報告)
+
+	* lisp/eelll.el: 端末での使用で警告が出るのを直した。また、キー配
+	置でシフトが定義してある場合の不具合を直した。(tut-codeメーリング
+	リストにて木原さん報告)
+
+2002-03-21  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* tc-2.3pre2 リリース
+	
+	* lisp/tc-mkmzdic.el: 汎用性を高めた。
+
+	* lisp/tc-setup.el (tcode-use-as-default-input-method): Tコード環
+	境での入力法を指定できるように新しく追加した。
+
+	* lisp/tc-mazegaki.el (tcode-mazegaki-prefix): フィルタとして使え
+	るように新たに追加した。
+
+	* lisp/tc-sysdep.el: NEmacs 用の toggle-input-method に
+	パッケージ切り替え機能を追加した。
+
+2002-03-19  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc.el: シフトを押しながら入力したときに、カタカナなど、フィ
+	ルタで処理できるようにした。(tut-code メーリングリストでの木原さん
+	のアイデアを実現)
+
+	* lisp/tc-is20.el: 
+	* lisp/tc-is19.el: 
+	* lisp/tc-is18.el: フィルタに対応した。
+
+	* lisp/tc.el: テーブルから得られたリストをフィルタで処理するように
+	した。
+
+	* lisp/tc-bushu.el (tcode-do-prefix-bushu): フィルタとして用いるよ
+	うに変更した。
+
+	* lisp/tc-jiscode.el: 
+	* lisp/tc-sysdep.el: Emacs21の関数を使うように変更した。
+
+	* lisp/tc-util.el: japan-util.elを利用するように変更した。
+
+	* lisp/tc-inst.el: エラーメッセージのバグを直した。
+
+	* lisp/tc-setup.el: `tcode-site-data-directory'を用いて
+	`tcode-data-directory'を設定するようにした。
+
+	* lisp/eelll.el: ビットマップ表示時に、フォントの大きさによって
+	表示がずれる問題に対処した。(安宅さんのパッチ等)
+
+	(eelll-other-frame): 新しくコマンドを作成した。
+
+2002-03-16  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/eelll.el: エラー率によってヘルプを表示するかしないかを切り
+	替えられるようにした。
+
+	* tc-2.3pre1.1 リリース。
+
+	* lisp/tc-inst.el (tcode-install): 不用な設定を行わないようにした。
+
+	* lisp/tc-setup.el: Lispファイルの再帰的な読み出しが起こらないよう
+	にした。また、.tcをtc-2.2.1以前のままで使用できるようにした。
+	(藤原さん報告)
+
+2002-03-15  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* tc-2.3pre1 リリース。
+
+	* lisp/tc-bitmap.el: Mule2でも使えるようにした。
+
+	* lisp/tc.el: 
+	* lisp/tc-setup.el: 
+	* lisp/tc-help.el: 
+	* lisp/eelll.el: 
+	* lisp/tc-sysdep.el: 
+	* lisp/make-elc.el: tc-setup.elで、Tコードユーザ以外にはほぼ影響が
+	ないようにした。
+
+	* lisp/tc-is20.el: 
+	* lisp/tc-is19.el: 
+	* lisp/tc-is18.el: provideを付けた。
+
+	* lisp/tc-bushu.el: 部首の展開と索引の作成の部分を分離した。
+
+2002-03-12  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc-sysdep.el: `activate-input-method' に対する advice を行
+	うタイミングによる不具合を修正した。(のしろさん報告)
+
+2002-03-11  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc-complete.el (tcode-complete-switch-to-dictionary): 新規
+	作成。
+
+	* lisp/tc-complete.el (tcode-complete-add-to-dictionary): 新規作成。
+
+	* lisp/tc-bushu.el: 前置型の場合に、目印▲を削除した場合の不具合を
+	直した。(やまだあきらさん報告)
+
+	* lisp/tc-sysdep.el: 
+	* lisp/eelll.el: ビットマップ表示できるようにした。また、XEmacsや
+	NEmacsで動作するようにした。
+
+2002-02-05  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc-is20.el:
+	* lisp/tc-is19.el: 前置型部首変換のときに入力途中でビープ音が鳴ら
+	ないようにした。(安宅さん報告)
+
+2002-01-29  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc-mazegaki.el (tcode-mazegaki-get-yomi-and-kanji): 登録す
+	る文字列の中に改行が含まれていればそれを取り除くようにした。
+
+2002-01-27  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* tc-2.2.1 リリース。
+
+2002-01-16  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc-sysdep.el:
+	* lisp/tc-mazegaki.el:
+	* lisp/tc.el: NEmacsでの不具合を直した。
+
+2002-01-05  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* tc-2.2 リリース。
+
+	* doc/tc.texinfo:
+	* README: 新版に合わせた修正。
+
+2001-12-11  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* tc-2.2pre2 リリース。
+
+	* lisp/tc-help.el (tcode-stroke-to-string): 追加。
+	(矢木さんより)
+
+	* lisp/tc.el: キー入力に対して関数を呼び出すときに、undo boundary
+	を設定するようにした。また、'tcode-self-inserting-commands' に
+	`c-electric-slash'を追加した。(矢木さんより)
+
+	* lisp/tc-bitmap.el (tc-bitmap-stroke-to-string): 追加。
+	(矢木さんより)
+
+	* lisp/tc-image.el (tc-image-stroke-to-string): 追加。
+	(矢木さんより)
+
+	* etc/EELLLTXT: Lesson 1 の Lesson-chars: 行を追加した。
+	(矢木さんより)
+
+2001-11-04  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* tc-2.2pre1 リリース。
+
+2001-10-27  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc-bitmap.el:
+	* lisp/tc-mkmzdic.el: 新しいファイル。(矢木さんより)
+
+	* lisp/tc-bushu.el:
+	* lisp/tc-help.el: アルゴリズムを新しくした。
+
+	* lisp/tc-util.el (tcode-zap-to-char): 新しいコマンド。
+
+2001-10-01  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* etc/bushu.dic: 改訂版。
+
+2001-09-08  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc-bushu.el: 部首を合成するとき、直接合成できない場合のアル
+	ゴリズムを少し変更した。
+	(岡さんより)
+
+	正規表現のメタ文字をクオートするようにした。
+	(岡さんより)
+
+2001-08-27  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc-setup.el: "Japanese" でのデフォールトのinput-method にも
+	登録するようにした。
+	(高橋玲子さんより)
+
+	* lisp/tc-mazegaki.el: マイナーモードではなく、自前でコマンドの実
+	行を行うようにした。
+
+2001-08-21  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc-mazegaki.el: 変換の印をoverlayで表示するようにした。
+
+2001-08-18  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* lisp/tc.el: .tc-record の書き込み方法を変更した。
+	(矢木さんより)
+
+	* lisp/tc.el:
+	* lisp/tc-mazegaki.el:
+	* lisp/tc-bushu.el:
+	* lisp/tc-complete.el: 関数 `tcode-switch-to-dictionary' の名前を
+	`tcode-switch-to-work-buffer' に変更した。
+
+	* lisp/tc-help.el: 部首の組み合わせをさがす部分を新しくした。
+	(矢木さんより)
+
+	* etc/bushu.dic: 「讐」と「誰」の部首の順番を入れ替えた。
+	(矢木さんより)
+
+2001-08-09  Kitajima Akira  <kitajima@isc.osakac.ac.jp>
+
+	* doc/tc.texinfo: LEIMを用いた変換について追加した。
+	(安宅さんのパッチの反映)
+
+	補完機能について追加した。
+
+	* lisp/tc-sysdep.el: EGGに依存した設定部分をtc.elから移した。
+
+	* lisp/tc-setup.el: tc-jiscode.el の追加に伴う変更を行った。
+
+	* lisp/tc-jiscode.el: JISコード表入力の部分をtc.elから分離させた。
+
+	* lisp/tc-complete.el: 新たに追加した。
+	補完機能を追加するためのモジュール。
+
+	* lisp/tc.el:
+	* lisp/tc-mazegaki.el:
+	* lisp/tc-help.el:
+	* lisp/tc-bushu.el: 一部コードを洗練した。
+
+	* lisp/eelll.el: 3ストローク以上必要な字も練習できるようにした。こ
+	れにより、TUTコードの練習も可能になった。
+
+	レッスンの選択でC-p, C-nを使えるようにした。
+	(矢木さんのパッチの反映)
+
+	* lisp/tc-is20.el: 不具合を修正した。
+	(矢木さんのパッチの反映)
+
+	* etc/EELLLTXT: Lesson 660が二つあるのを直した。
+	(矢木さんより)
+
+	* etc/bushu.dic: 區の部首を「匚品」にした。
+	(矢木さんより)
+
+	* mazegaki/greece.maz: 読みで「ァ」となるべきところで「ア」になっ
+	ている部分を直した。
+	(矢木さんより)
+
+	* mazegaki/combine.c (intern_yomi): yomiの長さを増やし、また、バッ
+	ファがオーバーフローしていないことを、 assertで確認するようにした。
+	(矢木さんより)
+
+2001-01-08  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* 2.1 (正式版) リリース
+
+2.1pre2 から 2.1pre3 への変更点
+
+2000-12-17  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* doc/tc.texinfo: info のファイル名をtc から tc.info に変更した。
+	また、交ぜ書き変換の部分などを修正した。
+
+	* lisp/tc-mazegaki.el:
+	変数 `tcode-mazegaki-alternative-select-left-keys' または
+	変数 `tcode-mazegaki-alternative-select-left-keys' が nil の場合は、
+	インラインでの候補選択をしないようにした。(ゆせさんより)
+
+	* mazegaki/t1200.dat:
+	* mazegaki/t1353.dat: データの不備を修正・追加した。(ゆせさんより)
+
+	* mazegaki/Makefile.am: 交ぜ書き変換辞書の作成時に、データの重複を
+	さけるようにした。(ゆせさんより)
+
+	* lisp/eelll.el: oddp が無くても計算できるようにした。(ゆせさんよ
+	り)
+
+	* mazegaki/tc-mkmzdic.in: reduce・combine の インストール先を
+	$execdir から $pkglibdir へ変更した。(植山さんより)
+
+2.1pre1 から 2.1pre2 への変更点
+
+2000-11-26  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* configure.in: デフォールトのlispファイルのインストール先を変更。
+	(藤原さんより)
+
+	* mazegaki/pd_kihon.yom: pubdic+ から作成しなおす。(ゆせさんより)
+
+	* etc/tc-inst.in: eelll-text の値の不具合を修正。また、Overwrite
+	時の条件式を修正。 (ゆせさんより)
+
+	* doc/tc.texinfo: TUTコードの設定方法を修正。また、direntryを設定。
+	(ゆせさんより)
+
+	* lisp/tc-util.el (tcode-kkc-mazegaki-toroku): 新たに作成。(安宅さ
+	んより)
+
+2.0beta10 から 2.1pre1 への変更点
+
+2000-11-19  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* bushu-util: 部首合成変換用のヘルプを作成するユーティリティー。
+	(前田さんのパッチ)
+
+	* lisp/tc.el (tcode-cancel-undo-boundary): まとめてundoする回数を
+	変更した。
+
+	* lisp/tc-setup.el (tcode-use-isearch): isearch を拡張するかどうか
+	を選択できるようにした。
+
+	* lisp/tc-mazegaki.el: 交ぜ書き変換で、
+	`tcode-mazegaki-inline-kouho-count' 個分は一覧表でなく、
+	その場で順に表示することができるようにした。(前田さんのパッチ)
+
+	* lisp/tc.el:
+	* lisp/tc-bushu.el:
+	* lisp/tc-help.el: ヘルプで事前にヘルプ情報を作成し、それを参照で
+	きるようにした。(前田さんのパッチ)
+
+2000-10-29  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* mazegaki/tc-mkmzdic.in: パッケージのディレクトリがうまく認識され
+	なかったのを直した。
+
+	* etc/tc-inst.in: パッケージのディレクトリがうまく認識されなかった
+	のを直した。また、.emacsに行うべき設定が.tcになっていた部分を直し
+	た。
+
+	* lisp/tc-util.el (tcode-insert-ya-outset): 表の1番目の文字が入力
+	できなかったのを修正した。また、表の文字を一部変更した。
+
+	* lisp/tutc-tbl.el:
+	* lisp/tc-tbl.el: 44 で最後にヘルプを表示した文字を再表示するよう
+	にした。
+
+	* lisp/tc.el:
+	* lisp/tc-setup.el:
+	* lisp/tc-is20.el:
+	* lisp/tc-is19.el:
+	* lisp/tc-is18.el:
+	* lisp/tc-help.el:
+	* lisp/eelll.el: 文章を変更した。
+
+
+2.0beta9 から 2.0beta10 への変更点
+
+2000-08-18  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-util.el: tcode-mode-off-cursor-color のデフォールトの値
+	が XEmacs 21.* でおかしかったのを修正した。
+
+2000-08-15  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tutc-tbl.el, lisp/tc-tbl.el (tcode-mode-help-string): 文字
+	列の不具合を修正した。
+
+	* lisp/tc-mazegaki.el (tcode-mazegaki-splitter): デフォールトの値
+	を"|"に変更した。
+
+	* lisp/tc.el, lisp/tc-sysdep.el: Emacs 20 で
+	`cancel-undo-boundery' が有効になるようにした。
+	(前田 薫 <maeda@src.ricoh.co.jp> さんより)
+
+	* lisp/tc-help.el (tcode-display-stroke-for-char):
+	* lisp/tc-is19.el, lisp/tc-is20.el (tcode-isearch-postfix-bushu):
+	`tcode-bushu-on-demand' の設定が反映されるようにした。
+	(UEYAMA Rui <rui@debian.or.jp> さんより)
+
+
+2.0beta8 から 2.0beta9 への変更点
+
+2000-05-13  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* etc/EELLLTXT: 練習済みの字がひらがなになっている箇所を漢字に、ま
+	た、練習していない、あるいは、直接入力できない漢字をひらがなに直し
+	た。(大石さんより)
+
+	* lisp/eelll.el (eelll-prepare-text): XEmacs 21 での不具合を修正し
+	た。(水谷さんより)
+
+	* lisp/tc.el: 19.28 以前の Emacs での不具合を修正した。(秋保さんよ
+	り)
+
+	* lisp/tc-sysdep.el: Emacs 20 より古い Emacs で
+	`toggle-input-mothod' が動作しない場合があったのを修正した。
+	(Ueyama Rui <rui@ic.netlaputa.ne.jp> さんより)
+
+2000-05-07  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-is20.el: 後置型交ぜ書き変換ができなかったのを直した。
+
+
+2.0beta7 から 2.0beta8 への変更点
+
+2000-03-04  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tutc-tbl.el:
+	* lisp/tc-tbl.el:
+	* lisp/tc-setup.el:
+	* lisp/tc-is20.el:
+	* lisp/tc-is19.el:
+	* lisp/tc-is18.el: コマンド `tcode-mode' をなくしたことによる不具
+	合を修正した。
+
+
+2.0beta6c から 2.0beta7 への変更点
+
+2000-02-26  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-sysdep.el: 定義済みの変数は再定義しないようにした。
+
+	* lisp/tc.el: `input-method-verbose-flag' の値を適切に反映させるよ
+	うにした。
+
+	read-char で文字以外のイベントの場合はなにもしないようにした。
+
+2000-02-25  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-setup.el: XEmacs 21 のときは tc-is19.el を読み込むように
+	した。
+
+	* lisp/tc-isxm21.el: 削除。
+
+	* AUTHORS:
+	* NEWS:
+	* acinclude.m4:
+	* Makefile.am:
+	* missing:
+	* mkinstalldirs:
+	* lisp/Makefile.am:
+	* mazegaki/Makefile.am:
+	* kinput2/Makefile.am:
+	* etc/Makefile.am:
+	* doc/Makefile.am:
+	* conf/Makefile.am: 新規作成。automake に対応したため。
+
+
+2.0beta5 から 2.0beta6c への変更点
+
+2000-02-05  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-tbl.el (tcode-special-commands-alist):
+	tcode-use-egg-in-mazegaki が t のときの不具合を修正した。
+
+	* lisp/tc-sysdep.el: 必要なときに、変数mc-flag を定義するようにし
+	た。
+
+1999-09-28  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-isxm21.el: 新規作成。XEmacs 用インクリメンタルサーチ。
+
+	* lisp/tc-util.el:
+	* lisp/tc.el:
+	* lisp/tc-sysdep.el:
+	* lisp/tc-setup.el:
+	* lisp/tc-mazegaki.el: XEmacs 21 への対応。
+	append -> nconc, equal -> eq, delete -> delq, member -> memq,
+	assoc -> assq に。
+
+	以上、中島＠あさひねっと<minakaji@osaka.email.ne.jp>さんより。
+
+1999-02-27  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/Makefile.in:
+	* etc/tc-inst.in:
+	* Makefile.in:
+	* configure.in:
+	* aclocal.m4: うまくいかなかった部分を修正。
+
+	* mazegaki/tc-mkmzdic.in: 新規作成。
+
+	* mazegaki/reduce.c (main): pd_kihon.yom を直接読むのではなく、標
+	準入力から読むようにした。
+
+1999-02-08  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* mazegaki/itaiji.dic: 追加。
+	(Ueyama Rui <rui@ic.netlaputa.ne.jp> さん作成。[T-code:1429])
+
+	* lisp/tc.el: `tcode-before-read-stroke-hook' を追加。
+	(KANEDA Hirokazu <kinta@mail.chabashira.co.jp> さんの要望より。)
+
+	* lisp/tc.el:
+	* lisp/tc-util.el:
+	* lisp/tc-sysdep.el: 部分的に Mule 3 以降の imput-method に対応。
+
+	* lisp/tc-mazegaki.el: はみちゃん♪<hermit@tomato.saino.ne.jp>のパッ
+	チ([T-code:1456])を反映。ミニパッファでのモード切り替えおよび
+	`tcode-mazegaki-gakusyu-kouho-offset' が 0 の
+	ときの不具合を改善。
+
+	* lisp/eelll.el (eelll-compile-text): 使えるように直した。
+
+	* lisp/tc.el:
+	* lisp/tc-sysdep.el:
+	* lisp/tc-setup.el:
+	* lisp/tc-mazegaki.el:
+	* lisp/tc-is20.el:
+	* lisp/tc-is19.el:
+	* lisp/tc-is18.el:
+	* lisp/tc-help.el:
+	* lisp/eelll.el: tcode-char-to-string を char-to-string に、
+	tcode-mode を tcode-activate に、
+	tcode-on を tcode-on-p にそれぞれ変更。
+
+	* Makefile.in:
+	* aclocal.m4:
+	* configure.in:
+	* install-sh:
+	* doc/Makefile.in:
+	* etc/Makefile.in:
+	* etc/tc-inst.in:
+	* lisp/Makefile.in:
+	* mazegaki/Makefile.in: autoconf に対応。サイトごとの設定は
+	configure で行い、ユーザーごとの初期設定は tc-inst で行うというよ
+	うにした。
+
+1998-11-01  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* etc/EELLLTXT:
+	* mazegaki/pd_kihon.yom:
+	* mazegaki/t575.dat: 「昭」のデータを「照」のデータに入れ替えた。
+	(Masaaki KOYANAGI <koyanagi@okilab.oki.co.jp> さんのパッチ
+	[T-code:1443] による。)
+
+	また、EELLLTXT の601〜605を「LR」から「RL!」に直した。
+	(Ryosuke OISHI <oru@tsudanuma.org> さん報告[T-code:1444]。)
+
+2.0beta4 から 2.0beta5 への変更点
+
+1998-08-22  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-util.el (tcode-katakana-preceding-chars): 直前の文字列を
+	順にカタカナにするコマンドを新たに作成。
+
+	* lisp/tutc-tbl.el:
+	* lisp/tc-tbl.el: 交ぜ書き変換を isearch でも使えるようにするため
+	の変更。
+
+	* lisp/tc-util.el:
+	* lisp/tc-sysdep.el:
+	* lisp/tc-setup.el:
+	* lisp/tc-mazegaki.el: Emacs 20.3 にも対応するように変更。
+
+	* lisp/tc-is20.el: Emacs 20.3 (MULE 4.0) 用に新たに作成。
+
+	* lisp/tc-is19.el:
+	* lisp/tc-is18.el: C-w で日本語の場合は1文字ずつとり込むようにした。
+	また、isearch 中の交ぜ書き変換も可能にした。
+
+2.0beta3 から 2.0beta4 への変更点
+
+1998-03-28  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc.el: ヘルプウィンドウの自動高さ調整で、縦に分割されている
+	場合には調整しないようにした。
+
+	* lisp/tc-mazegaki.el: 辞書登録後の英単語の変換がおかしかったのを
+	修正(Ueyama Rui <rui@ic.netlaputa.ne.jp>さん報告)。
+
+1998-02-16  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tutc-tbl.el: QWERTY での「tgu」の文字を「態」から「熊」に変
+	更(ymorita@mxc.meshnet.or.jp (Yuji Morita)さん報告)。
+
+	* lisp/eelll.el (eelll-end): 「どれかキーをおしてください」でマウ
+	スなどの操作をしてもエラーにならないようにした(Ueyama Rui
+	<rui@ic.netlaputa.ne.jp>さん報告)。
+
+	* mazegaki/Makefile.in: /usr/local/bin/perl5 がある場合とない場合
+	の条件判定がおかしかったのを修正(goto@so.fjh.se.fujitsu.co.jp さん
+	報告)。
+
+Sat Nov 15 15:33:29 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* custom パッケージに対応。
+
+Wed Nov 12 21:28:06 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc.el (tcode-version): XEmacs でのバージョン表示がおかしか
+	ったのを修正。また、Emacs のバージョンも表示するようにした。
+
+2.0beta2 から 2.0beta3 への変更点
+
+Fri Oct 31 19:59:28 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* etc/bushu.dic: 一部ソートされていなかったのを直した(藤原 誠
+	<makoto@komekome.bay.prug.or.jp>さん報告)。
+
+Wed Oct 15 11:10:58 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-mazegaki.el (tcode-mazegaki-kakutei): 前置型で空文字列を
+	変換しようとしたときの対策をちゃんと行うようにした。
+
+Mon Oct 13 10:29:30 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-util.el: モードによりカーソルの色を変える機能および
+	tcode-electric-space を XEmacs に対応。
+
+	* lisp/tc-is19.el:
+
+	** XEmacs でモードの切り替えがうまくいかなかったのを修正。
+
+	** 前置型の部首変換がうまくいかなかったのを修正。
+
+Mon Oct  6 11:20:23 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-sysdep.el: XEmacs、NEmacs でのモード表示を、そのバッファ
+	でまだ T-Code モードに入っていない場合には行わないようにした。
+
+Wed Oct  1 10:35:57 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-util.el:
+
+	** (tcode-insert-ya-outset): 表を表示した後に不正な入力があった場
+	合に、表を消すようにした。
+
+	** XEmacs に対応。ただし、カーソルの色変更機能など、まだ対応してい
+	ないものもある。
+
+	* lisp/tc-tbl.el: 「全角モード」のモード表示がおかしかったのを修正。
+
+	* lisp/tc-sysdep.el:
+
+	** XEmacs に対応。
+
+	** Emacs 20.* で、モード行のT-Codeモード表示を、モードがオフのとき
+	でも消えないようにした。
+
+	* lisp/tc-mazegaki.el:
+
+	** 候補が二つの場合の選択のとき、その場に候補を表示するようにした。
+
+	** XEmacs に対応。
+
+	** tcode-auto-help の delete-the-char を実現するコードを追加(下記
+	参照)。
+
+	* lisp/tc-is19.el: XEmacs に対応。
+
+	* lisp/tc-help.el:
+
+	** 変数 tcode-last-help-char を導入。最後にヘルプを表示した文字を
+	保持する。
+
+	** (tcode-display-stroke-for-char): エラーチェックをするようにした。
+
+	** tcode-auto-help の delete-the-char を実現するコードを追加(下記
+	参照)。
+
+	* lisp/tc-bushu.el: tcode-auto-help の delete-the-char に対応(下記
+	参照)。
+
+	* lisp/tc.el:
+
+	** XEmacs でも T-Code 入力できるように変更。
+
+	** 変数 tcode-auto-help の値がシンボル delete-the-char の場合に、
+	自動ヘルプの対象となった最後の字を手動で入力しなければならない機能
+	を追加。
+
+	** 「全角モード」・「カタカナモード」をバッファローカルにした。
+
+	** 仮想鍵盤が表示されているときに不正な入力があった場合、表示を消
+	すようにした。
+
+2.0beta1 から 2.0beta2 への変更点
+
+Fri Sep 12 18:14:49 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* Configure: Lisp ファイルだけインストールするオプションを付けた。
+
+Thu Sep 11 11:35:37 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-util.el (set-tcode-mode-key): キーにコマンド以外を設定し
+	たら、tcode-mode-map の対応するキーは未定義に変更するようにした。
+
+Wed Sep 10 21:10:15 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc-mazegaki.el: 交ぜ書き変換モードでヘルプが表示されないな
+	どのキー割り当てに関する不都合を解消。
+
+Tue Sep  9 11:10:39 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc.el (tcode-mode-line-redisplay): Egg のない Mule でミニバ
+	ッファでのモード表示がおかしかったのを修正(Kazuyuki Koishikawa
+ 	<koi@sfc.keio.ac.jp> さん報告)。
+
+Mon Sep  8 11:58:58 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* lisp/tc.el (tcode-load-table): tcode-mode-indicator を間違った値
+	に設定していたのを修正(Kazuyuki Koishikawa <koi@sfc.keio.ac.jp> さ
+	ん報告)。
+
+	* lisp/mazegaki.el: 変数 tcode-space-chars-list を変数
+	tcode-ignore-char-list に変更(Kazuyuki Koishikawa
+	<koi@sfc.keio.ac.jp> さん報告)。
+
+Thu Sep  4 21:36:44 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* Configure: ~foo の形でもパスを指定できるように修正(藤原 誠
+	<makoto@komekome.bay.prug.or.jp>さん要望)。
+
+	* conf/getpath.el: 新たに作成。上記を行うのに使う。
+
+	* lisp/tc.el (tcode-get-action-from-table): tcode-mode で `~' を入
+	力するとおかしかったのを修正。
+
+Wed Sep  3 12:42:02 1997  KITAJIMA Akira  <kitajima@ics.es.osaka-u.ac.jp>
+
+	* Configure: lispdir を作成する必要があるときに作らなかったのを修
+	正(藤原 誠 <makoto@komekome.bay.prug.or.jp>さん報告)。
+
+	* mazegaki/pd_kihon.yom: 「微<ちょう>」を削除(Naoto Takahashi
+ 	<Naoto.Takahashi@imag.fr>さん報告)。また、uniq により、重複してい
+	る候補を削除。

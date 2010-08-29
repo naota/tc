@@ -1,0 +1,415 @@
+#!/usr/local/bin/perl5
+
+require 5.000;
+
+$stroke_file = "tcode.txt";
+$bushu_file = "bushu.dic";
+$tchar_file = "tchars.txt";
+$parts_file = "parts.txt";
+$want_file = "want.txt";
+$order_file = "order.txt";
+
+while ($ARGV[0] =~ /^-(\w+)/) {
+    my ($act) = $1;
+    $_ = shift;
+    if ($act eq 'help' || $act eq 'h') {
+	&usage;
+    } elsif ($act =~ /^(stroke|bushu|tchar|parts|want|order)$/) {
+	/^-(\w+)=(.*)/;
+	my ($var) = "$1_file";
+	$$var = $2;
+    } elsif ($act eq 'dump') {
+	$_ =~ /^-dump-(\w+)/;
+	my ($var) = "dump_$1";
+	$$var++;
+    } else {
+	&usage;
+    }
+}
+
+sub usage {
+    print <<EOL
+Usage: where [file-spec] [dump-spec]
+    file-specs		入力ファイルの切り換え
+	-stroke-file	コード表[tcode.txt]
+	-bushu-file	部首データベース[bushu.dic]
+	-tchar-file	基本文字の修得状況[tchars.txt]
+	-parts-file	部首部品入力文字の優先度[parts.txt]
+	-want-file	部首辞書に出力したい文字[want.txt]
+	-order-file	第一部品にしたい文字、第二部品にしたい文字[order.txt]
+    dump-specs		データの出力
+	-dump-stroke	修得状況と打ちやすさの表を出力
+	-dump-parts	部品の優先度表を出力
+	-dump-auto	自動補完後の部品優先度表を出力
+EOL
+;
+    exit(1);
+}
+
+$CH = "(?:[!-~]|[\241-\376][\241-\376])";
+
+# 基本ストロークを読む。
+
+open (IN, $stroke_file);
+while (<IN>) {
+    chomp;
+    ($s, $c) = /^($CH+) ($CH)/o;
+    push(@tchars, $c);
+    next if $c eq '';
+    if ($c eq '▲') {
+	$jf = $c;
+	$st_jf = $s;
+	next;
+    } elsif ($c eq '△') {
+	$fj = $c;
+	$st_fj = $s;
+	next;
+    }
+    $stroke_code{"$s"} = $c;
+    $code_stroke{$c} = "$s";
+}
+close (IN);
+
+# 打てる字、打てない字を読む
+
+open (IN, $tchar_file);
+while (<IN>) {
+    next if /^#/;
+    next if /^$/;
+    chomp;
+    my ($c, $acc, $cert) = split;
+    next if ($c eq $fj || $c eq $jf);
+    $access{$c} = $acc;		# 打ちやすさ
+    $cert{$c} = $cert+0;	# 確信度
+}
+close (IN);
+
+if ($dump_stroke) {
+    print "★stroke dump\n";
+    for $s (sort keys %stroke_code) {
+	my $c = $stroke_code{$s};
+	printf "%-2s: %3d  %3d\n", $c, $cert{$c}, $access{$c};
+    }
+    print "★stroke dump end\n\n";
+}
+
+# 部首文字の優先度を読む
+
+open (IN, $parts_file);
+while (<IN>) {
+    next if /^#/;
+    next if /^$/;
+    chomp;
+    my ($c, @parts) = split;
+    next if ($c eq $fj || $c eq $jf);
+    my ($order) = 0;
+    for $p (@parts) {
+	$acc = $access{$p};
+	$cert = $cert{$p};
+	next if $cert >= 200;	# 打てない
+	push(@{$parts{$c}}, [$order + $cert, $acc, $p]);
+	$order++;
+    }
+}
+close (IN);
+
+if ($dump_parts) {
+    print "★parts dump\n";
+    for $p (sort keys %parts) {
+	my ($c) = $parts{$p};
+	printf "%-2s: ", $p;
+	for $cp (@$c) {
+	    printf "%-2s:%3d:%3d  ", $cp->[2], $cp->[0], $cp->[1];
+	}
+	print "\n";
+    }
+    print "★parts dump end\n\n";
+}
+
+# 部首変換の辞書を読む。
+
+open (IN, $bushu_file);
+while (<IN>) {
+    next if /^$/;
+    chomp;
+    ($f, $s, $c) = /^($CH)($CH)($CH)$/;
+    next unless $c;
+    $compose{"$f$s"} = $c;
+    $decompose{$c} = [$f, $s];
+    next unless $code_stroke{$c} && $cert{$c} < 200; # 打てない字はスキップする
+    push(@{$contains{$f}}, $c) unless $f eq 'N';
+    push(@{$contains{$s}}, $c) unless $s eq 'N';
+}
+delete $bushu_exist{'N'};
+close (IN);
+
+# parts表がない文字
+
+sub sorter {
+    (($a->[0] <=> $b->[0]) ||
+     ($a->[1] <=> $b->[1]) ||
+     ($a->[2] <=> $b->[2]));
+}
+
+for $p (sort keys %contains) {
+    unless ($parts{$p}) {
+	my ($acc, $cert) = ($access{$p}, $cert{$p});
+	if ($code_stroke{$p} && $cert == 0) {
+	    $parts{$p} = [[2, $acc, $p]];
+	}
+    }
+    next if ($p ge "ぁ" && $p le "ヴ");
+    my (@cont);
+    @cont = ();
+    for $co ($p, @{$contains{$p}}) {
+	next if $co eq $jf || $co eq $fj;
+	next unless $code_stroke{$co};
+	my ($acc, $cert) = ($access{$co}, $cert{$co});
+	push(@cont, [($p eq $co ? 30 : 50) + $cert, $acc, $co]);
+    }
+    if (@cont) {
+	my (%dup) = ();
+	my (%ref) = ();
+	@cont = sort sorter @cont;
+	for $c (@cont) {
+	    $ref{$c->[2]} = $c unless defined($ref{$c->[2]});
+	    $dup{$c->[2]}++;
+	}
+	for $c (@{$parts{$p}}) {
+	    delete $dup{$c->[2]};
+	}
+	@cont = @ref{keys %dup};
+	@cont = sort sorter @cont;
+	splice(@cont, $cert{$p} == 0 ? 3 : 5);
+	push(@{$parts{$p}}, @cont);
+    }
+}
+
+if ($dump_auto) {
+    print "★auto dump\n";
+    for $p (sort keys %parts) {
+	my ($c) = $parts{$p};
+	printf "%-2s: ", $p;
+	for $cp (@$c) {
+	    printf "%-2s:%3d:%3d  ", $cp->[2], $cp->[0], $cp->[1];
+	}
+	print "\n";
+    }
+    print "★auto dump end\n\n";
+}
+
+# 出力の左右表
+
+open (IN, $order_file);
+while (<IN>) {
+    chomp;
+    my ($ord, $rest) = split;
+    my (@chars) = $rest =~ /($CH)/g;
+    for $c (@chars) {
+	$order{$c} = $ord;
+    }
+}
+close (IN);
+
+sub where {
+    my ($target) = shift;
+    my (%try) = ();
+
+    my ($dec) = $decompose{$target};
+
+    # $targetを作るための部品組み合わせの候補を作成
+    addition: if ($dec) {
+	my ($c1, $c2) = @$dec;
+	last addition if ($c1 eq 'N');
+	# 日月→明、月日→明、月月→朋
+	$try{"$c1-$c2"}++;
+    }
+    subtraction: {
+	my (@t) = @{$contains{$target}};
+	$try{"$target-$target"}++ if (@t);
+	for $f (@t) {
+	    my ($dec) = $decompose{$f};
+	    next unless $dec;
+	    my ($c1, $c2) = @$dec;
+	    my ($s) = $c1 eq $target ? $c2 : $c1;
+	    $try{"$f-$s"}++;
+	}
+    }
+
+    # 組み合わせて実際に$targetが得られる組み合わせをさがす。
+    my (@try) = (keys %try);
+    my (%res) = ();
+    for $t (@try) {
+	my ($t1, $t2) = split(/-/, $t);
+	my (@t1, @t2);
+	# 部品リスト そのいち
+	if (@t1 = @{$parts{$t1}}) {
+	    ;
+	} elsif ($code_stroke{$t1} && $cert{$t1} < 200) {
+	    @t1 = ([60+$cert{$1}, $access{$t1}, $t1]);
+	} else {
+	    @t1 = ();
+	}
+	# 部品リスト そのに
+	if (@t2 = @{$parts{$t2}}) {
+	    ;
+	} elsif ($code_stroke{$t2} && $cert{$t2} < 200) {
+	    @t2 = ([60+$cert{$1}, $access{$t2}, $t2]);
+	} else {
+	    @t2 = ();
+	}
+	next if @t1 == 0 || @t2 == 0;
+
+	for $tt1 (@t1) {
+	    for $tt2 (@t2) {
+		my ($test);
+		my ($tc1, $tc2);
+		$tc1 = $tt1->[2];
+		$tc2 = $tt2->[2];
+		next if $tc1 eq $target || $tc2 eq $target;
+		my ($ok1, $ok2);
+		$ok1 = &lookup($tc1, $tc2) eq $target;
+		$ok2 = &lookup($tc2, $tc1) eq $target;
+
+	      order:
+		{
+		    if ($ok1 && $ok2) {
+			# ABとBAが両方当たりのとき、どちらを選ぶか。
+			# 記号類はbushu.dicのとおりにする。
+			if ($target le "ヶ") {
+			    if ($compose{"$tc1$tc2"} eq $target) {
+				$ok2 = 0;
+				last order;
+			    } elsif ($compose{"$tc2$tc1"} eq $target) {
+				$ok1 = 0;
+				last order;
+			    }
+			}
+			# それ以外は部首順を見る
+			my ($o1, $o2);
+			$o1 = $order{$t1} || 100;
+			$o2 = $order{$t2} || 100;
+			if ($o1 < $o2) {
+			    $ok2 = 0; last order;
+			} elsif ($o1 > $o2) {
+			    $ok1 = 0; last order;
+			}
+		    }
+		}
+
+		if ($ok1 && !$res{"$tc1$tc2"}) {
+		    $res{"$tc1$tc2"} = [$tt1->[0] + $tt2->[0],
+					$tt1->[1] + $tt2->[1],
+					"$tc1$tc2"];
+		}
+		if ($ok2 && !$res{"$tc2$tc1"}) {
+		    $res{"$tc2$tc1"} = [$tt2->[0] + $tt1->[0],
+					$tt2->[1] + $tt1->[1],
+					"$tc2$tc1"];
+		}
+	    }
+	}
+    }
+
+    my (@res) = sort sorter values %res;
+    my (@result) = ();
+    my ($cert) = 9999;
+    my (%done) = ();
+    for $r (@res) {
+	if ($cert != $r->[0]) {
+	    # 確実なものが出てたら後は出さない
+	    last if $cert < 10 && $r->[0] >= 10;
+	    last if $cert < 100 && $r->[0] - $cert >= 40;
+	    $cert = $r->[0];
+	}
+	unless ($done{$r->[2]}) {
+	    my ($rev);
+	    $r->[2] =~ /^($CH)($CH)$/o;
+	    $rev = "$2$1";
+	    $done{$r->[2]}++;
+	    $done{$rev}++;
+	    push(@result, $r);
+	}
+    }
+    splice(@result, 2);		# 2つまでで打ち切り
+    @result;
+}
+
+open (IN, $want_file);
+while (<IN>) {
+    chomp;
+    for $target (/($CH)/go) {
+	next if ($code_stroke{$target} && $cert{$target} == 0); # 打てる
+	my (@res) = where($target);
+	next unless @res;
+	for $r (@res) {
+	    printf("%-16.16s%4d\t%5d\n", $r->[2] . $target, $r->[0], $r->[1]);
+	}
+	if ($dump_emacs) {
+	    my $r = $res[0];
+	    my ($f, $s) = $r->[2] =~ /($CH)/go;
+	    unless ($compose{"$f$s"} eq $target ||
+		    $compose{"$s$f"} eq $target) {
+		push(@emacs_help, $target . $r->[2] . "\n");
+	    }
+	}
+    }
+}
+close (IN);
+if ($dump_emacs) {
+    open (EMACS, ">bushu_help.emacs");
+    print EMACS sort @emacs_help;
+    close EMACS;
+}
+
+#
+# 部首変換エンジン
+#
+
+sub lookup_sub {
+    my ($c1, $c2) = @_;
+    $compose{"$c1$c2"} || $compose{"$c2$c1"} || '';
+}
+
+sub eqchar {
+    my ($c) = shift;
+    my ($d) = $decompose{$c};
+    $d && $d->[0] eq "N" ? $d->[1] : $c;
+}
+
+sub lookup {
+    my ($t1, $t2) = @_;
+    my $x;
+
+    return $x if ($x = lookup_sub($t1, $t2));
+    $t1 = eqchar $t1;
+    $t2 = eqchar $t2;
+    return $x if ($x = lookup_sub($t1, $t2));
+    my ($t11, $t12, $t21, $t22);
+    if ($t11 = $decompose{$t1}) {
+	($t11, $t12) = @$t11;
+    }
+    if ($t21 = $decompose{$t2}) {
+	($t21, $t22) = @$t21;
+    }
+    $t11 eq 'N' && ($t11 = '');
+    $t12 eq 'N' && ($t12 = '');
+    $t21 eq 'N' && ($t21 = '');
+    $t22 eq 'N' && ($t22 = '');
+    return $t12 if ($t11 && ($t11 eq $t2) && ($t12 ne $t1) && ($t12 ne $t2));
+    return $t11 if ($t12 && ($t12 eq $t2) && ($t11 ne $t1) && ($t11 ne $t2));
+    return $t21 if ($t21 && ($t21 eq $t1) && ($t22 ne $t1) && ($t22 ne $t2));
+    return $t22 if ($t22 && ($t22 eq $t2) && ($t21 ne $t1) && ($t21 ne $t2));
+    for $p ([$t1, $t22], [$t1, $t22], [$t2, $t12],
+	    [$t1, $t21], [$t2, $t11], [$t12, $t22],
+	    [$t21, $t12], [$t11, $t22], [$t21, $t11]) {
+	$x = $p->[0] && $p->[1] && lookup_sub(@$p);
+	$x = '' if ($x eq $t1 || $x eq $t2);
+	return $x if $x;
+    }
+    return $t12 if $t11 && $t21 && $t11 eq $t21 && $t12 ne $t1 && $t12 ne $t2;
+    return $t12 if $t11 && $t22 && $t11 eq $t22 && $t12 ne $t1 && $t12 ne $t2;
+    return $t11 if $t12 && $t21 && $t12 eq $t21 && $t11 ne $t1 && $t11 ne $t2;
+    return $t11 if $t12 && $t22 && $t12 eq $t21 && $t11 ne $t1 && $t11 ne $t2;
+    '';
+}

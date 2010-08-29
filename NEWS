@@ -1,0 +1,337 @@
+●tc-2.3.1
+
+	- 2.3のバグフィックス
+
+●tc-2.3
+
+	- 2.3pre20のバグフィックス
+
+●tc-2.3pre20
+
+	- 2.3pre19のバグフィックス
+	- 部首合成変換で`tcode-bushu-compose-explicitly'による変換
+          (ヘルプ用補助ファイルのデータを用いた変換)を導入した。
+
+●tc-2.3pre19
+
+	- 部首合成変換のアルゴリズムを一部変更した。
+	- 部首合成変換の高速化を行った。
+	- 部首合成変換用辞書に登録されている項目の誤りをいくつか修正した。
+
+●tc-2.3pre18
+
+	- 2.3pre17のバグフィックス
+	- EELLLでリージョンで指定したテキストが練習できるようになった。
+	  (eelll-reegion)
+	- 部首合成変換用辞書に登録されている項目の誤りをいくつか修正した。
+	- 部首合成変換のアルゴリズムを一部変更した。
+	- 交ぜ書き変換で用いる候補選択用キーのデフォールトの割り当てを
+          変更した。
+
+●tc-2.3pre17
+
+	- 2.3pre16のバグフィックス
+
+●tc-2.3pre16
+
+	- 2.3pre15のバグフィックス
+	- 交ぜ書き変換中に、変換対象をさかのぼって変換する機能を追加した。
+
+●tc-2.3pre15
+
+	- 2.3pre14のバグフィックス
+	- skkinput3で交ぜ書き変換での候補の一覧表示が可能になった。
+	- isearchで、tcode-isearch-special-function-alistに登録されていない
+	  関数が入力された場合は、そのキー入力列を検索文字列に追加するように
+	  した。
+	- 統計機能で、未使用文字のリストを表示するコマンドを作成した。
+	  (tcode-list-unused-chars-display)
+	  また、統計情報の表示のときに、文字数の合計なども表示するようにした。
+	- 2バイト英数字直接入力モードを廃止し、別途input-methodとして
+	  入力できるようにした。
+	- 交ぜ書き変換を中心に変数名や関数名を見直し、変更を行った。
+
+	  変数名の変更
+	  tcode-mazegaki-priority-list
+	  -> tcode-mazegaki-stroke-priority-list
+	  tcode-mazegaki-alternative-select-left-keys
+	  -> tcode-mazegaki-alternative-select-first-keys
+	  tcode-mazegaki-alternative-select-right-keys
+	  -> tcode-mazegaki-alternative-select-second-keys
+	  tcode-mazegaki-gakusyu-kouho-offset
+	  -> tcode-mazegaki-fixed-priority-count
+	  tcode-mazegaki-enable-variable-yomi-postfix
+	  -> tcode-mazegaki-enable-inflection
+	  tcode-complete-kouho-max
+	  -> tcode-complete-max-candidate-count
+
+	  詳細はChangeLogを参照。
+	- 交ぜ書き変換辞書のもとデータ(pd_kihon.yom・jukujiku.maz)の修正を
+          行った。
+
+●tc-2.3pre14
+
+	- 2.3pre13のバグフィックス
+	- skkinput3 (3.0.4) 用の設定ファイルを統合した。
+	- 入力文字の統計を記録する機能を新たに導入した。
+	- 関数名・変数名の変更をいくつか行った。(詳細はChangeLog参照)
+	    * 変数 `tcode-table-file-name' は削除した。
+	        default-input-method などで関接的に指定する。
+            * 関数 `set-tcode-mode-key' は `tcode-set-key' に改名した。
+	        しばらくは両方使えるようになっているが、
+                将来的には、`set-tcode-mode-key'は使用できなくなる。
+            * 部首合成変換および交ぜ書き変換の変換用コマンド名を改名した。
+                デフォールトから変更している人は設定の変更が必要。
+	tcode-compose-chars -> tcode-bushu-convert-preceding-chars
+	tcode-bushu-start -> tcode-bushu-put-prefix
+	tcode-bushu-end -> tcode-bushu-delete-prefix
+	tcode-do-prefix-bushu -> tcode-bushu-prefix-convert
+	tcode-bushu-henkan -> tcode-bushu-begin-conversion
+	tcode-bushu-henkan-interactively -> tcode-bushu-convert-interactively
+	tcode-bushu-another-henkan -> tcode-bushu-begin-alternate-conversion
+	tcode-compose-char-interactively
+	->tcode-bushu-convert-preceding-char-interactively
+
+	tcode-mazegaki-henkan -> tcode-mazegaki-convert
+	tcode-mazegaki-start -> tcode-mazegaki-begin-conversion
+	tcode-mazegaki-alternative-start ->
+	tcode-mazegaki-begin-alternate-conversion
+	tcode-mazegaki-kakutei -> tcode-mazegaki-finish
+	tcode-start-fixed-mazegaki -> tcode-mazegaki-put-prefix
+	tcode-mazegaki-prefix -> tcode-mazegaki-add-prefix
+
+●tc-2.3pre13
+
+	- 2.3pre12.1のバグフィックス
+	- skkinput3 (3.0.4) へ対応した。
+
+●tc-2.3pre12.1
+
+	- 2.3pre12のインストール上の問題を修正した。
+
+●tc-2.3pre12
+
+	- 44で、直前に表示したヘルプ表を再表示するようにした。
+	- 2打目に空白を打つ場合に入力できないことがあったのを修正した。
+	- マニュアルをPDF形式でも用意した。
+
+●tc-2.3pre11
+
+	- TコードモードのときにはTコード入力用として用いるコマンドを、
+	  `tcode-input-command-list'で指定できるようにした。
+	- tc-complete.elで、候補の表示までの時間を
+	  `tcode-complete-delay'で指定できるようにした。
+
+●tc-2.3pre10
+
+	- Tコードのモードをマイナーモードとして切り替えるようにした。
+          これに伴い、変数`tcode-self-inserting-commands'は廃止した。
+	- tc-complete.el で、交ぜ書き変換辞書からも補完するようにした。
+	- kinput2/tc-ki2.el が動作していなったのを、動作するように直した。
+	- 2.3pre9.1のバグフィックス
+
+●tc-2.3pre9.1
+
+	- 2.3pre9のバグフィックス
+
+●tc-2.3pre9
+
+	- 2.3pre8のバグフィックス
+
+●tc-2.3pre8
+
+	- 2.3pre7のバグフィックス
+	- EELLLランダムモードを追加した。(コマンドeelll-random)
+
+●tc-2.3pre7
+
+	- 2.3pre6のバグフィックス
+	- 部首合成変換で交ぜ書き変換も組み合わせられるようにした。
+	    (tcode-bushu-functionsにtcode-mazegaki-lookup-with-prefixを
+	     追加する。)
+
+●tc-2.3pre6
+
+	- 2.3pre5.1のバグフィックス
+        - 部首合成変換の速度を改善した。
+
+●tc-2.3pre5.1
+
+	- インストール時の部首合成変換用辞書の作成で、メッセージを
+	  捨てないようにした。
+
+●tc-2.3pre5
+
+	- 2.3pre4のバグフィックス
+	- 辞書などのファイル名を、パスを指定しない方式にした。
+
+	【注意】次の変数でパス名を指定している方は、
+	ファイル名だけするように変更してください。
+		* tcode-complete-dictionary-name
+		* tcode-bushu-reverse-dictionary-name
+		* tcode-bushu-expand-file-name
+		* tcode-bushu-index-file-name
+		* tcode-mazegaki-dictionary-name
+		* tcode-bushu-help-dictionary-name
+
+	また、次の変数は、表を読むときに設定するようにしましたので、
+	変更したい場合は、`tcode-after-load-table-hook'で設定を行って
+	ください。
+		* eelll-text
+
+●tc-2.3pre4
+
+	- 2.3pre3のバグフィックス
+	- TUTコード用EELLL練習テキストEELLLTXT.tutを追加した。
+
+●tc-2.3pre3
+
+	- 2.3pre2のバグフィックス
+
+●tc-2.3pre2
+
+	- 挿入される文字に対してフィルタをかけられるようにした。
+	  また、シフト入力時にもフィルタを指定できるようにした。
+	- 変数 tcode-default-input-method を設定することにより、
+	  TUTコードの設定が以前より容易になった。
+	- コマンド `tcode-make-mazegaki-dictionary' により、
+	  交ぜ書き変換辞書の作成ができるようになった。
+	  (以前は新しいEmacsでのみ可能)
+	- 個人用初期設定をEmacs上で対話的に行えるようにした。
+	  (正確には2.3pre1から)
+	- tc-initとtc-mkmzdicを廃止した。(それぞれ`tcode-install'と
+	  `tcode-make-mazegaki-dictionary'で可能。)
+
+●tc-2.3pre1.1
+
+	- 2.3pre1のバグフィックス(tc-2.3pre1の【注意】は不要です。)
+
+●tc-2.3pre1
+
+	- EELLLがビットマップ表示に対応した。
+	- tc-setupで、非Tコードユーザへの影響を少なくした。
+	- .tcがなくてもとりあえず使用できるようにした。
+
+	【注意】旧版をお使いの方は、次のコードを.tcに追加してください。
+--------
+(setq tcode-use-as-default-input-method t)
+(setq tcode-use-isearch t)
+--------
+
+●tc2.2.1
+
+	- NEmacs で動作しなかったのを修正
+
+●tc2.2
+
+	- 正式版リリース
+	- マニュアル等の文書の一部修正
+
+●tc2.2pre2
+
+	- ヘルプ表の表示形式をより自由に変更できるようにした。
+	- マニュアルの修正
+	- 細かいバグフィックス
+
+●tc2.2pre1
+
+	- 部首合成変換のアルゴリズムを変更した。
+
+	  アルファ版テストで協力していただいた方は
+	以下のとおりです。(五十音順)
+		安宅正之さん
+		小石川さん
+		高橋玲子さん
+		藤原誠さん
+
+	  【注意】部首合成変換のアルゴリズムの変更にともない、
+	  部首合成変換用辞書がrev形式になりました。
+	  tc-2.1のものをそのまま使いたい場合はrev形式の方を
+	  お使いください。
+
+	- 部首合成変換用辞書を改訂した。
+
+	  協力していただいた方は以下のとおりです。(五十音順)
+		安宅正之さん
+		飯田義朗さん
+		岡俊行さん
+		小石川さん
+		藤原誠さん
+		前田薫さん
+		正岡さん
+		矢木さん
+		やまだあきらさん
+
+	  【注意】改訂に伴い、記号類は別ファイル(symbol.rev)に
+	  分けました。標準では使わないようになっています。
+	  使用したい場合は、bushu.revに追加して、ソートしてください。
+
+	- EELLL で TUT コードの練習ができるようにした。
+	  【注意】練習用ファイルは用意していません。
+	  Tコード用のEELLLTXTを参考に、練習用ファイルを用意してください。
+	- 補完機能を追加した。
+	- インクリメンタルサーチの不具合を修正した。
+	- 変数 `tcode-bushu-on-demand' に設定する値の意味を一部修正した。
+	- 交ぜ書き変換で逆向きの読みの辞書への対応を止めた。
+	- EGGによる変換への対応を止めた。
+	- その他、いくつかの不具合を修正した。
+
+●tc2.1
+
+	- 正式リリース版
+
+●tc2.1pre3
+
+	- 変数 `tcode-use-as-default-input-method' を .emacs の
+	  (require 'tc-setup) よりも前に nil に設定しておけば、
+	  デフォールトのinput-method にしないようにするようにした。
+	- EELLL で oddp を使用しないようにした。
+	- マニュアルの交ぜ書き変換の部分などを修正した。
+	- Info のファイル名を tc から tc.info に変更した。
+	- 交ぜ書き変換辞書作成に用いるコマンドreduce・combineを
+	  $pkblibdir に置くようにした。
+	- 交ぜ書き変換辞書作成時に、データが重複しないようにした。
+	- 交ぜ書き変換辞書作成用データ(t*.dat)の不備を修正・追加した。
+	- 変数 `tcode-mazegaki-alternative-select-left-keys' または
+	  変数 `tcode-mazegaki-alternative-select-left-keys' が nil の場合は、
+	  交ぜ書き変換で、インラインでの候補選択をしないようにした。
+
+●tc2.1pre2
+
+	- マニュアルのTUTコードの設定部分などを修正した。
+	- 個人設定用のスクリプトの不具合を修正した。
+	- Lisp ファイルのデフォールトのインストール先ディレクトリを
+	  tc専用に作るようにした。
+	- KKC を用いて変換を行うコマンドを付けた(Emacs 20用)。
+	- 交ぜ書き辞書用のデータをpubdic+を用いたものに変更した。
+
+●tc2.1pre1
+
+	- マニュアルを改訂した。
+	- 個人設定用のスクリプトの不具合を修正した。
+	- tcode-insert-ya-outset で、表の1番目の文字が入力
+	  できなかったのを修正した。また、表の文字を一部変更した。
+	- 44 で最後にヘルプを表示した文字を再表示するようにした。
+	- 交ぜ書き変換で一覧表でなく順次表示する方法でも選択できるようにした。
+	- へルプ表示の際、部首合成変換で入力可能な場合に補助表を
+	  もとにヘルプを表示できるようにした。
+
+●tc2.0beta10
+
+	- 変数 `tcode-bushu-on-demand' の設定が反映されるように直した。
+	- Emacs 20 でも cancel-undo-boundary が有効になるようにした。
+	- 交ぜ書き辞書用データ `pd_kihon.yom' を活用対応にした。
+	- 変数 `tcode-mazegaki-splitter' のデフォールトの値を "|" に
+	  変更した。
+	- ヘルプのメッセージの不具合を修正した。
+	- XEmacs 21.* で tcode-mode-off-cursor-color のデフォールトの値が
+	  不適切だったのを修正した。
+
+●tc2.0beta9
+
+	- Emacs 20 で後置型交ぜ書き変換ができなかったのを修正した。
+	- XEmacs で EELLL ができなかったのを修正した。
+	- Emacs 19 での T-Code モードの切り替えができない場合があったのを
+          修正した。
+	- Emacs 19.28 ベースの Mule 2.3 での不具合を修正した。
+	- ファイル `INSTALL' を詳しく書き直した。

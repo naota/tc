@@ -1,0 +1,18 @@
+; -*-emacs-lisp-*-
+(and (fboundp 'set-language-environment)
+     (set-language-environment "Japanese"))
+(setq load-path (cons "../lisp" load-path))
+(let (tcode-init-file-name 
+      set-auto-coding-function)
+  (load "tc-pre-base")
+  (provide 'tc-pre)
+  (setq tcode-site-data-directory nil)
+  (load "tc-setup.el")
+  (setq tcode-data-directory ".")
+  (load "tc")
+  (message "making bushu dictionary...")
+  (let (tcode-verbose-message)
+    (tcode-bushu-init 999))
+  (tcode-save-dictionaries)
+  (message "making bushu dictionary...done"))
+(kill-emacs)

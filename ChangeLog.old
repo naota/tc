@@ -1,0 +1,75 @@
+Fri Jan 12 14:20:21 1996  MASUHARA Hidehiko <masuhara@is.s.u-tokyo.ac.jp>
+
+	* Nemacs/Macintosh 対応
+
+Fri Oct 13 12:07:10 1995  Yasushi Saito  <yasushi@velvet.cs.washington.edu>
+
+	* tc-use-postfix-bushu-as-default変数を用意した。これをtにすると，jf
+	で後置型の変換ができる。
+	* 微修正。ドキュメントの修正。
+
+Thu Sep 28 20:31:25 1995  Yasushi Saito  <yasushi@scrod.cs.washington.edu>
+
+	* Makefile中のinstall scriptを，Configureというファイルに移した。
+
+Mon Jul 31 16:43:51 1995  SAITO Yasushi  <yasushi@orestes.is.s.u-tokyo.ac.jp>
+
+	* t*.datを対話的に見るためのinter.plを作成。
+	* mazegakiのreduceを書き直した。combineもCで書き直した。
+	* t*.datの形式を変更。
+
+Sun Jul 23 14:17:17 1995  SAITO Yasushi  <yasushi@helene>
+
+	* tc.el (tcode-self-insert-command): lookup-keyの引数にvectorでなくstringを与えるようにした。Emacs-18対策。
+
+
+Thu Jul 20 15:26:47 1995  SAITO Yasushi  <yasushi@electra.is.s.u-tokyo.ac.jp>
+
+	* ドキュメントの変更。Makefileの小変更。
+
+Mon Jul 17 13:39:50 1995  SAITO Yasushi  <yasushi@electra.is.s.u-tokyo.ac.jp>
+
+	* eelll.el: eelll-compileで無限ループに陥ることがあるのを修正。
+	* tc-mz-postfix.el (tcode-mazegaki-select-kouho): 候補リストから選
+	んだ時にも，辞書学習できるようにした。また，C-nまたは" "の連続打で
+	候補リストが出た時に，候補選択が働くようにした。
+
+Fri Jul 14 19:15:22 1995  SAITO Yasushi  <yasushi@helene.is.s.u-tokyo.ac.jp>
+
+	* tc.elとtc-mule.elを廃止。tc-mule2.elをtc.elにrenameして、全ての
+	バージョンのemacsでtc.elが使えるように調整した。
+	* tc-isearch19をtc-is19に名前変更。
+	* 同様に、eelll.elとeelll-mule.elも統合。
+
+Wed Jul 12 18:30:01 1995  SAITO Yasushi  <yasushi@electra.is.s.u-tokyo.ac.jp>
+
+	* インストールドキュメントをINSTALLファイルに分離した。
+	* Makefileを修正
+	* tcode-data-directoryという変数を新設して，T-Codeデータファイルを置く
+	ディレクトリを変えられるようにした。
+
+Mon Jul 10 21:34:38 1995  SAITO Yasushi  (yasushi@mahapo-linux)
+
+	* 部首変換関連のコードをtc-bushu.elに分離した。
+	* 部首辞書の内部形式を，obarrayから，手製のchained hash table
+	に変更して，ロードの高速化を図った。
+	* [重要]bushu-mule.dic -> bushu.dic
+
+Sat Jul  8 11:43:24 1995  SAITO Yasushi  (yasushi@mahapo-linux)
+
+	* mazegaki/reduce.plとmazegaki/makedic.plなどがおかしいのを修正。
+	* tc-mule.elのmode-line-formatがおかしいのを修正。
+	* [重要]後置型交ぜ書き変換がデフォルトになった。
+	* [重要]交ぜ書き変換モジュールを，tc-mz-{prefix,postfix}.elに分離した。
+	* [重要]tc.tbl.el -> tc-tbl.el
+
+Thu Jul  6 14:19:29 1995  SAITO Yasushi  <yasushi@electra.is.s.u-tokyo.ac.jp>
+
+	* tc-mazegaki.el : 変換モードで「C-c」を押すと，候補列が
+	ミニバッファに表示されるようになった。
+
+Wed Jul  5 17:30:23 1995  SAITO Yasushi  <yasushi@electra.is.s.u-tokyo.ac.jp>
+
+	* EELLLのレッスン番号入力時にcompletionが付くようにした。
+	* EELLLコンパイラをeelll-compile.elに分離した。
+	* 増村さんから指摘されたバグ修正 (boundp -> featurep)

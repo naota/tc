@@ -1,0 +1,8 @@
+;-*-emacs-lisp-*-
+;; make .elc files
+(setq load-path (cons "." load-path))
+;;(let (tcode-init-file-name)
+;;  (load "tc-setup.el"))
+(and (fboundp 'set-language-environment)
+     (set-language-environment "Japanese"))
+(batch-byte-compile)

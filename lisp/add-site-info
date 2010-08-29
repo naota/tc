@@ -1,0 +1,16 @@
+#!/bin/sh
+
+SITE_BASE=$1
+SITE_FILE=$2
+SITE_DIR=$3
+
+cp $SITE_BASE $SITE_FILE
+
+cat >> $SITE_FILE <<EOF
+
+(defconst tcode-site-data-directory "$SITE_DIR")
+
+(provide 'tc-pre)
+
+;;; tc-pre.el ends here
+EOF
