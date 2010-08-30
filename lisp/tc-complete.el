@@ -50,7 +50,8 @@
 ;; 補完辞書のバッファ名
 
 (defcustom tcode-complete-mazegaki-prefix-length 3
-  "*交ぜ書き変換辞書からの補完の場合に接頭辞とみなす文字数。")
+  "*交ぜ書き変換辞書からの補完の場合に接頭辞とみなす文字数。"
+  :type 'integer :group 'tcode)
 
 ;;; 辞書の登録
 (unless (assq tcode-complete-buffer-name tcode-dictionaries)
