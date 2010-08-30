@@ -1,0 +1,14 @@
+*.elc
+*~
+Makefile
+autom4te.cache/
+config.log
+config.status
+etc/bushu.expand
+etc/bushu.index2
+lisp/compile.log
+lisp/tc-pre-base
+lisp/tc-pre.el
+mazegaki/mazegaki.dic
+skkinput3/load-path.el
+skkinput3/tcinput
