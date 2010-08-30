@@ -251,8 +251,8 @@ When optional HELPED is non-nil, list uninputted characters also."
 
 (add-hook 'tcode-help-stroke-hook
 	  (lambda () (if tcode-count-input-statistics
-		    (tcode-count-in-property (tcode-string-to-char ch)
-					     'help-count))))
+			 (tcode-count-in-property (tcode-string-to-char ch)
+						  'help-count))))
 
 (if (fboundp 'defadvice)
     (defadvice delete-backward-char (before

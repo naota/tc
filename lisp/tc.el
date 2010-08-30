@@ -378,17 +378,17 @@ nil のときは `tcode-mode' から得る。")
 		  i (1+ i)))
 	  (setq list (cons layout (nreverse list))))))
     (let ((i 0))
-      (mapcar (lambda (char)
-		(cond ((null char)
-		       (aset table (- char ? ) -1))
-		      ((and tcode-shift-lowercase
-			    (/= (upcase char) char))
-		       (aset table (- char ? ) i)
-		       (aset table (- (upcase char) ? ) -2))
-		      (t
-		       (aset table (- char ? ) i)))
-		(setq i (1+ i)))
-	      (cdr list)))
+      (mapc (lambda (char)
+	      (cond ((null char)
+		     (aset table (- char ? ) -1))
+		    ((and tcode-shift-lowercase
+			  (/= (upcase char) char))
+		     (aset table (- char ? ) i)
+		     (aset table (- (upcase char) ? ) -2))
+		    (t
+		     (aset table (- char ? ) i)))
+	      (setq i (1+ i)))
+	    (cdr list)))
     (let ((char ? ))
       (while (<= char ?~)
 	(if (lookup-key tcode-mode-map (char-to-string char))
@@ -633,22 +633,22 @@ t ... cancel"
 	 nil)))
 
 (defun tcode-apply-filters (list)
-  (mapcar (lambda (alist)
-	    (if (eval (car alist))
-		(let ((v (mapcar (lambda (c) (funcall (cdr alist) c))
-				 list)))
-		  (setq list (apply 'nconc
-				    (mapcar (lambda (e) (if (stringp e)
-						       (string-to-list e)
-						     (list e)))
-					    v))))))
-	  tcode-input-filter-functions)
+  (mapc (lambda (alist)
+	  (if (eval (car alist))
+	      (let ((v (mapcar (lambda (c) (funcall (cdr alist) c))
+			       list)))
+		(setq list (apply 'nconc
+				  (mapcar (lambda (e) (if (stringp e)
+							  (string-to-list e)
+							(list e)))
+					  v))))))
+	tcode-input-filter-functions)
   list)
 
 (defun tcode-input-method (ch)
   "The input method function for T-Code."
   (setq last-command 'self-insert-command
-	last-command-char ch)
+	last-command-event ch)
   (if input-method-verbose-flag
       (unless tcode-input-method-verbose-flag
 	;; push some variables' values
@@ -978,9 +978,9 @@ ARG が nil でないとき、ARG 番目の組に切り替える。"
 				  (make-vector tcode-stroke-table-size 0)))
     (tcode-set-stroke-property tcode-table nil t)
     ;; コマンドをテーブルに登録する。
-    (mapcar (lambda (elm)
-	      (tcode-set-action-to-table (car elm) (cdr elm)))
-	    tcode-special-commands-alist)
+    (mapc (lambda (elm)
+	    (tcode-set-action-to-table (car elm) (cdr elm)))
+	  tcode-special-commands-alist)
     (setq tcode-special-commands-alist nil) ; free
     (if (get-buffer tcode-stroke-buffer-name)
 	(kill-buffer tcode-stroke-buffer-name))
@@ -1182,7 +1182,7 @@ The remaining arguments are libraries to be loaded before using the package."
   "Encode Tcode character and insert."
   (interactive "P")
   (tcode-cancel-undo-boundary)
-  (let ((events (tcode-input-method last-command-char)))
+  (let ((events (tcode-input-method last-command-event)))
     (while events
       (let* ((ch (car events))
 	     (command (tcode-default-key-binding (char-to-string ch))))
@@ -1193,7 +1193,7 @@ The remaining arguments are libraries to be loaded before using the package."
 	      (setq command 'self-insert-command))
 	  (setq prefix-arg current-prefix-arg
 		this-command command
-		last-command-char ch) ; for self-insert-command
+		last-command-event ch) ; for self-insert-command
 	  (command-execute command)))
       (setq events (cdr events)))))
 
@@ -1301,11 +1301,11 @@ Type \\[tcode-mode-help] for more detail."
 	 draw-table)
      ;; table はリスト
      (let ((draw-table (make-vector 40 nil)))
-       (mapcar (lambda (elm)
-		 (aset draw-table
-		       (car elm)
-		       (tcode-action-to-printable (cdr elm))))
-	       table)
+       (mapc (lambda (elm)
+	       (aset draw-table
+		     (car elm)
+		     (tcode-action-to-printable (cdr elm))))
+	     table)
        draw-table))
    1 1))
 
@@ -1322,8 +1322,7 @@ Type \\[tcode-mode-help] for more detail."
         (sep0 [" " " " " " " " "  " "  " "  " " " " " " " ""])
         (sep1 ["[" " " " " " " "] " "  " " [" " " " " " " "]"])
         (none-str "-"))
-    (save-excursion
-      (set-buffer buf)
+    (with-current-buffer buf
       (erase-buffer)
       (let ((fv (make-vector 10 nil))
 	    (i 0)
@@ -1370,17 +1369,15 @@ Type \\[tcode-mode-help] for more detail."
     (if append
 	(let ((buf (get-buffer tcode-help-buffer-name)))
 	  (setq previous-contents (and buf
-				       (save-excursion
-					 (set-buffer buf)
+				       (with-current-buffer buf
 					 (buffer-string))))))
     (with-output-to-temp-buffer tcode-help-buffer-name
       (when previous-contents
 	(princ previous-contents)
 	(princ "\n"))
-      (princ (save-excursion (set-buffer buffer) (buffer-string))))
+      (princ (with-current-buffer buffer (buffer-string))))
     (if (fboundp 'help-mode)
-	(save-excursion
-	  (set-buffer (get-buffer tcode-help-buffer-name))
+	(with-current-buffer (get-buffer tcode-help-buffer-name)
 	  (help-mode))))
   ;; ウィンドウの大きさの調整
   (let ((orig-win (selected-window))
@@ -1595,8 +1592,7 @@ BACKUP-INHIBITED が nil でない場合は、バックアップファイルの作成を
 	       buffer
 	       (buffer-modified-p buffer)
 	       (file-writable-p file-path))
-      (save-excursion
-	(set-buffer buffer)
+      (with-current-buffer buffer
 	(unless (or backup-inhibited
 		    (not (file-exists-p file-path)))
 	  (rename-file file-path (make-backup-file-name file-path) t))

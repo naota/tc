@@ -175,7 +175,8 @@
     (goto-char (point-min))
     (while (and (> max-line 0)
 		(> lines 0))
-      (goto-line (1+ (random lines)))
+      (goto-char (point-min))
+      (forward-line (random lines))
       (if (eolp)
 	  (progn
 	    (unless (eobp)
@@ -207,7 +208,7 @@
 	(error "練習テキスト%sはありません。" (if num (int-to-string num) "")))
     (setq eelll-lesson-string (buffer-substring (match-beginning 1)
 						(match-end 1))
-	  eelll-lesson-no (string-to-int eelll-lesson-string))
+	  eelll-lesson-no (string-to-number eelll-lesson-string))
     (setq eelll-first-hand (looking-at "[Rr]"))
     (setq eelll-second-hand (looking-at ".[Rr]"))
     (setq eelll-upper-row (looking-at "..!"))
@@ -232,8 +233,7 @@
 (defun eelll-lesson-line ()
   "練習テキストの次の行をとってくる。終わりならnilを返す。
 eelll-text-line:	印字イメージ"
-  (save-excursion
-    (set-buffer eelll-current-text-buffer)
+  (with-current-buffer eelll-current-text-buffer
     (skip-chars-forward " \t\n\f" (point-max))
     (and (not (eobp))
 	 (let ((p (point)))
@@ -283,8 +283,7 @@ Tコードで入力できなければnilを返す。"
 ;;;
 (defun eelll-draw-chart ()
   "練習テキストの練習対象となる文字のストローク表を作る。"
-  (save-excursion
-    (set-buffer (get-buffer-create eelll-help-buffer-name))
+  (with-current-buffer (get-buffer-create eelll-help-buffer-name)
     (widen)
     (erase-buffer)
     (goto-char (point-min))
@@ -303,7 +302,7 @@ Tコードで入力できなければnilを返す。"
 	  (delete-horizontal-space)
 	  (insert "\n"))
 	(if (< i 4) (insert "\n"))))
-    (mapcar
+    (mapc
      (lambda (c)
        (let ((stroke (eelll-stroke-for-char (char-to-string c))))
 	 (when (and stroke
@@ -313,7 +312,8 @@ Tコードで入力できなければnilを返す。"
 		  (fr (/ (car stroke) 10))
 		  (sc (% second 5))
 		  (sr (/ second 10)))
-	     (goto-line (+ (* sr 5) fr 1))
+	     (goto-char (point-min))
+	     (forward-line (+ (* sr 5) fr))
 	     (move-to-column (+ 4 (* 12 sc) (* 2 fc)
 				(if (> sc (if eelll-second-hand 0 3)) 2 0)))
 	     (tcode-delete-char 1)
@@ -494,8 +494,7 @@ EELLL 内ではほとんどのコマンドが禁止されています。
       (eelll-draw-chart)
       (delete-other-windows)
       (split-window-vertically
-       (save-excursion
-	 (set-buffer eelll-help-buffer-name)
+       (with-current-buffer eelll-help-buffer-name
 	 (setq mode-line-format
 	       '("-----EELLL Help"
 		 (eelll-lesson-string
@@ -512,22 +511,22 @@ EELLL 内ではほとんどのコマンドが禁止されています。
 
 (defun eelll-select-chars (text)
   (let ((ret nil))
-    (mapcar (lambda (c)
-	      (let* ((stroke (eelll-stroke-for-char (char-to-string c)))
-		     (1st (car stroke))
-		     (2nd (car (cdr stroke)))
-		     (lks '(0 1 2 3 4
-			      10 11 12 13 14
-			      20 21 22 23 24
-			      30 31 32 33 34))
-		     (rks '(5 6 7 8 9
-			      15 16 17 18 19
-			      25 26 27 28 29
-			      35 36 37 38 39)))
-		(and (memq 1st (if eelll-first-hand rks lks))
-		     (memq 2nd (if eelll-second-hand rks lks))
-		     (setq ret (cons c ret)))))
-	    (string-to-list text))
+    (mapc (lambda (c)
+	    (let* ((stroke (eelll-stroke-for-char (char-to-string c)))
+		   (1st (car stroke))
+		   (2nd (car (cdr stroke)))
+		   (lks '(0 1 2 3 4
+			    10 11 12 13 14
+			    20 21 22 23 24
+			    30 31 32 33 34))
+		   (rks '(5 6 7 8 9
+			    15 16 17 18 19
+			    25 26 27 28 29
+			    35 36 37 38 39)))
+	      (and (memq 1st (if eelll-first-hand rks lks))
+		   (memq 2nd (if eelll-second-hand rks lks))
+		   (setq ret (cons c ret)))))
+	  (string-to-list text))
     (if ret
 	(mapconcat 'char-to-string ret nil)
       "")))
@@ -611,7 +610,7 @@ Emacs内部のcompletionの実装上の問題のため、「?」を
 			      (if pos (cons 'hist pos) 'hist))))))
 	    (if (string= str "")
 		nil
-	      (list (string-to-int str)))))
+	      (list (string-to-number str)))))
       (fset 'minibuffer-completion-help orig-minibuffer-completion-help))))
 
 (defun eelll-minibuffer-completion-help ()
@@ -630,7 +629,7 @@ Emacs内部のcompletionの実装上の問題のため、「?」を
 `display-completion-list'を置き換える。"
   (princ "    ---- 練習テキスト一覧 ----\n")
   (setq x (sort x (lambda (x y)
-		    (< (string-to-int x) (string-to-int y)))))
+		    (< (string-to-number x) (string-to-number y)))))
   (while x
     (princ (car x))
     (princ ":")
@@ -689,7 +688,7 @@ Emacs内部のcompletionの実装上の問題のため、「?」を
 	(beg (progn 
 	       (insert "\n")
 	       (point))))
-    (mapcar 'eelll-put-help-char chars)
+    (mapc 'eelll-put-help-char chars)
     (insert "\n")
     (forward-line)))
 
@@ -720,8 +719,7 @@ Emacs内部のcompletionの実装上の問題のため、「?」を
 	  eelll-lesson-string "Temporary"
 	  eelll-lesson-no 0
 	  eelll-lesson-chars "")
-    (save-excursion
-      (set-buffer (get-buffer-create eelll-current-text-buffer))
+    (with-current-buffer (get-buffer-create eelll-current-text-buffer)
       (erase-buffer)
       (insert lesson)
       (if eelll-random-mode
@@ -816,8 +814,7 @@ Emacs内部のcompletionの実装上の問題のため、「?」を
 	(require 'tc-bitmap))
     (when (>= eelll-previous-error-rate eelll-display-help-threshold)
       (split-window-vertically
-       (save-excursion
-	 (set-buffer eelll-help-buffer-name)
+       (with-current-buffer eelll-help-buffer-name
 	 (setq mode-line-format
 	       '("-----EELLL Help"
 		 (eelll-lesson-string
@@ -838,9 +835,8 @@ Emacs内部のcompletionの実装上の問題のため、「?」を
 
 (defun eelll-key ()
   (interactive)
-  (save-excursion
-    (set-buffer " *eelll: strokes*")
-    (insert (char-to-string last-command-char)))
+  (with-current-buffer " *eelll: strokes*"
+    (insert (char-to-string last-command-event)))
   (if eelll-move-cursor
       (insert " ")))
 
@@ -849,8 +845,7 @@ Emacs内部のcompletionの実装上の問題のため、「?」を
   (if eelll-start-time
       (progn
 	(delete-region (point) (progn (beginning-of-line 1) (point)))
-	(let* ((str (save-excursion
-		      (set-buffer " *eelll: strokes*")
+	(let* ((str (with-current-buffer " *eelll: strokes*"
 		      (buffer-string)))
 	       (res (eelll-match str eelll-text-line))
 	       (err (car (cdr res))))
@@ -870,8 +865,7 @@ Emacs内部のcompletionの実装上の問題のため、「?」を
     (setq eelll-start-time (eelll-current-time)))
   (if (null (eelll-lesson-line))
       (eelll-end-lesson)
-    (save-excursion
-      (set-buffer (get-buffer-create " *eelll: strokes*"))
+    (with-current-buffer (get-buffer-create " *eelll: strokes*")
       (widen) (erase-buffer))
     (when eelll-use-image
       (insert "\n")
@@ -890,11 +884,11 @@ Emacs内部のcompletionの実装上の問題のため、「?」を
 (defun eelll-current-time ()
   (let ((str (current-time-string)))
     (string-match "\\([0-9][0-9]\\):\\([0-9][0-9]\\):\\([0-9][0-9]\\)" str)
-    (+ (* 3600 (string-to-int (substring str
+    (+ (* 3600 (string-to-number (substring str
 					 (match-beginning 1)
 					 (match-end 1))))
-       (* 60 (string-to-int (substring str (match-beginning 2) (match-end 2))))
-       (string-to-int (substring str (match-beginning 3) (match-end 3))))))
+       (* 60 (string-to-number (substring str (match-beginning 2) (match-end 2))))
+       (string-to-number (substring str (match-beginning 3) (match-end 3))))))
 
 (defun eelll-percentage (num den)
   (let ((res%  (min 9999 (/ num (max 1 den)))))
@@ -966,8 +960,7 @@ Emacs内部のcompletionの実装上の問題のため、「?」を
     (if (equal eelll-lesson-string "Temporary")
 	(if (y-or-n-p "もう一度トライしますか? ")
 	    (progn
-	      (save-excursion
-		(set-buffer eelll-current-text-buffer)
+	      (with-current-buffer eelll-current-text-buffer
 		(goto-char (point-min)))
 	      (eelll-setup-lesson))
 	  (eelll-end))
@@ -1077,8 +1070,7 @@ RECOMPILE-ALL が non-nil の場合には、
     (save-restriction
       (widen)
       (goto-char (point-min))
-      (save-excursion
-	(set-buffer (get-buffer-create " *eelll: lessons*"))
+      (with-current-buffer (get-buffer-create " *eelll: lessons*")
 	(delete-region (point-min) (point-max)))
       (while (and (not reached-eob) (not (eobp)))
 	(let ((point (point)))

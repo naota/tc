@@ -116,8 +116,7 @@
 	  (progn
 	    (put (intern str tcode-stroke-table) 'bushu str)
 	    (list char))
-	(save-excursion
-	  (set-buffer (get-buffer tcode-bushu-expand-buffer-name))
+	(with-current-buffer tcode-bushu-expand-buffer-name
 	  (if (tcode-bushu-search str)
 	      (let ((bushu-list (cdr (tcode-bushu-parse-entry))))
 		(put (intern str tcode-stroke-table)
@@ -128,8 +127,7 @@
 	    (list char)))))))
 
 (defun tcode-bushu-lookup-index2-entry-internal (str)
-  (save-excursion
-    (set-buffer (get-buffer tcode-bushu-index2-buffer-name))
+  (with-current-buffer tcode-bushu-index2-buffer-name
     (when (tcode-bushu-search (concat str " "))
       (search-forward " ")
       (tcode-bushu-parse-entry))))
@@ -239,8 +237,7 @@
 ;;;
 
 (defun tcode-bushu-add-to-index2 (char component)
-  (save-excursion
-    (set-buffer (get-buffer tcode-bushu-index2-buffer-name))
+  (with-current-buffer tcode-bushu-index2-buffer-name
     (setq component (sort component '<))
     (let ((l nil) bushu)
       (while component
@@ -282,8 +279,7 @@
 	(noe (count-lines (point-min) (point-max)))
 	(count 0)
 	(percent -1))
-    (save-excursion
-      (set-buffer (get-buffer-create tcode-bushu-index2-buffer-name))
+    (with-current-buffer tcode-bushu-index2-buffer-name
       (erase-buffer)
       (or (not (boundp 'buffer-file-coding-system))
 	  (set-buffer-file-coding-system coding-system)))
@@ -303,8 +299,7 @@
       (message "部首合成辞書の拡張索引を作成中(100%%)...完了"))))
 
 (defun tcode-bushu-expand-add-entry (char component)
-  (save-excursion
-    (set-buffer (get-buffer tcode-bushu-expand-buffer-name))
+  (with-current-buffer tcode-bushu-expand-buffer-name
     (if (not (tcode-bushu-search (char-to-string char)))
 	(insert char (mapconcat 'char-to-string component nil) ?\n)
       (end-of-line)
@@ -314,8 +309,7 @@
   (if (memq char tcode-bushu-list)
       (list char)
     (let ((str (char-to-string char)))
-      (save-excursion
-	(set-buffer (get-buffer tcode-bushu-expand-buffer-name))
+      (with-current-buffer tcode-bushu-expand-buffer-name
 	(tcode-bushu-search str)
 	(let ((entry (tcode-bushu-parse-entry)))
 	  (if (and entry (= char (car entry)))
@@ -357,8 +351,7 @@
 			    buffer-file-coding-system))
 	(noe (count-lines (point-min) (point-max)))
 	(count 0))
-    (save-excursion
-      (set-buffer bushu-expand-buf)
+    (with-current-buffer bushu-expand-buf
       (erase-buffer)
       (or (not (boundp 'buffer-file-coding-system))
 	  (set-buffer-file-coding-system coding-system)))
@@ -416,8 +409,7 @@ FORCEがnilでない場合は再読み込みする。"
   "現在のバッファにあるdic形式部首合成辞書データをrev形式に変換する。"
   (interactive)
   (let ((buf (get-buffer-create "*tcode: dic to rev*")))
-    (save-excursion
-      (set-buffer buf)
+    (with-current-buffer buf
       (erase-buffer))
     (goto-char (point-min))
     (setq tcode-bushu-list nil)
@@ -633,10 +625,10 @@ nilでない場合は多い方が優先される。"
   (let* ((bushu-list (apply 'nconc (mapcar 'tcode-bushu-for-char char-list)))
 	 (r (tcode-bushu-superset bushu-list)))
     (catch 'not-found
-      (mapcar (lambda (c)
-		(unless (setq r (delq c r))
-		  (throw 'not-found nil)))
-	      char-list)
+      (mapc (lambda (c)
+	      (unless (setq r (delq c r))
+		(throw 'not-found nil)))
+	    char-list)
       (sort r 'tcode-bushu-less-p))))
 
 (defun tcode-bushu-less-against-seqence-p (char1 char2)
@@ -657,22 +649,22 @@ nilでない場合は多い方が優先される。"
 (defun tcode-bushu-include-all-chars-bushu-p (char char-list)
   (let* ((bushu (tcode-bushu-for-char char))
 	 (new-bushu bushu))
-    (mapcar (lambda (char)
-	      (setq new-bushu 
-		    (tcode-subtract-set new-bushu
-					(tcode-bushu-for-char char))))
-	    char-list)
+    (mapc (lambda (char)
+	    (setq new-bushu 
+		  (tcode-subtract-set new-bushu
+				      (tcode-bushu-for-char char))))
+	  char-list)
     (setq bushu (tcode-subtract-set bushu new-bushu))
     (catch 'false
-      (mapcar (lambda (char)
-		(or (tcode-subtract-set 
-		     bushu
-		     (apply 'nconc 
-			    (mapcar 
-			     'tcode-bushu-for-char
-			     (tcode-subtract-set char-list (list char)))))
-		    (throw 'false nil)))
-	      char-list)
+      (mapc (lambda (char)
+	      (or (tcode-subtract-set 
+		   bushu
+		   (apply 'nconc 
+			  (mapc
+			   'tcode-bushu-for-char
+			   (tcode-subtract-set char-list (list char)))))
+		  (throw 'false nil)))
+	    char-list)
       t)))
 
 (defun tcode-bushu-all-compose-set (char-list &optional bushu-list)
@@ -792,7 +784,7 @@ nilでない場合は多い方が優先される。"
 (defun tcode-bushu-common-set (char-list)
   (let ((bushu-list (tcode-bushu-for-char (car char-list))))
     (catch 'not-found
-      (mapcar
+      (mapc
        (lambda (c)
 	 (unless (setq bushu-list
 		       (tcode-intersection bushu-list
@@ -800,10 +792,10 @@ nilでない場合は多い方が優先される。"
 	   (throw 'not-found nil)))
        (cdr char-list))
       (let ((kouho (tcode-bushu-subset bushu-list)))
-	(mapcar (lambda (c)
-		  (if (memq c kouho)
-		      (setq kouho (delq c kouho))))
-		char-list)
+	(mapc (lambda (c)
+		(if (memq c kouho)
+		    (setq kouho (delq c kouho))))
+	      char-list)
 	(sort kouho 'tcode-bushu-less-or-many-p)))))
 
 (defun tcode-bushu-compose-explicitly (char-list)
@@ -846,7 +838,7 @@ nilでない場合は多い方が優先される。"
   "Compose a character from characters in CHAR-LIST.
 See also `tcode-bushu-functions'."
   (catch 'found
-    (mapcar
+    (mapc
      (lambda (function)
        (let ((r (funcall function char-list)))
 	 (if r

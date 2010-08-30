@@ -130,8 +130,7 @@ nil でない引数があれば、カーソルの色がモードにより変わらないようにする。"
 (autoload 'tcode-mazegaki-switch-to-dictionary "tc-mazegaki" nil t)
 
 (defun tcode-mazegaki-write-to-delete-log (str)
-  (save-excursion
-    (set-buffer tcode-mazegaki-delete-log-buffer)
+  (with-current-buffer tcode-mazegaki-delete-log-buffer
     (goto-char (point-max))
     (insert str)))
 
@@ -144,16 +143,15 @@ nil でない引数があれば、カーソルの色がモードにより変わらないようにする。"
   (let ((nod 0)
 	(yomi-pattern (concat "[^ ]*" kanji))
 	str)
-    (save-excursion
-      (get-buffer-create tcode-mazegaki-delete-log-buffer)
+    (with-current-buffer (get-buffer-create tcode-mazegaki-delete-log-buffer)
       (tcode-mazegaki-switch-to-dictionary)
       (goto-char (point-min))
       (message "検索中(%s)..." kanji)
       (while (search-forward kanji nil t)
 	(beginning-of-line)
 	(if (looking-at yomi-pattern)
-	    (next-line 1)
-	  (setq str (buffer-substring (point) (progn (next-line 1) (point))))
+	    (forward-line 1)
+	  (setq str (buffer-substring (point) (progn (forward-line 1) (point))))
 	  (tcode-mazegaki-write-to-delete-log str)
 	  (setq nod (1+ nod))))
       (if (> nod 0)
@@ -190,9 +188,9 @@ nil でない引数があれば、カーソルの色がモードにより変わらないようにする。"
 	       (while (search-forward kanji nil t)
 		 (beginning-of-line)
 		 (if (looking-at yomi-pattern)
-		     (next-line 1)
+		     (forward-line 1)
 		   (narrow-to-region (point)
-				     (save-excursion (next-line 1) (point)))
+				     (save-excursion (forward-line 1) (point)))
 		   (while (re-search-forward pattern nil t)
 		     (replace-match "/")
 		     (backward-char)
@@ -297,7 +295,7 @@ Tコードモードのときに、このリストのコマンドが呼ばれた後に
 	     (if (memq last-command tcode-electric-switching-command-list)
 		 ;; 空白をそのままにして切り替え
 		 (progn
-		   (delete-backward-char 1)
+		   (delete-char -1)
 		   (toggle-input-method)
 		   (or tcode-electric-space-without-inserting
 		       (and (not (bobp))
@@ -305,14 +303,14 @@ Tコードモードのときに、このリストのコマンドが呼ばれた後に
 					      (tcode-preceding-char))))
 			      (string-match (regexp-quote prev-char)
 					    tcode-no-following-space-chars)))
-		       (tcode-redo-command last-command-char)))
+		       (tcode-redo-command last-command-event)))
 	       (condition-case nil
 		   (let* ((echo-keystrokes 0)
 			  (ch (read-char)))
 		     (if (memq ch tcode-electric-deleting-and-switching-chars)
 			 ;; 直前の空白を消して切り替え
 			 (progn
-			   (delete-backward-char 1)
+			   (delete-char -1)
 			   (toggle-input-method))
 		       ;; 切り替えない
 		       (tcode-redo-command ch)))
@@ -328,10 +326,10 @@ Tコードモードのときに、このリストのコマンドが呼ばれた後に
 		    (ch (read-char)))
 	       (cond ((memq ch tcode-electric-switching-chars)
 		      (and tcode-electric-space-without-inserting
-			   (delete-backward-char 1))
+			   (delete-char -1))
 		      (toggle-input-method))
 		     ((memq ch tcode-electric-deleting-and-switching-chars)
-		      (delete-backward-char 1)
+		      (delete-char -1)
 		      (toggle-input-method))
 		     (t
 		      (tcode-redo-command ch))))
@@ -398,7 +396,7 @@ LEVEL 番目の表が対象となる。"
 	  (cond (elm
 		 (let (current-prefix-arg)
 		   (tcode-insert elm)))
-		((= ch last-command-char)
+		((= ch last-command-event)
 		 (tcode-insert-ya-outset (1+ level)))
 		((= ch ? )
 		 (self-insert-command level))
@@ -633,7 +631,7 @@ RET で終了。
     (unwind-protect
 	(let* ((echo-keystrokes 0)
 	       (ch (read-char)))
-	  (cond ((= ch last-command-char)
+	  (cond ((= ch last-command-event)
 		 (tcode-katakana-preceding-chars (1+ arg)))
 		((= ch ?\C-?)
 		 (tcode-katakana-preceding-chars (- arg)))

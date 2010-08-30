@@ -46,8 +46,7 @@
 	  (setq dir (concat dir "/")))
       (setq dir (expand-file-name dir))
       ;; .tc§Œ∫Ó¿Æ
-      (save-excursion
-	(set-buffer (get-buffer-create "*tcode: .tc *"))
+      (with-current-buffer (get-buffer-create "*tcode: .tc *")
 	(erase-buffer)
 	(insert ";;; -*-emacs-lisp-*- This file is automatically created\n")
 	(insert (format "(setq tcode-data-directory \"%s\")\n" dir))

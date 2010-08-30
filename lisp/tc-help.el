@@ -130,13 +130,13 @@ nil の場合では見つからないような場合でも、non-nil にすれば見つかる場合が
 	      (cl2 (or (tcode-char-list-for-bushu b1)
 		       (if (= (length b1) 1)
 			   b1))))
-	  (mapcar (lambda (c1)
-		    (mapcar (lambda (c2)
-			      (if (= (tcode-bushu-compose-two-chars c1 c2)
-				     char)
-				  (throw 'found (cons c1 c2))))
-			    cl2))
-		  cl1))
+	  (mapc (lambda (c1)
+		  (mapc (lambda (c2)
+			  (if (= (tcode-bushu-compose-two-chars c1 c2)
+				 char)
+			      (throw 'found (cons c1 c2))))
+			cl2))
+		cl1))
 	(setq b2 (nconc b2 (list (car b1))))))))
 
 (defun tcode-decompose-char (kanji &optional for-help)
@@ -164,7 +164,7 @@ FOR-HELPがnilでない場合は、直接入力できる字に分解する。"
 					  (cdr decomposed))))
 			 (catch 'found
 			   ;; 強合成集合を探す。
-			   (mapcar
+			   (mapc
 			    (lambda (c)
 			      (if (tcode-bushu-composed-p kanji
 							  (car decomposed)
@@ -174,7 +174,7 @@ FOR-HELPがnilでない場合は、直接入力できる字に分解する。"
 			    (sort (tcode-bushu-subset bushu-list)
 				  'tcode-bushu-less-p))
 			   ;; 弱合成集合を探す。
-			   (mapcar
+			   (mapc
 			    (lambda (c)
 			      (if (tcode-bushu-composed-p kanji
 							  (car decomposed)
@@ -193,7 +193,7 @@ FOR-HELPがnilでない場合は、直接入力できる字に分解する。"
 					(car decomposed))))
 		       (catch 'found
 			 ;; 強合成集合を探す。
-			 (mapcar
+			 (mapc
 			  (lambda (c)
 			    (if (tcode-bushu-composed-p kanji
 							c
@@ -203,7 +203,7 @@ FOR-HELPがnilでない場合は、直接入力できる字に分解する。"
 			  (sort (tcode-bushu-subset bushu-list)
 				'tcode-bushu-less-p))
 			 ;; 弱合成集合を探す。
-			 (mapcar
+			 (mapc
 			  (lambda (c)
 			    (if (tcode-bushu-composed-p kanji
 							c
@@ -232,9 +232,9 @@ FOR-HELPがnilでない場合は、直接入力できる字に分解する。"
 					  (tcode-bushu-superset bushu2))
 				   'tcode-bushu-less-p))))
 		       (catch 'found
-			 (mapcar
+			 (mapc
 			  (lambda (c1)
-			    (mapcar
+			    (mapc
 			     (lambda (c2)
 			       (if (tcode-bushu-composed-p kanji c1 c2)
 				   (throw 'found
@@ -253,17 +253,17 @@ FOR-HELPがnilでない場合は、直接入力できる字に分解する。"
 	  ;; 強差合成集合を探す。
 	  (let ((bushu-list (tcode-bushu-for-char char)))
 	    (catch 'found
-	      (mapcar
+	      (mapc
 	       (lambda (c)
 		 (when (tcode-encode c)
 		   (let ((diff (tcode-subtract-set (tcode-bushu-for-char c)
 						   bushu-list)))
-		     (mapcar (lambda (d)
-			       (if (tcode-bushu-composed-p kanji c d)
-				   (throw 'found
-					  (cons (char-to-string c)
-						(char-to-string d)))))
-			     (tcode-bushu-subset diff)))))
+		     (mapc (lambda (d)
+			     (if (tcode-bushu-composed-p kanji c d)
+				 (throw 'found
+					(cons (char-to-string c)
+					      (char-to-string d)))))
+			   (tcode-bushu-subset diff)))))
 	       (sort (tcode-bushu-superset bushu-list)
 		     'tcode-bushu-less-p))
 	      (cons kanji nil)))))))
@@ -398,7 +398,8 @@ FOR-HELPがnilでない場合は、直接入力できる字に分解する。"
 
 (defun tcode-help-stroke (loc ch)
   "subroutine of `tcode-draw-stroke-for-char'."
-  (goto-line (1+ (car loc)))
+  (goto-char (point-min))
+  (forward-line (car loc))
   (move-to-column (+ (* 2 (cdr loc)) (if (>= (cdr loc) 6) 0 -2)))
   (tcode-delete-char (if (= (char-width (tcode-following-char)) 2) 
 			 1 
@@ -423,7 +424,8 @@ FOR-HELPがnilでない場合は、直接入力できる字に分解する。"
 	     (char (car (cdr datum)))
 	     (str (car (cdr (cdr datum)))))
 	(tcode-help-stroke (tcode-get-key-location addr) char)
-	(goto-line (if (= (mod i 2) 0) 3 4))
+	(goto-char (point-min))
+	(forward-line (if (= (mod i 2) 0) 2 3))
 	(end-of-line)
 	(insert "     " char "…第" str "打鍵")
 	(setq i (1+ i)
@@ -499,8 +501,7 @@ FOR-HELPがnilでない場合は、直接入力できる字に分解する。"
       (let* ((strokes (tcode-encode (tcode-string-to-char ch)))
 	     (buf (get-buffer-create " *tcode: stroke*"))
 	     decomposed-string)
-	(save-excursion
-	  (set-buffer buf)
+	(with-current-buffer buf
 	  (erase-buffer)
 	  (and strokes
 	       (<= (length strokes) 4)
@@ -642,8 +643,7 @@ SECOND to the second stroke.  If nil, then left, else right.
 If FORCE is non-nil, make new table."
   (let ((buf (get-buffer-create tcode-stroke-buffer-name))
 	(str (concat "^" (if first "R" "L") (if second "R" "L"))))
-    (save-excursion
-      (set-buffer buf)
+    (with-current-buffer buf
       (widen)
       (goto-char (point-min))
       (if (and (not force)

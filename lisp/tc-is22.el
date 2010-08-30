@@ -27,7 +27,7 @@
 
 ;;; Code:
 
-(if (< (string-to-int emacs-version) 22)
+(if (< (string-to-number emacs-version) 22)
     (error "tc-is22 cannot run on NEmacs/Mule/Emacs20/21.  Use Emacs 22 or later!"))
 
 ;;;
@@ -88,10 +88,10 @@
 (defun isearch-printing-char ()
   "Add this ordinary printing character to the search string and search."
   (interactive)
-  (let ((char last-command-char))
+  (let ((char last-command-event))
     (if (and (boundp 'tcode-mode) tcode-mode)
 	;; isearch for T-Code
-	(let* ((decoded (tcode-decode-chars last-command-char))
+	(let* ((decoded (tcode-decode-chars last-command-event))
 	       (action (car decoded))
 	       (prev (tcode-isearch-bushu)))
 	  (cond ((null action)

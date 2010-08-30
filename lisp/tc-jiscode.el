@@ -35,7 +35,7 @@
 (defvar tcode-jiscode-map nil)
 (unless tcode-jiscode-map
   (setq tcode-jiscode-map (make-sparse-keymap))
-  (mapcar
+  (mapc
    (lambda (elm)
      (let ((cmd (car elm))
 	   (key (cdr elm)))
@@ -88,7 +88,7 @@
       (tcode-jiscode-insert-line 1st (+ 2nd (* 2 32)))
       (setq 1st (1+ 1st))))
   (message "Making jiscode tables...done.")
-  (beginning-of-buffer))
+  (goto-char (point-min)))
 
 (defun tcode-jiscode-insert ()
   "JIS 漢字表の現在位置にある文字を、表を作る前にいたバッファに挿入する。"
