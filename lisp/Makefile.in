@@ -1,6 +1,6 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
-# Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
+# Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -59,6 +59,8 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+host_alias = @host_alias@
+host_triplet = @host@
 CC = @CC@
 DOTEMACS = @DOTEMACS@
 ELC_FILES = @ELC_FILES@
@@ -67,8 +69,11 @@ EMACS = @EMACS@
 EMACS_FLAVOR = @EMACS_FLAVOR@
 EMACS_PACKAGE_DIR = @EMACS_PACKAGE_DIR@
 EMACS_VERSION = @EMACS_VERSION@
+HAVE_LIB = @HAVE_LIB@
 INSTALL = @INSTALL@
 INSTALLINFO = @INSTALLINFO@
+LIB = @LIB@
+LTLIB = @LTLIB@
 MAKEINFO = @MAKEINFO@
 NO_COMPILE_EL_FILES = @NO_COMPILE_EL_FILES@
 PACKAGE = @PACKAGE@
@@ -86,7 +91,7 @@ PREFILE = tc-pre.el
 COMMON_EL_FILES = tc-setup.el tc.el tc-help.el tc-complete.el tc-jiscode.el 	tc-bushu.el tc-mazegaki.el tc-util.el tc-tbl.el tutc-tbl.el eelll.el 	tc-inst.el tc-stat.el tc-ja-alnum.el
 
 
-lisp_LISP = tc-sysdep.el $(COMMON_EL_FILES) tc-is18.el tc-is19.el tc-is20.el 	 tc-bitmap.el tc-image.el tc-mkmzdic.el $(PREFILE)
+lisp_LISP = tc-sysdep.el $(COMMON_EL_FILES) tc-is18.el tc-is19.el tc-is20.el tc-is22.el 	 tc-bitmap.el tc-image.el tc-mkmzdic.el $(PREFILE)
 
 ELCFILES = compile.log
 noinst_LISP = make-elc guess tc-pre-base
@@ -107,9 +112,9 @@ all: all-redirect
 .SUFFIXES:
 .SUFFIXES: .el .elc
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps lisp/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu lisp/Makefile
 
-Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
+Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
@@ -118,22 +123,26 @@ tc-pre-base: $(top_builddir)/config.status tc-pre-base.in
 
 install-lispLISP: $(lisp_LISP) $(ELCFILES)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(lispdir)
-	@list='$(lisp_LISP)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(lispdir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(lispdir)/$$p; \
-	  if test -f $${p}c; then \
-	    echo " $(INSTALL_DATA) $${p}c $(DESTDIR)$(lispdir)/$${p}c"; \
-	    $(INSTALL_DATA) $${p}c $(DESTDIR)$(lispdir)/$${p}c; \
-	  else : ; fi; \
-	done
+	@if test -n "$(lispdir)"; then \
+	  $(mkinstalldirs) $(DESTDIR)$(lispdir); \
+	  list='$(lisp_LISP)'; for p in $$list; do \
+	    if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
+	    echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(lispdir)/$$p"; \
+	    $(INSTALL_DATA) $$d$$p $(DESTDIR)$(lispdir)/$$p; \
+	    if test -f $${p}c; then \
+	      echo " $(INSTALL_DATA) $${p}c $(DESTDIR)$(lispdir)/$${p}c"; \
+	      $(INSTALL_DATA) $${p}c $(DESTDIR)$(lispdir)/$${p}c; \
+	    else : ; fi; \
+	  done; \
+	else : ; fi
 
 uninstall-lispLISP:
 	@$(NORMAL_UNINSTALL)
-	list='$(lisp_LISP)'; for p in $$list; do \
-	  rm -f $(lispdir)/$$p $(DESTDIR)$(lispdir)/$${p}c; \
-	done
+	@if test -n "$(lispdir)"; then \
+	  list='$(lisp_LISP)'; for p in $$list; do \
+	    rm -f $(DESTDIR)$(lispdir)/$$p $(DESTDIR)$(lispdir)/$${p}c; \
+	  done; \
+	else : ; fi
 .el.elc:
 	@echo 'WARNING: Warnings can be ignored. :-)'
 	if test $(EMACS) != no; then \
@@ -157,6 +166,11 @@ distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 subdir = lisp
 
 distdir: $(DISTFILES)
+	here=`cd $(top_builddir) && pwd`; \
+	top_distdir=`cd $(top_distdir) && pwd`; \
+	distdir=`cd $(distdir) && pwd`; \
+	cd $(top_srcdir) \
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu lisp/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \

@@ -9,7 +9,7 @@ COMMON_EL_FILES = tc-setup.el tc.el tc-help.el tc-complete.el tc-jiscode.el \
 	tc-bushu.el tc-mazegaki.el tc-util.el tc-tbl.el tutc-tbl.el eelll.el \
 	tc-inst.el tc-stat.el tc-ja-alnum.el
 
-lisp_LISP = tc-sysdep.el $(COMMON_EL_FILES) tc-is18.el tc-is19.el tc-is20.el \
+lisp_LISP = tc-sysdep.el $(COMMON_EL_FILES) tc-is18.el tc-is19.el tc-is20.el tc-is22.el \
 	 tc-bitmap.el tc-image.el tc-mkmzdic.el $(PREFILE)
 ELCFILES = compile.log
 noinst_LISP = make-elc guess tc-pre-base

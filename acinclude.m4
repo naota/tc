@@ -43,27 +43,32 @@ case $type in
 nemacs)
 	EL_FILES="tc-is18.el"
 	ELC_FILES="tc-is18.elc"
-	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is19.el tc-is20.el"
+	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is19.el tc-is20.el tc-is22.el"
 	;;
 mule1)
 	EL_FILES="tc-is18.el"
 	ELC_FILES="tc-is18.elc"
-	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is19.el tc-is20.el"
+	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is19.el tc-is20.el tc-is22.el"
 	;;
 mule4|mule5)
 	EL_FILES="tc-is20.el"
 	ELC_FILES="tc-is20.elc"
-	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is18.el tc-is19.el"
+	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is18.el tc-is19.el tc-is22.el"
+	;;
+mule6)
+	EL_FILES="tc-is22.el"
+	ELC_FILES="tc-is22.elc"
+	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is18.el tc-is19.el tc-is20.el"
 	;;
 xemacs21)
 	EL_FILES="tc-is19.el"
 	ELC_FILES="tc-is19.elc"
-	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is18.el tc-is20.el"
+	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is18.el tc-is20.el tc-is22.el"
 	;;
 mule*|xemacs20)
 	EL_FILES="tc-is19.el"
 	ELC_FILES="tc-is19.elc"
-	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is18.el tc-is20.el"
+	NO_COMPILE_EL_FILES="tc-sysdep.el tc-is18.el tc-is20.el tc-is22.el"
 	;;
 *)
 	echo "Unsupported Editor ($type)!!"

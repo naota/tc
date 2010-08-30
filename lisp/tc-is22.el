@@ -1,14 +1,15 @@
-;;; tc-is20.el --- T-Code isearch modification for Emacs 2[01].*.
+;;; tc-is22.el --- T-Code isearch modification for Emacs 22.*.
 
-;; Copyright (C) 1994,97-2001 Kaoru Maeda, Mikihiko Nakao and KITAJIMA Akira
+;; Copyright (C) 1994,97-2001, 2005 Kaoru Maeda, Mikihiko Nakao, KITAJIMA Akira and Masayuki Ataka
 
 ;; Author: Kaoru Maeda <maeda@src.ricoh.co.jp>
 ;;	Mikihiko Nakao
 ;;	KITAJIMA Akira <kitajima@isc.osakac.ac.jp>
-;; Maintainer: KITAJIMA Akira
-;; Create: 27 Jun (Sat), 1998
+;;      Masayuki Ataka <ataka@milk.freemail.ne.jp>
+;; Maintainer: Masayuki Ataka
+;; Create: 12 Feb (Sat), 2005
 
-;; $Id: tc-is20.el,v 1.17 2003/05/18 08:41:15 kitajima Exp $
+;; $Id: $
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -26,8 +27,8 @@
 
 ;;; Code:
 
-(if (< (string-to-int emacs-version) 20)
-    (error "tc-is20 cannot run on NEmacs/Mule.  Use Emacs 20 or later!"))
+(if (< (string-to-int emacs-version) 22)
+    (error "tc-is22 cannot run on NEmacs/Mule/Emacs20/21.  Use Emacs 22 or later!"))
 
 ;;;
 ;;;  User Variables
@@ -69,80 +70,28 @@
   (put 'isearch-toggle-tcode 'isearch-command t)) ; for XEmacs
 
 ;;;
-;;; patch to original functions in isearch.el of Emacs 20.2.96
+;;; patch to original functions in isearch.el of Emacs 22
 ;;;
-(defun isearch-search ()
-  ;; Do the search with the current search string.
-  (isearch-message nil t)
-  (if (and (eq isearch-case-fold-search t) search-upper-case)
-      (setq isearch-case-fold-search
-	    (if (eq tcode-emacs-version 'xemacs)
- 		(isearch-no-upper-case-p isearch-string)
- 	      (isearch-no-upper-case-p isearch-string isearch-regexp))))
-  (condition-case lossage
-      (let ((inhibit-point-motion-hooks search-invisible)
-	    (inhibit-quit nil)
-	    (case-fold-search isearch-case-fold-search)
-	    (retry t))
-	(if isearch-regexp (setq isearch-invalid-regexp nil))
-	(setq isearch-within-brackets nil)
-	(while retry
-	  (setq isearch-success
-		(funcall
-		 (cond (isearch-word
-			(if isearch-forward
-			    'word-search-forward 'word-search-backward))
-		       ((or isearch-regexp
-			    (and (boundp 'tcode-isearch-enable-wrapped-search)
-				 tcode-isearch-enable-wrapped-search))
-			(if isearch-forward
-			    're-search-forward 're-search-backward))
-		       (t
-			(if isearch-forward 'search-forward 'search-backward)))
-		 isearch-string nil t))
-	  ;; Clear RETRY unless we matched some invisible text
-	  ;; and we aren't supposed to do that.
-	  (if (or (eq search-invisible t)
-		  (not isearch-success)
-		  (bobp) (eobp)
-		  (= (match-beginning 0) (match-end 0))
-		  (not (isearch-range-invisible
-			(match-beginning 0) (match-end 0))))
-	      (setq retry nil)))
-	(setq isearch-just-started nil)
-	(if isearch-success
-	    (setq isearch-other-end
-		  (if isearch-forward (match-beginning 0) (match-end 0)))))
-
-    (quit (isearch-unread ?\C-g)
-	  (setq isearch-success nil))
-
-    (invalid-regexp
-     (setq isearch-invalid-regexp (car (cdr lossage)))
-     (setq isearch-within-brackets (string-match "\\`Unmatched \\["
-						 isearch-invalid-regexp))
-     (if (string-match
-	  "\\`Premature \\|\\`Unmatched \\|\\`Invalid "
-	  isearch-invalid-regexp)
-	 (setq isearch-invalid-regexp "incomplete input")))
-    (error
-     ;; stack overflow in regexp search.
-     (setq isearch-invalid-regexp (car (cdr lossage)))))
-
-  (if isearch-success
-      nil
-    ;; Ding if failed this time after succeeding last time.
-    (and (nth 3 (car isearch-cmds))
-	 (ding))
-    (goto-char (nth 2 (car isearch-cmds)))))
+(defun tcode-isearch-search-fun ()
+  (cond (isearch-word
+	 (if isearch-forward
+	     'word-search-forward 'word-search-backward))
+	((or isearch-regexp
+	     (and (boundp 'tcode-isearch-enable-wrapped-search)
+		  tcode-isearch-enable-wrapped-search))
+	 (if isearch-forward
+	     're-search-forward 're-search-backward))
+	(t
+	 (if isearch-forward 'search-forward 'search-backward))))
+(setq isearch-search-fun-function #'tcode-isearch-search-fun)
 
 (defun isearch-printing-char ()
   "Add this ordinary printing character to the search string and search."
   (interactive)
-  (let ((char (isearch-last-command-char)))
+  (let ((char last-command-char))
     (if (and (boundp 'tcode-mode) tcode-mode)
 	;; isearch for T-Code
-	(let* ((decoded (tcode-decode-chars (isearch-last-command-char)))
+	(let* ((decoded (tcode-decode-chars last-command-char))
 	       (action (car decoded))
 	       (prev (tcode-isearch-bushu)))
 	  (cond ((null action)
@@ -184,7 +133,9 @@
       (if (and enable-multibyte-characters
 	       (>= char ?\200)
 	       (<= char ?\377))
-	  (isearch-process-search-char (+ char nonascii-insert-offset))
+	  (if (keyboard-coding-system)
+	      (isearch-process-search-multibyte-characters char)
+	    (isearch-process-search-char (unibyte-char-to-multibyte char)))
 	(if current-input-method
 	    (isearch-process-search-multibyte-characters char)
 	  (isearch-process-search-char char))))))
@@ -202,15 +153,11 @@
 (defun isearch-yank-word ()
   "Pull next word from buffer into search string."
   (interactive)
-  (isearch-yank-string
-   (save-excursion
-     (and (not isearch-forward) isearch-other-end
-	  (goto-char isearch-other-end))
-     (buffer-substring (point)
-		       (progn (if (= (char-width (char-after (point))) 2)
-				  (forward-char 1)
-				(forward-word 1))
-			      (point))))))
+  (isearch-yank-internal (lambda () 
+			   (if (= (char-width (char-after)) 2)
+			       (forward-char 1)
+			     (forward-word 1))
+			   (point))))
 
 (defun isearch-yank-string (string)
   "Pull STRING into search string."
@@ -223,7 +170,7 @@
 			       (tcode-isearch-make-string-for-wrapping string))
 	isearch-message
 	(concat isearch-message
-		(mapconcat 'isearch-text-char-description string nil))
+		(mapconcat 'isearch-text-char-description string ""))
 	;; Don't move cursor in reverse search.
 	isearch-yank-flag t)
   (isearch-search-and-update))
@@ -238,15 +185,18 @@
 		(or (if isearch-regexp
 			(car regexp-search-ring)
 		      (car search-ring))
-		    "")
+		    (error "No previous search string"))
 		isearch-message
 		(mapconcat 'isearch-text-char-description
 			   (tcode-isearch-remove-ignore-regexp isearch-string)
-			   nil))
+			   "")
+		isearch-case-fold-search isearch-last-case-fold-search)
 	;; If already have what to search for, repeat it.
 	(or isearch-success
 	    (progn
-	      (goto-char (if isearch-forward (point-min) (point-max)))
+	      (if isearch-wrap-function
+		  (funcall isearch-wrap-function)
+	        (goto-char (if isearch-forward (point-min) (point-max))))
 	      (setq isearch-wrapped t))))
     ;; C-s in reverse or C-r in forward, change direction.
     (setq isearch-forward (not isearch-forward)))
@@ -255,7 +205,8 @@
 
   (if (equal isearch-string "")
       (setq isearch-success t)
-    (if (and isearch-success (equal (match-end 0) (match-beginning 0))
+    (if (and isearch-success 
+	     (equal (point) isearch-other-end)
 	     (not isearch-just-started))
 	;; If repeating a search that found
 	;; an empty string, ensure we advance.
@@ -318,8 +269,7 @@
 (defun isearch-toggle-tcode ()
   "インクリメンタルサーチ中のTコードモードをトグルする。"
   (interactive)
-  (if tcode-isearch-start-state
-      ()
+  (unless tcode-isearch-start-state
     (toggle-input-method))
   (isearch-update))
 
@@ -329,13 +279,13 @@
 					  (string-to-char c2))))
     (if c
 	(let ((s (char-to-string c)))
-	  (let ((msg (car (cdr (car isearch-cmds)))))
+	  (let ((msg (isearch-message-state (car isearch-cmds))))
 	    (while (and msg
-			(string= msg (car (cdr (car isearch-cmds)))))
+			(string= msg (isearch-message-state (car isearch-cmds))))
 	      (isearch-delete-char)))
-	  (let ((msg (car (cdr (car isearch-cmds)))))
+	  (let ((msg (isearch-message-state (car isearch-cmds))))
 	    (while (and msg 
-			(string= msg (car (cdr (car isearch-cmds)))))
+			(string= msg (isearch-message-state (car isearch-cmds))))
 	      (isearch-delete-char)))
 	  (isearch-process-search-string
 	   (tcode-isearch-make-string-for-wrapping s) s))
@@ -449,6 +399,6 @@ STR から `tcode-isearch-ignore-regexp' を取り除く。"
 
 (add-hook 'isearch-mode-hook 'tcode-isearch-init)
 
-(provide 'tc-is20)
+(provide 'tc-is22)
 
-;;; tc-is20.el ends here
+;;; tc-is22.el ends here

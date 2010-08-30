@@ -47,6 +47,8 @@ nemacs, mule-1, mule-2, mule-3, mule-4, xemacsのいずれか。")
 	 'tc-is18)
 	((memq tcode-emacs-version '(mule-1 mule-2 mule-3 xemacs))
 	 'tc-is19)
+	((numberp (string-match "^2[2-4]" emacs-version))
+	 'tc-is22)
 	(t
 	 'tc-is20))
   "isearchで用いるTコード用モジュールのタイプ。")
@@ -120,7 +122,7 @@ nemacs, mule-1, mule-2, mule-3, mule-4, xemacsのいずれか。")
 ;;;; site information
 
 
-(defconst tcode-site-data-directory "/usr/local/share/tc/")
+(defconst tcode-site-data-directory "/Users/naota/Gentoo/usr/share/tc/")
 
 (provide 'tc-pre)
 
