@@ -270,8 +270,8 @@ Nが指定された場合は、N番目の候補になる。"
 					       candidate))
 				     (cdr candidate-list)
 				     " "))
-			"]"))
-	    "")))
+			"]")
+	      ""))))
 
 (defun tcode-complete-display ()
   "現在の文脈から推定できる入力候補を表示する。"
