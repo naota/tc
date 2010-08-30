@@ -1424,16 +1424,10 @@ Type \\[tcode-mode-help] for more detail."
 	   (not (eq help-buf (current-buffer)))
 	   (setq help-win (get-buffer-window help-buf))
 	   (cond (tcode-window-configuration-before-help
-		  (let ((orig-win (selected-window))
-			(orig-buf (current-buffer))
-			(orig-pos (point)))
+		  (save-excursion
 		    (if tcode-adjust-window-for-help
 			(set-window-configuration
-			 tcode-window-configuration-before-help))
-		    (unless (one-window-p)
-		      (select-window orig-win))
-		    (set-window-buffer (selected-window) orig-buf)
-		    (goto-char orig-pos)))
+			 tcode-window-configuration-before-help))))
 		 ((not (one-window-p))
 		  (delete-window help-win))))
       (and help-buf
