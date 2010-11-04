@@ -279,7 +279,7 @@
 	(noe (count-lines (point-min) (point-max)))
 	(count 0)
 	(percent -1))
-    (with-current-buffer tcode-bushu-index2-buffer-name
+    (with-current-buffer (get-buffer-create tcode-bushu-index2-buffer-name)
       (erase-buffer)
       (or (not (boundp 'buffer-file-coding-system))
 	  (set-buffer-file-coding-system coding-system)))
