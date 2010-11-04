@@ -1,5 +1,6 @@
-AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(tc, 2.3.1)
+AC_INIT(tc,2.3.1)
+AC_CONFIG_SRCDIR(lisp/tc.el)
+AM_INIT_AUTOMAKE
 AC_PREREQ(2.4)
 
 SHELL=/bin/sh
