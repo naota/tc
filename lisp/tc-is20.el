@@ -26,7 +26,7 @@
 
 ;;; Code:
 
-(if (< (string-to-int emacs-version) 20)
+(if (< (string-to-number emacs-version) 20)
     (error "tc-is20 cannot run on NEmacs/Mule.  Use Emacs 20 or later!"))
 
 ;;;

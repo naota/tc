@@ -47,7 +47,7 @@
 
 ;;; Code:
 
-(if (<= (string-to-int emacs-version) 18)
+(if (<= (string-to-number emacs-version) 18)
     (error "tc-is19 cannot run on Nemacs/mule-1.x.  Use Mule-2.0 or later!"))
 
 ;;;
